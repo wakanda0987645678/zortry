@@ -32,7 +32,7 @@ export default function WalletConnectButton() {
                 return (
                   <Button
                     onClick={openConnectModal}
-                    className="bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
+                    className="spotify-button"
                     data-testid="button-connect-wallet"
                   >
                     <Wallet className="w-4 h-4 mr-2" />
@@ -57,8 +57,7 @@ export default function WalletConnectButton() {
                 <div className="flex gap-2">
                   <Button
                     onClick={openChainModal}
-                    variant="outline"
-                    className="font-mono"
+                    className="spotify-secondary-button font-mono"
                     data-testid="button-chain"
                   >
                     {chain.hasIcon && (
@@ -86,8 +85,7 @@ export default function WalletConnectButton() {
 
                   <Button
                     onClick={openAccountModal}
-                    variant="outline"
-                    className="font-mono"
+                    className="spotify-secondary-button font-mono"
                     data-testid="button-disconnect-wallet"
                   >
                     <Wallet className="w-4 h-4 mr-2" />

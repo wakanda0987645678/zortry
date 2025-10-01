@@ -50,27 +50,27 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
   };
 
   return (
-    <div className="glass-card rounded-2xl p-8 max-w-3xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="spotify-card rounded-2xl p-8 max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="blogUrl" className="block text-sm font-medium text-foreground mb-2">
+          <label htmlFor="blogUrl" className="block text-lg font-bold text-white mb-4">
             Enter Blog or Article URL
           </label>
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <Input
               type="url"
               id="blogUrl"
               placeholder="https://medium.com/@author/amazing-article"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              className="flex-1 bg-muted border-input text-foreground placeholder:text-muted-foreground"
+              className="flex-1 bg-muted/50 border-border text-white placeholder:text-muted-foreground h-14 text-lg rounded-full px-6 focus:ring-2 focus:ring-primary"
               disabled={scrapeMutation.isPending}
               data-testid="input-blog-url"
             />
             <Button
               type="submit"
               disabled={scrapeMutation.isPending}
-              className="bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
+              className="spotify-button h-14 px-8"
               data-testid="button-scrape"
             >
               {scrapeMutation.isPending ? (
@@ -81,15 +81,15 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
               ) : (
                 <>
                   <Search className="w-5 h-5 mr-2" />
-                  Scrape
+                  Import
                 </>
               )}
             </Button>
           </div>
         </div>
         
-        <div className="text-xs text-muted-foreground text-left">
-          Supports: Medium, personal blogs, news articles, and most web content
+        <div className="text-sm text-muted-foreground">
+          <span className="font-semibold">Supported platforms:</span> Medium, Substack, personal blogs, news articles, and most web content
         </div>
       </form>
     </div>

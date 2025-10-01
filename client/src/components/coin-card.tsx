@@ -192,36 +192,36 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
   };
 
   return (
-    <Card
-      className={`hover:shadow-lg transition-shadow ${isOwnCoin ? 'border-purple-200 bg-purple-50/50' : ''}`}
+    <div
+      className={`spotify-card rounded-xl overflow-hidden ${isOwnCoin ? 'ring-2 ring-primary/50' : ''}`}
       style={{ width: CARD_WIDTH, height: CARD_HEIGHT, minWidth: CARD_WIDTH, minHeight: CARD_HEIGHT, maxWidth: CARD_WIDTH, maxHeight: CARD_HEIGHT, display: 'flex', flexDirection: 'column' }}
     >
-      <CardHeader className="pb-2 px-3">
+      <div className="pb-2 px-4 pt-4">
         <div className="flex items-center justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <CardTitle className="flex items-center gap-1 text-base font-semibold truncate">
-              <Coins className="h-4 w-4" />
+            <h3 className="flex items-center gap-2 text-lg font-bold truncate text-white">
+              <Coins className="h-5 w-5 text-primary" />
               <span className="truncate">{coin.name}</span>
               {isOwnCoin && (
-                <Badge variant="secondary" className="bg-purple-100 text-purple-800 ml-1">by you</Badge>
+                <Badge className="bg-primary/20 text-primary border-primary/30 ml-1 text-xs">yours</Badge>
               )}
-            </CardTitle>
-            <CardDescription className="flex items-center gap-1 mt-0.5 text-xs text-gray-500">
-              <span className="truncate">{formatAddress(coin.address)}</span>
-            </CardDescription>
+            </h3>
+            <p className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+              <span className="truncate font-mono">{formatAddress(coin.address)}</span>
+            </p>
           </div>
           <Button
-            variant="outline"
-            size="icon"
+            variant="ghost"
+            size="sm"
             onClick={() => handleCopy(coin.address)}
-            className="ml-1 h-7 w-7"
+            className="ml-1 h-8 w-8 p-0 hover:bg-primary/20"
           >
-            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            {copied ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4 text-muted-foreground" />}
           </Button>
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent className="flex-1 flex flex-col gap-2 px-3 py-2">
+      <div className="flex-1 flex flex-col gap-3 px-4 py-2">
         {/* Stats with icons */}
         <CoinStatsIcons
           price={price}
@@ -285,9 +285,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
               <DialogTrigger asChild>
                 <Button
-                  variant="default"
-                  size="sm"
-                  className="flex-1 px-1 py-1 text-xs h-7 bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-blue-400"
+                  className="spotify-button flex-1 text-xs h-8"
                 >
                   <TrendingUp className="h-3 w-3 mr-1" />
                   Trade
@@ -383,6 +381,6 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
           )}
         </div>
       </CardContent>
-    </Card>
+    </div>
   );
 }

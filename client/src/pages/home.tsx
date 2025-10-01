@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Coin } from "@shared/schema";
@@ -10,6 +11,10 @@ import {
   Users,
   DollarSign,
   Coins as CoinsIcon,
+  Play,
+  Search,
+  Home,
+  Library,
 } from "lucide-react";
 
 export default function Home() {
@@ -31,254 +36,231 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <path d="M12 6v12M9 9h6M9 15h6"/>
-                </svg>
-                <span className="text-2xl font-bold gradient-text">CoinIT</span>
-              </div>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Spotify-style Layout */}
+      <div className="flex h-screen">
+        {/* Left Sidebar */}
+        <div className="w-64 bg-black/90 p-6 flex flex-col">
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <Play className="w-4 h-4 text-black fill-current" />
             </div>
-            <div className="flex items-center gap-4">
-              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-dashboard">
-                Dashboard
-              </button>
-              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-my-coins">
-                My Coins
-              </button>
-              <button className="text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-docs">
-                Docs
-              </button>
-              <WalletConnectButton />
-            </div>
+            <span className="text-2xl font-bold text-white">CoinIT</span>
           </div>
-        </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-20 pb-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-secondary/20 opacity-50"></div>
-        <div className="absolute inset-0" style={{backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)'}}></div>
-        
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-4xl mx-auto mb-12">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Transform <span className="gradient-text">Any Blog</span> into a <span className="gradient-text">Blockchain Coin</span>
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Import content from any URL and mint it as a tradeable coin on the Zora network. Own your favorite content on-chain.
+          <nav className="space-y-4 mb-8">
+            <div className="flex items-center gap-3 text-white hover:text-white transition-colors cursor-pointer">
+              <Home className="w-6 h-6" />
+              <span className="font-bold">Home</span>
+            </div>
+            <div className="flex items-center gap-3 text-muted-foreground hover:text-white transition-colors cursor-pointer">
+              <Search className="w-6 h-6" />
+              <span className="font-bold">Browse</span>
+            </div>
+            <div className="flex items-center gap-3 text-muted-foreground hover:text-white transition-colors cursor-pointer">
+              <Library className="w-6 h-6" />
+              <span className="font-bold">Your Coins</span>
+            </div>
+          </nav>
+
+          <div className="bg-muted/20 rounded-lg p-4 mt-auto">
+            <h3 className="font-bold text-white mb-2">Create Your First Coin</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Turn any blog post into a tradeable digital asset.
             </p>
-
-            <URLInputForm onScraped={handleScrapedData} />
+            <button className="spotify-button w-full">
+              Get Started
+            </button>
           </div>
         </div>
-      </section>
 
-      {/* Content Preview Section */}
-      {showPreview && scrapedData && (
-        <section className="py-12">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-2xl font-bold mb-6">Preview & Create Coin</h2>
-              <ContentPreviewCard 
-                scrapedData={scrapedData} 
-                onCoinCreated={handleCoinCreated}
-              />
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Stats Overview */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="stat-card rounded-xl p-4 hover-lift">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Total Coins</span>
-                <CoinsIcon className="w-5 h-5 text-primary" />
-              </div>
-              <div className="text-2xl font-bold" data-testid="text-total-coins">{coins.length}</div>
-              <div className="text-xs text-green-400 mt-1">All time</div>
-            </div>
-
-            <div className="stat-card rounded-xl p-4 hover-lift">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Total Volume</span>
-                <TrendingUp className="w-5 h-5 text-secondary" />
-              </div>
-              <div className="text-2xl font-bold" data-testid="text-total-volume">Live on chain</div>
-              <div className="text-xs text-green-400 mt-1">Real-time</div>
-            </div>
-
-            <div className="stat-card rounded-xl p-4 hover-lift">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Active Traders</span>
-                <Users className="w-5 h-5 text-accent" />
-              </div>
-              <div className="text-2xl font-bold" data-testid="text-active-traders">On Zora</div>
-              <div className="text-xs text-green-400 mt-1">Network wide</div>
-            </div>
-
-            <div className="stat-card rounded-xl p-4 hover-lift">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Blockchain</span>
-                <DollarSign className="w-5 h-5 text-green-400" />
-              </div>
-              <div className="text-2xl font-bold" data-testid="text-blockchain">Zora</div>
-              <div className="text-xs text-green-400 mt-1">Live network</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Coin Dashboard */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold mb-2">Trending Coins</h2>
-              <p className="text-muted-foreground">Discover the most popular blog coins on the network</p>
-            </div>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-lg bg-muted text-foreground text-sm font-medium hover:bg-muted/80 transition-colors" data-testid="button-all-coins">
-                All Coins
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Top Navigation Bar */}
+          <header className="flex items-center justify-between p-4 bg-background/95 backdrop-blur-md border-b border-border">
+            <div className="flex items-center gap-4">
+              <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center opacity-60">
+                <span className="text-sm">←</span>
               </button>
-              <button className="px-4 py-2 rounded-lg bg-primary/20 text-primary text-sm font-medium hover:bg-primary/30 transition-colors" data-testid="button-my-coins">
-                My Coins
+              <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center opacity-60">
+                <span className="text-sm">→</span>
               </button>
             </div>
-          </div>
+            <WalletConnectButton />
+          </header>
 
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="glass-card rounded-xl overflow-hidden shimmer">
-                  <div className="h-40 bg-muted/50"></div>
-                  <div className="p-4 space-y-3">
-                    <div className="h-6 bg-muted/50 rounded w-3/4"></div>
-                    <div className="h-4 bg-muted/50 rounded w-1/2"></div>
-                    <div className="h-16 bg-muted/50 rounded"></div>
-                    <div className="h-10 bg-muted/50 rounded"></div>
+          {/* Scrollable Content */}
+          <main className="flex-1 overflow-y-auto">
+            {/* Hero Section */}
+            <section className="relative p-8 bg-gradient-to-b from-primary/20 via-background/50 to-background">
+              <div className="max-w-6xl mx-auto">
+                <div className="mb-8">
+                  <h1 className="text-6xl font-black mb-4 text-white">
+                    Transform Blogs into <span className="spotify-green">Digital Assets</span>
+                  </h1>
+                  <p className="text-xl text-muted-foreground max-w-2xl">
+                    Import content from any URL and mint it as a tradeable coin on the Zora blockchain.
+                  </p>
+                </div>
+
+                <URLInputForm onScraped={handleScrapedData} />
+              </div>
+            </section>
+
+            {/* Content Preview Section */}
+            {showPreview && scrapedData && (
+              <section className="p-8">
+                <div className="max-w-6xl mx-auto">
+                  <h2 className="text-3xl font-bold mb-6 text-white">Preview & Create Coin</h2>
+                  <ContentPreviewCard 
+                    scrapedData={scrapedData} 
+                    onCoinCreated={handleCoinCreated}
+                  />
+                </div>
+              </section>
+            )}
+
+            {/* Stats Section */}
+            <section className="p-8">
+              <div className="max-w-6xl mx-auto">
+                <h2 className="text-3xl font-bold mb-6 text-white">Platform Stats</h2>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="stat-card rounded-xl p-6 hover-lift">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-muted-foreground font-semibold">Total Coins</span>
+                      <CoinsIcon className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-3xl font-black text-white" data-testid="text-total-coins">{coins.length}</div>
+                    <div className="text-sm text-primary mt-1">All time</div>
+                  </div>
+
+                  <div className="stat-card rounded-xl p-6 hover-lift">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-muted-foreground font-semibold">Network</span>
+                      <TrendingUp className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-3xl font-black text-white" data-testid="text-total-volume">Zora</div>
+                    <div className="text-sm text-primary mt-1">Blockchain</div>
+                  </div>
+
+                  <div className="stat-card rounded-xl p-6 hover-lift">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-muted-foreground font-semibold">Traders</span>
+                      <Users className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-3xl font-black text-white" data-testid="text-active-traders">Live</div>
+                    <div className="text-sm text-primary mt-1">On-chain</div>
+                  </div>
+
+                  <div className="stat-card rounded-xl p-6 hover-lift">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-muted-foreground font-semibold">Status</span>
+                      <DollarSign className="w-6 h-6 text-primary" />
+                    </div>
+                    <div className="text-3xl font-black text-white" data-testid="text-blockchain">Active</div>
+                    <div className="text-sm text-primary mt-1">Network</div>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : coins.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No coins created yet. Be the first to create one!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {coins.map((coin) => (
-                <CoinCard key={coin.id} coin={coin} />
-              ))}
-            </div>
-          )}
+              </div>
+            </section>
+
+            {/* Trending Coins Section */}
+            <section className="p-8">
+              <div className="max-w-6xl mx-auto">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-3xl font-bold text-white">Trending Coins</h2>
+                  <div className="flex gap-3">
+                    <button className="spotify-secondary-button" data-testid="button-all-coins">
+                      All Coins
+                    </button>
+                    <button className="spotify-button" data-testid="button-my-coins">
+                      My Coins
+                    </button>
+                  </div>
+                </div>
+
+                {isLoading ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {[...Array(8)].map((_, i) => (
+                      <div key={i} className="spotify-card rounded-xl overflow-hidden shimmer">
+                        <div className="h-48 bg-muted/20"></div>
+                        <div className="p-4 space-y-3">
+                          <div className="h-6 bg-muted/20 rounded w-3/4"></div>
+                          <div className="h-4 bg-muted/20 rounded w-1/2"></div>
+                          <div className="h-16 bg-muted/20 rounded"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : coins.length === 0 ? (
+                  <div className="text-center py-16">
+                    <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CoinsIcon className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">No coins yet</h3>
+                    <p className="text-muted-foreground mb-6">Be the first to create a coin from your favorite blog!</p>
+                    <button className="spotify-button">Create First Coin</button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {coins.map((coin) => (
+                      <CoinCard key={coin.id} coin={coin} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="border-t border-border p-8 mt-16">
+              <div className="max-w-6xl mx-auto">
+                <div className="grid md:grid-cols-4 gap-8 mb-8">
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <Play className="w-4 h-4 text-black fill-current" />
+                      </div>
+                      <span className="text-xl font-bold text-white">CoinIT</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Transform blogs into blockchain coins on Zora
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white mb-4">Product</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                      <li><a href="#" className="hover:text-white transition-colors">How it Works</a></li>
+                      <li><a href="#" className="hover:text-white transition-colors">Roadmap</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white mb-4">Resources</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
+                      <li><a href="#" className="hover:text-white transition-colors">API</a></li>
+                      <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white mb-4">Company</h4>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                      <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                      <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="border-t border-border pt-6 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    © 2024 CoinIT. All rights reserved.
+                  </p>
+                </div>
+              </div>
+            </footer>
+          </main>
         </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 border-t border-border">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-4xl font-bold mb-4">How CoinIT Works</h2>
-            <p className="text-lg text-muted-foreground">
-              Transform any blog post into a tradeable blockchain coin in three simple steps
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-white text-2xl font-bold mb-4">
-                1
-              </div>
-              <h3 className="text-xl font-bold mb-3">Import Content</h3>
-              <p className="text-muted-foreground">
-                Paste any blog URL and our scraper automatically extracts the title, content, images, and metadata
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-white text-2xl font-bold mb-4">
-                2
-              </div>
-              <h3 className="text-xl font-bold mb-3">Create Coin</h3>
-              <p className="text-muted-foreground">
-                Review the content preview, customize your coin symbol, and mint it on the Zora blockchain with IPFS storage
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-white text-2xl font-bold mb-4">
-                3
-              </div>
-              <h3 className="text-xl font-bold mb-3">Trade & Earn</h3>
-              <p className="text-muted-foreground">
-                Your coin is now live! Trade it, track its performance, and earn rewards as the creator
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-border py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <svg className="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <path d="M12 6v12M9 9h6M9 15h6"/>
-                </svg>
-                <span className="text-xl font-bold gradient-text">CoinIT</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Transform blogs into blockchain coins on the Zora network
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">How it Works</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Roadmap</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">API Reference</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Community</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Terms</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">
-              © 2024 CoinIT. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }
