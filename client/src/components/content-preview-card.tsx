@@ -8,7 +8,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { uploadToIPFS } from "@/lib/pinata";
 import { createZoraCoin } from "@/lib/zora";
 import { Calendar, User, ExternalLink, Loader2, Plus } from "lucide-react";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 
 interface ContentPreviewCardProps {
   scrapedData: any;
@@ -18,6 +18,7 @@ interface ContentPreviewCardProps {
 export default function ContentPreviewCard({ scrapedData, onCoinCreated }: ContentPreviewCardProps) {
   const { toast } = useToast();
   const { address: walletAddress } = useAccount();
+  const { data: walletClient } = useWalletClient();
   const [coinSymbol, setCoinSymbol] = useState(
     scrapedData.title
       .split(" ")
@@ -54,8 +55,14 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
         image: scrapedData.image, // This can be a URL or File
       };
 
-      // Create coin on Zora using the SDK
-      const zoraCoinResult = await createZoraCoin(coinMetadata, walletAddress);
+      // Create coin on Zora using the SDK with wallet
+      const { createZoraCoinWithWallet } = await import('@/lib/zora');
+      
+      if (!walletClient) {
+        throw new Error("Wallet client not available. Please ensure your wallet is properly connected.");
+      }
+      
+      const zoraCoinResult = await createZoraCoinWithWallet(coinMetadata, walletAddress, walletClient);
       
       // Create coin record in our database
       const coinData = {
@@ -165,10 +172,10 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
               />
               <Button
                 onClick={() => createCoinMutation.mutate()}
-                disabled={createCoinMutation.isPending || !coinSymbol || !walletAddress}
+                disabled={createCoinMutation.isPending || !coinSymbol || !walletAddress || !walletClient}
                 className="bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
                 data-testid="button-create-coin"
-                title={!walletAddress ? "Connect wallet to create coins" : ""}
+                title={!walletAddress ? "Connect wallet to create coins" : !walletClient ? "Wallet client not ready" : ""}
               >
                 {createCoinMutation.isPending ? (
                   <>
