@@ -52,11 +52,24 @@ export async function createZoraCoin(
       transport: http(rpcUrl),
     });
 
+    // Convert IPFS URI to HTTP URL for Zora SDK validation
+    let metadataUri = metadata.image || "";
+    if (metadataUri.startsWith('ipfs://')) {
+      const ipfsHash = metadataUri.replace('ipfs://', '');
+      const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
+      if (gatewayUrl) {
+        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+        console.log(`Converting IPFS URI ${metadata.image} to HTTP URL ${metadataUri}`);
+      } else {
+        throw new Error("VITE_NEXT_PUBLIC_GATEWAY_URL not configured for IPFS conversion");
+      }
+    }
+
     // Create coin arguments matching SDK v0.2.1 API
     const createCoinArgs = {
       name: metadata.name,
       symbol: metadata.symbol,
-      uri: metadata.image || "",
+      uri: metadataUri,
       chainId,
       payoutRecipient: creatorAddress, // Creator receives payouts
       currency: DeployCurrency.ETH,
@@ -66,12 +79,8 @@ export async function createZoraCoin(
     // The actual transaction will be handled by the wallet client
     const txCalls = await createCoinCall(createCoinArgs);
 
-    // Return mock result for now - in real implementation, this would be handled by wallet
-    return {
-      hash: `0x${Math.random().toString(16).substring(2)}` as Hash,
-      address: `0x${Math.random().toString(16).substring(2, 42)}` as Address,
-      deployment: txCalls
-    };
+    // This is a placeholder - actual implementation requires wallet integration
+    throw new Error("Wallet integration required for actual coin creation. This is a development environment limitation.");
 
   } catch (error) {
     console.error("Zora coin creation error:", error);
@@ -100,11 +109,24 @@ export async function createZoraCoinWithWallet(
       transport: http(rpcUrl),
     });
 
+    // Convert IPFS URI to HTTP URL for Zora SDK validation
+    let metadataUri = typeof metadata.image === 'string' ? metadata.image : "";
+    if (metadataUri.startsWith('ipfs://')) {
+      const ipfsHash = metadataUri.replace('ipfs://', '');
+      const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
+      if (gatewayUrl) {
+        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+        console.log(`Converting IPFS URI ${metadata.image} to HTTP URL ${metadataUri}`);
+      } else {
+        throw new Error("VITE_NEXT_PUBLIC_GATEWAY_URL not configured for IPFS conversion");
+      }
+    }
+
     // Create coin arguments matching SDK v0.2.1 API
     const createCoinArgs = {
       name: metadata.name,
       symbol: metadata.symbol,
-      uri: typeof metadata.image === 'string' ? metadata.image : "",
+      uri: metadataUri,
       chainId,
       payoutRecipient: creatorAddress,
       currency: DeployCurrency.ETH,

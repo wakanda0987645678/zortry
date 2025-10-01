@@ -54,44 +54,26 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
         image: scrapedData.image, // This can be a URL or File
       };
 
-      try {
-        const zoraCoinResult = await createZoraCoin(coinMetadata, walletAddress);
-        
-        // Create coin record in our database
-        const coinData = {
-          name: scrapedData.title,
-          symbol: coinSymbol,
-          address: zoraCoinResult.address,
-          creator: walletAddress,
-          scrapedContentId: scrapedData.id,
-          ipfsUri,
-        };
+      // Create coin on Zora using the SDK
+      const zoraCoinResult = await createZoraCoin(coinMetadata, walletAddress);
+      
+      // Create coin record in our database
+      const coinData = {
+        name: scrapedData.title,
+        symbol: coinSymbol,
+        address: zoraCoinResult.address,
+        creator: walletAddress,
+        scrapedContentId: scrapedData.id,
+        ipfsUri,
+      };
 
-        const res = await apiRequest("POST", "/api/coins", coinData);
-        return { ...res.json(), zoraCoinResult };
-      } catch (error) {
-        // Fallback to mock creation if Zora fails
-        console.warn("Zora coin creation failed, using mock:", error);
-        
-        const coinData = {
-          name: scrapedData.title,
-          symbol: coinSymbol,
-          address: `0x${Math.random().toString(16).substring(2, 42)}`,
-          creator: walletAddress,
-          scrapedContentId: scrapedData.id,
-          ipfsUri,
-        };
-
-        const res = await apiRequest("POST", "/api/coins", coinData);
-        return res.json();
-      }
+      const res = await apiRequest("POST", "/api/coins", coinData);
+      return { ...res.json(), zoraCoinResult };
     },
     onSuccess: (data) => {
       toast({
         title: "Coin created successfully!",
-        description: data.zoraCoinResult 
-          ? "Your coin is now live on Zora!"
-          : "Your coin has been created (mock mode).",
+        description: "Your coin is now live on Zora!",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/coins"] });
       onCoinCreated();
