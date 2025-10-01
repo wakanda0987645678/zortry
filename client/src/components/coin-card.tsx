@@ -276,7 +276,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
         <DialogTrigger asChild disabled={isOwnCoin}>
           <div
-            className={`relative w-full h-33 bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
+            className={`relative w-full h-32 bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
           >
             {coinImage || coin.metadata?.image ? (
               <img
