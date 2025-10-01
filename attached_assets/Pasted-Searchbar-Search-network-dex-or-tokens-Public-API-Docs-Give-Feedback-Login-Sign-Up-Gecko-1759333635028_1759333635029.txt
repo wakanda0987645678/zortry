@@ -1,0 +1,817 @@
+Searchbar/
+Search network, dex or tokens
+Public API Docs
+Give Feedback
+
+
+Login
+Sign Up
+GeckoTerminal logo
+
+My Watchlist
+Multicharts
+
+Dashboards
+Chain Rankings
+DEX Rankings
+New Pools
+Categories
+AI Agents
+
+Chains
+Plasma
+Plasma
+0G
+0G
+Solana
+Solana
+BNB Chain
+BNB Chain
+Ethereum
+Ethereum
+Base
+Base
+Arbitrum
+Arbitrum
+Hyperliquid
+Hyperliquid
+Sui Network
+Sui Network
+Avalanche
+Avalanche
+Unichain
+Unichain
+HyperEVM
+HyperEVM
+Sepolia Testnet
+Sepolia Testnet
+Aptos
+Aptos
+Linea
+Linea
+Polygon POS
+Polygon POS
+Tron
+Tron
+Near
+Near
+Bittensor
+Bittensor
+Optimism
+Optimism
+Katana
+Katana
+Sonic
+Sonic
+Starknet
+Starknet
+Sei V2
+Sei V2
+Mantle
+Mantle
+x Layer
+x Layer
+CELO
+CELO
+Berachain
+Berachain
+Pulsechain
+Pulsechain
+Hemi
+Hemi
+Hedera Hashgraph
+Hedera Hashgraph
+Abstract
+Abstract
+Gnosis XDAI
+Gnosis XDAI
+Monad Testnet
+Monad Testnet
+World Chain
+World Chain
+Cronos
+Cronos
+Saga
+Saga
+Etherlink
+Etherlink
+Soneium
+Soneium
+Flare
+Flare
+XRPL
+XRPL
+TON
+TON
+Ronin
+Ronin
+Scroll
+Scroll
+Somnia
+Somnia
+Ink
+Ink
+Xone
+Xone
+Cardano
+Cardano
+ZkSync
+ZkSync
+Plume Network
+Plume Network
+Kaia
+Kaia
+Moonbeam
+Moonbeam
+Fraxtal
+Fraxtal
+Zedxion Smart Chain
+Zedxion Smart Chain
+Blast
+Blast
+Story
+Story
+IOTA EVM
+IOTA EVM
+Flow EVM
+Flow EVM
+Rootstock
+Rootstock
+Morph L2
+Morph L2
+Lisk
+Lisk
+XDC
+XDC
+Peaq
+Peaq
+Eclipse
+Eclipse
+Chiliz Chain
+Chiliz Chain
+Metis
+Metis
+Immutable zkEVM
+Immutable zkEVM
+Initia
+Initia
+BounceBit
+BounceBit
+opBNB
+opBNB
+Parex
+Parex
+TAC
+TAC
+Mode
+Mode
+Corn
+Corn
+BOB Network
+BOB Network
+Beam
+Beam
+Core
+Core
+Filecoin
+Filecoin
+Manta Pacific
+Manta Pacific
+ZetaChain
+ZetaChain
+Internet Computer
+Internet Computer
+Movement
+Movement
+Wanchain
+Wanchain
+Conflux
+Conflux
+Vana
+Vana
+Zircuit
+Zircuit
+IOTEX
+IOTEX
+Merlin Chain
+Merlin Chain
+Oasys
+Oasys
+Haven1
+Haven1
+Songbird
+Songbird
+Zero Network
+Zero Network
+Cronos zkEVM
+Cronos zkEVM
+Botanix
+Botanix
+WEMIX
+WEMIX
+Hashkey
+Hashkey
+Fuse
+Fuse
+Superseed
+Superseed
+Units Network
+Units Network
+Fantom
+Fantom
+Aurora
+Aurora
+Swellchain
+Swellchain
+Sonic SVM
+Sonic SVM
+Taiko
+Taiko
+Mantra
+Mantra
+SX Rollup
+SX Rollup
+Harmony
+Harmony
+Viction
+Viction
+ONUS
+ONUS
+Goat
+Goat
+DFK Chain
+DFK Chain
+Polygon zkEVM
+Polygon zkEVM
+Kava
+Kava
+Superposition
+Superposition
+QL1
+QL1
+Mezo
+Mezo
+Redbelly Network
+Redbelly Network
+Moonriver
+Moonriver
+Shibarium
+Shibarium
+Lens
+Lens
+SmartBCH
+SmartBCH
+Humanode
+Humanode
+Pepe Unchained
+Pepe Unchained
+Genesys Network
+Genesys Network
+Gravity
+Gravity
+Sei Network
+Sei Network
+BESC HyperChain
+BESC HyperChain
+Zilliqa EVM
+Zilliqa EVM
+Telos
+Telos
+KUB
+KUB
+Ultron
+Ultron
+Bahamut Mainnet
+Bahamut Mainnet
+WAX
+WAX
+ThunderCore
+ThunderCore
+SKALE Europa
+SKALE Europa
+Nibiru
+Nibiru
+Arbitrum Nova
+Arbitrum Nova
+Electroneum
+Electroneum
+Astar
+Astar
+Endurance
+Endurance
+Mitosis
+Mitosis
+EDU Chain
+EDU Chain
+Energi
+Energi
+EOS EVM
+EOS EVM
+Glue
+Glue
+Zora
+Zora
+Dogechain
+Dogechain
+BSquared Network
+BSquared Network
+Shido Network
+Shido Network
+MemeCore
+MemeCore
+Oasis Sapphire
+Oasis Sapphire
+Rails Network
+Rails Network
+ApeChain
+ApeChain
+Sophon
+Sophon
+Kucoin Community Chain
+Kucoin Community Chain
+Godwoken
+Godwoken
+Step Network
+Step Network
+AirDAO
+AirDAO
+MAP Protocol
+MAP Protocol
+Elysium
+Elysium
+Elastos
+Elastos
+Neon EVM
+Neon EVM
+OpenGPU
+OpenGPU
+Bitlayer
+Bitlayer
+PlatON Network
+PlatON Network
+Nahmii
+Nahmii
+Pundi AIFX Omnilayer
+Pundi AIFX Omnilayer
+Hydra Chain
+Hydra Chain
+Lukso
+Lukso
+Redstone
+Redstone
+OctaSpace
+OctaSpace
+Taraxa
+Taraxa
+Areum Network
+Areum Network
+zkLink Nova
+zkLink Nova
+Rari
+Rari
+DefiMetaChain
+DefiMetaChain
+Mint
+Mint
+ShimmerEVM
+ShimmerEVM
+Meter
+Meter
+Ethereum Classic
+Ethereum Classic
+Ancient8
+Ancient8
+Cyber
+Cyber
+RSS3 VSL Mainnet
+RSS3 VSL Mainnet
+Saakuru
+Saakuru
+XRPL EVM
+XRPL EVM
+DuckChain
+DuckChain
+Camp Network
+Camp Network
+BitTorrent
+BitTorrent
+Tombchain
+Tombchain
+MXC zkEVM
+MXC zkEVM
+EthereumPOW
+EthereumPOW
+Q Mainnet
+Q Mainnet
+Planq
+Planq
+Larissa
+Larissa
+Rollux
+Rollux
+AlveyChain
+AlveyChain
+Haqq Network
+Haqq Network
+Hela
+Hela
+LoopNetwork
+LoopNetwork
+Sanko
+Sanko
+Qitmeer Network
+Qitmeer Network
+Matchain
+Matchain
+Omax Chain
+Omax Chain
+Tokchain
+Tokchain
+Swanchain
+Swanchain
+Boba Network
+Boba Network
+DefiVerse
+DefiVerse
+Velas
+Velas
+LightLink Phoenix
+LightLink Phoenix
+Bitrock
+Bitrock
+Base
+Ad
+BC.Game: The Best Crypto Casino!  Win Up to 5 BTC
+BC.Game: The Best Crypto Casino! Win Up to 5 BTC
+1
+RWA
+RWA
+-6.66%
+2
+KTA
+KTA
+8.53%
+3
+AVNT
+AVNT
+2.65%
+4
+ZORA
+ZORA
+20.61%
+5
+VFY
+VFY
+-29.99%
+6
+AVNT
+AVNT
+2.69%
+7
+ETHY
+ETHY
+79.38%
+8
+Shield
+Shield
+92.43%
+9
+kazonomics
+kazonomics
+44.41%
+10
+DORA
+DORA
+25.63%
+11
+FACY
+FACY
+15.31%
+12
+SYND
+SYND
+-13.29%
+13
+BSX
+BSX
+11.84%
+14
+REI
+REI
+14.82%
+15
+AERO
+AERO
+10.63%
+16
+noice
+noice
+4.86%
+17
+BNKR
+BNKR
+9.37%
+18
+AERO
+AERO
+10.19%
+19
+PREDI
+PREDI
+14%
+20
+BIO
+BIO
+21.05%
+Base
+Uniswap V4 (Base)
+
+
+
+Low Liquidity Pool
+This pool has very low liquidity and prices may differ drastically. What is liquidity?
+
+Improve the GT Score of this token with a Banner!
+gala2000/Mérida🧡
+gala2000 Price (gala2000)
+$0.00004426
+10.73%
+/420.64 Mérida🧡
+
+44,262.82
+MCAP
+
+
+
+
+Trade
+
+5m
+0%
+
+1h
++10.77%
+
+6h
++10.73%
+
+24h
++10.73%
+
+24h Txn
+4
+24h Vol
+$0.5961
+Net Buy
+-$0.26
+Buy
+2
+Sell
+2
+24h Vol
+$0.5961
+Liquidity
+$75.07
+Holders
+193
+Age
+57 minutes
+FDV
+$44.26K
+Market Cap
+$44.26K
+Community Promoted
+OTCfi/SOL
+Ad
+OTCfi
+OTCfi
+$OTCfi is the first community token created for OTC traders, holders, and OGs. Built on Solana, it’s designed to unite the retail community and bring transparency, liquidity, and global attention to the OTC.
+
+pump fun
+meme
+Promote token here
+Advertise here
+
+1
+GT Score
+
+De.Fi Scan
+
+GoPlus Scan
+Get Crypto
+Wallet
+Addresses
+Pool
+
+0xb77...ab0d
+gala2000
+
+0x892...75f4
+Metamask Icon
+Explorer Logo
+
+Mérida🧡
+
+0xae6...cf22
+Metamask Icon
+Explorer Logo
+
+Track this pool on
+EtherDrops
+Phanes
+Cielo
+Scan this pool on
+TTF Bot
+Quick Intel
+QuillCheck
+Pool Details
+1%
+Fee
+gala2000
+14,992.62
+~$0.6636
+Mérida🧡
+689,633,562.14
+~$74.11
+GT Score
+1
+ / 100
+
+gala2000/Mérida🧡
+Pool
+0 / 100
+Transactions
+0 / 100
+Creation
+0 / 100
+gala2000
+Info
+20 / 100
+Holders
+0 / 100
+GoPlus Token Security
+1
+
+Honeypot
+No
+Open Source
+Yes
+Get Wallet Security from SecWareX
+De.Fi Scanner
+
+Buy Tax
+0%
+Sell Tax
+0%
+Open Source
+No
+Creator Rugpull Risk
+Reentrancy Risk
+No
+Rugpull Risk
+No
+Honeypot.is
+Honeypot
+No
+GT Internal Security
+New pool (less than 24 hours old)
+Community Reports
+
+Report
+There are currently 0 reports that this pool is suspicious
+gala2000 to Mérida🧡 Converter
+1
+g
+gala2000
+0.00004426
+Select output token
+USD
+Mérida🧡
+Mérida🧡
+How do you feel about gala2000/Mérida🧡 today?
+Be the first to submit a sentiment!
+🚀
+👎
+
+
+Transactions
+
+Holders
+193
+
+Traders
+
+Bubblemaps
+
+Gaming
+Ad
+Time
+Type
+
+Price ETH
+
+Price USD
+
+gala2000
+
+Value
+
+From
+
+TX
+Oct 01
+04:04:03 PM
+Buy
+0.071022
+$0.00004426
+26.96
+$0.001194
+d4d4c
+
+Oct 01
+04:04:03 PM
+Buy
+0.071022
+$0.00004426
+3,740.03
+$0.1655
+d4d4c
+
+Oct 01
+03:50:55 PM
+Sell
+0.089249
+$0.00003996
+3,811.22
+$0.1523
+62226
+
+Oct 01
+03:49:29 PM
+Sell
+0.089242
+$0.00003997
+6,113.91
+$0.2444
+0697c
+
+Oct 01
+03:49:07 PM
+Sell
+0.089272
+$0.00004011
+5,084.28
+$0.2039
+4cef5
+
+Text Ad Icon
+BCGAME-The Best Crypto Casino,Daily Bonus up to 5BTC,50+ token options,760% Deposit Bonus 5000+Slots& live games- Join Now
+gala2000 token info
+Mérida🧡 token info
+About gala2000 (gala2000)
+
+No token info found for gala2000
+
+Update Token Info
+Past Token Info
+
+Current
+ORIGINAL
+gala2000/Mérida🧡 Price Stats
+The current price of gala2000 (gala2000/Mérida🧡) on Uniswap V4 (Base) is $0.00004426, the price is up 10.73% in the last 24 hours. Its 24-hour trading volume is reported to be at $0.5961 with a total of 4 transactions. gala2000/Mérida🧡 contract address is 0xb77ec0aba0d875e0c13d8fb505f4718c566066d3292412c44bdeadc38544ab0d, with a Fully Diluted Valuation (FDV) of $107.46 and a liquidity pool of $75.07.
+
+
+What is the 24-hour high and low price of Mérida🧡 / gala2000 1%?
+
+What is the liquidity of Mérida🧡 / gala2000 1% today?
+
+When was the Mérida🧡 / gala2000 1% pool created?
+
+What is the trading fee of Mérida🧡 / gala2000 1% on Uniswap V4 (Base)?
+
+What is the exchange rate of 1 gala2000 to Mérida🧡?
+
+How much gala2000 can I purchase with 1 USD?
+
+What is the token allocation of gala2000/Mérida🧡?
+
+Where to buy gala2000/Mérida🧡?
+
+Helper menu
+GeckoTerminal logo
+GeckoTerminal is the most comprehensive real-time DEX tracker, built by the team behind CoinGecko. Monitor crypto prices, volume, transactions, liquidity, and more on decentralized exchanges across all blockchains.
+
+Get it on Google Play
+Download on the App Store
+Resources
+ETH Wars
+About
+About Us
+Disclaimer
+Terms and Conditions
+Privacy Policy
+Ad Policy
+Cookie Preferences
+Bug Bounty
+IMPORTANT DISCLAIMER: All content provided herein our website, hyperlinked sites, associated applications, forums, blogs, social media accounts and other platforms (“Site”) is for your general information only, procured primarily from third party sources. We make no warranties of any kind in relation to our content and services (such as token swap functionalities), including but not limited to accuracy, security and updatedness. No part of the content and services that we provide constitutes financial advice, legal advice or any other form of advice meant for your specific reliance for any purpose, nor any dealing in (or promotion of) securities for which a license is required from the Monetary Authority of Singapore. Any use or reliance on our content and services is solely at your own risk and discretion. You should conduct your own research, review, analyze and verify our content and services before relying on or using them. Trading is a highly risky activity that can lead to major losses, please therefore consult your financial advisor before making any decision. No content on our Site is meant to be a solicitation or offer.
+

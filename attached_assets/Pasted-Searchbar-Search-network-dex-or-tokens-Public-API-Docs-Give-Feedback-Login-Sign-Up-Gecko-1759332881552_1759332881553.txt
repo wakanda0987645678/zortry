@@ -1,0 +1,747 @@
+Searchbar/
+Search network, dex or tokens
+Public API Docs
+Give Feedback
+
+
+Login
+Sign Up
+GeckoTerminal logo
+
+My Watchlist
+Multicharts
+
+Dashboards
+Chain Rankings
+DEX Rankings
+New Pools
+Categories
+AI Agents
+
+Chains
+Plasma
+Plasma
+0G
+0G
+Solana
+Solana
+BNB Chain
+BNB Chain
+Ethereum
+Ethereum
+Base
+Base
+Arbitrum
+Arbitrum
+Hyperliquid
+Hyperliquid
+Sui Network
+Sui Network
+Avalanche
+Avalanche
+Unichain
+Unichain
+HyperEVM
+HyperEVM
+Sepolia Testnet
+Sepolia Testnet
+Aptos
+Aptos
+Linea
+Linea
+Polygon POS
+Polygon POS
+Tron
+Tron
+Near
+Near
+Bittensor
+Bittensor
+Optimism
+Optimism
+Katana
+Katana
+Sonic
+Sonic
+Starknet
+Starknet
+Sei V2
+Sei V2
+x Layer
+x Layer
+Mantle
+Mantle
+CELO
+CELO
+Berachain
+Berachain
+Pulsechain
+Pulsechain
+Hemi
+Hemi
+Hedera Hashgraph
+Hedera Hashgraph
+Abstract
+Abstract
+Gnosis XDAI
+Gnosis XDAI
+Monad Testnet
+Monad Testnet
+World Chain
+World Chain
+Cronos
+Cronos
+Saga
+Saga
+Etherlink
+Etherlink
+Flare
+Flare
+Soneium
+Soneium
+XRPL
+XRPL
+TON
+TON
+Ronin
+Ronin
+Scroll
+Scroll
+Somnia
+Somnia
+Ink
+Ink
+Xone
+Xone
+Cardano
+Cardano
+ZkSync
+ZkSync
+Plume Network
+Plume Network
+Kaia
+Kaia
+Fraxtal
+Fraxtal
+Moonbeam
+Moonbeam
+Zedxion Smart Chain
+Zedxion Smart Chain
+Blast
+Blast
+Story
+Story
+IOTA EVM
+IOTA EVM
+Flow EVM
+Flow EVM
+Rootstock
+Rootstock
+Morph L2
+Morph L2
+Peaq
+Peaq
+Lisk
+Lisk
+XDC
+XDC
+Eclipse
+Eclipse
+Chiliz Chain
+Chiliz Chain
+Metis
+Metis
+Immutable zkEVM
+Immutable zkEVM
+Initia
+Initia
+BounceBit
+BounceBit
+opBNB
+opBNB
+Parex
+Parex
+Mode
+Mode
+TAC
+TAC
+Corn
+Corn
+Beam
+Beam
+BOB Network
+BOB Network
+Filecoin
+Filecoin
+Core
+Core
+Manta Pacific
+Manta Pacific
+ZetaChain
+ZetaChain
+Internet Computer
+Internet Computer
+Movement
+Movement
+Wanchain
+Wanchain
+Conflux
+Conflux
+Vana
+Vana
+Zircuit
+Zircuit
+IOTEX
+IOTEX
+Merlin Chain
+Merlin Chain
+Oasys
+Oasys
+Haven1
+Haven1
+Songbird
+Songbird
+Zero Network
+Zero Network
+WEMIX
+WEMIX
+Hashkey
+Hashkey
+Cronos zkEVM
+Cronos zkEVM
+Botanix
+Botanix
+Superseed
+Superseed
+Fuse
+Fuse
+Units Network
+Units Network
+Fantom
+Fantom
+Aurora
+Aurora
+Swellchain
+Swellchain
+Taiko
+Taiko
+Sonic SVM
+Sonic SVM
+Mantra
+Mantra
+Harmony
+Harmony
+SX Rollup
+SX Rollup
+DFK Chain
+DFK Chain
+ONUS
+ONUS
+Goat
+Goat
+Viction
+Viction
+Moonriver
+Moonriver
+Polygon zkEVM
+Polygon zkEVM
+Kava
+Kava
+Superposition
+Superposition
+Redbelly Network
+Redbelly Network
+QL1
+QL1
+Mezo
+Mezo
+Lens
+Lens
+Shibarium
+Shibarium
+SmartBCH
+SmartBCH
+Humanode
+Humanode
+Pepe Unchained
+Pepe Unchained
+Genesys Network
+Genesys Network
+Gravity
+Gravity
+BESC HyperChain
+BESC HyperChain
+Zilliqa EVM
+Zilliqa EVM
+Ultron
+Ultron
+KUB
+KUB
+WAX
+WAX
+Telos
+Telos
+Bahamut Mainnet
+Bahamut Mainnet
+ThunderCore
+ThunderCore
+SKALE Europa
+SKALE Europa
+Nibiru
+Nibiru
+Arbitrum Nova
+Arbitrum Nova
+Electroneum
+Electroneum
+Astar
+Astar
+EDU Chain
+EDU Chain
+Endurance
+Endurance
+Mitosis
+Mitosis
+Energi
+Energi
+EOS EVM
+EOS EVM
+Glue
+Glue
+Zora
+Zora
+BSquared Network
+BSquared Network
+Shido Network
+Shido Network
+Dogechain
+Dogechain
+Oasis Sapphire
+Oasis Sapphire
+MemeCore
+MemeCore
+Rails Network
+Rails Network
+ApeChain
+ApeChain
+Sophon
+Sophon
+Kucoin Community Chain
+Kucoin Community Chain
+Godwoken
+Godwoken
+Sei Network
+Sei Network
+Step Network
+Step Network
+AirDAO
+AirDAO
+MAP Protocol
+MAP Protocol
+Elastos
+Elastos
+Elysium
+Elysium
+Neon EVM
+Neon EVM
+OpenGPU
+OpenGPU
+Bitlayer
+Bitlayer
+Nahmii
+Nahmii
+Pundi AIFX Omnilayer
+Pundi AIFX Omnilayer
+PlatON Network
+PlatON Network
+Hydra Chain
+Hydra Chain
+Lukso
+Lukso
+Redstone
+Redstone
+Areum Network
+Areum Network
+OctaSpace
+OctaSpace
+Taraxa
+Taraxa
+zkLink Nova
+zkLink Nova
+Rari
+Rari
+Mint
+Mint
+ShimmerEVM
+ShimmerEVM
+DefiMetaChain
+DefiMetaChain
+Meter
+Meter
+Ethereum Classic
+Ethereum Classic
+Ancient8
+Ancient8
+Cyber
+Cyber
+RSS3 VSL Mainnet
+RSS3 VSL Mainnet
+Saakuru
+Saakuru
+XRPL EVM
+XRPL EVM
+DuckChain
+DuckChain
+Camp Network
+Camp Network
+BitTorrent
+BitTorrent
+Tombchain
+Tombchain
+MXC zkEVM
+MXC zkEVM
+EthereumPOW
+EthereumPOW
+Q Mainnet
+Q Mainnet
+Planq
+Planq
+Larissa
+Larissa
+Rollux
+Rollux
+AlveyChain
+AlveyChain
+Haqq Network
+Haqq Network
+Hela
+Hela
+LoopNetwork
+LoopNetwork
+Sanko
+Sanko
+Qitmeer Network
+Qitmeer Network
+Matchain
+Matchain
+Omax Chain
+Omax Chain
+Tokchain
+Tokchain
+Swanchain
+Swanchain
+Boba Network
+Boba Network
+DefiVerse
+DefiVerse
+Velas
+Velas
+LightLink Phoenix
+LightLink Phoenix
+Bitrock
+Bitrock
+Base
+Ad
+BC.Game: The Best Crypto Casino!  Win Up to 5 BTC
+BC.Game: The Best Crypto Casino! Win Up to 5 BTC
+1
+RWA
+RWA
+-4.06%
+2
+KTA
+KTA
+6.6%
+3
+AVNT
+AVNT
+7.34%
+4
+ZORA
+ZORA
+16.5%
+5
+AVNT
+AVNT
+7.35%
+6
+VFY
+VFY
+-28.33%
+7
+ETHY
+ETHY
+67.67%
+8
+kazonomics
+kazonomics
+28.22%
+9
+DORA
+DORA
+23.21%
+10
+Shield
+Shield
+84.92%
+11
+FACY
+FACY
+20.77%
+12
+SYND
+SYND
+-4.61%
+13
+BSX
+BSX
+6.04%
+14
+REI
+REI
+14.08%
+15
+AERO
+AERO
+9.49%
+16
+BNKR
+BNKR
+7.29%
+17
+AERO
+AERO
+9.62%
+18
+noice
+noice
+2.82%
+19
+BIO
+BIO
+18.04%
+20
+PREDI
+PREDI
+16.36%
+Base
+Uniswap V4 (Base)
+
+
+
+Low Liquidity Pool
+This pool has very low liquidity and prices may differ drastically. What is liquidity?
+
+Improve the GT Score of this token with a Banner!
+TABIA
+TABIA/ETH
+[invalid] Price (TABIA)
+N/A
+0%
+/N/A ETH
+
+0
+MCAP
+
+
+
+
+zora_logo
+Trade
+Learn moreTechbros are preparing their latest bandwagon.
+zora content
+
+5m
+0%
+
+1h
+0%
+
+6h
+0%
+
+24h
+0%
+
+24h Txn
+N/A
+24h Vol
+N/A
+Net Buy
+N/A
+Buy
+0
+Sell
+0
+24h Vol
+N/A
+Liquidity
+N/A
+Holders
+3
+Age
+36 minutes
+FDV
+$0.00
+Market Cap
+$0.00
+Promote token here
+Advertise here
+
+0
+GT Score
+
+De.Fi Scan
+
+GoPlus Scan
+Get Crypto
+Wallet
+Addresses
+Pool
+
+0xea7...4d67
+TABIA
+
+0x473...2b2f
+Metamask Icon
+Explorer Logo
+
+ETH
+
+0x000...0000
+Metamask Icon
+Explorer Logo
+
+Track this pool on
+EtherDrops
+Phanes
+Cielo
+Scan this pool on
+TTF Bot
+Quick Intel
+QuillCheck
+Pool Details
+1%
+Fee
+TABIA
+949,500,000
+~$0.00
+ETH
+0
+~$0.00
+GT Score
+0
+ / 100
+
+TABIA/ETH
+Pool
+0 / 100
+Transactions
+0 / 100
+Creation
+0 / 100
+TABIA
+Info
+0 / 100
+Holders
+0 / 100
+GoPlus Token Security
+
+Honeypot
+Buy Tax
+Sell Tax
+Open Source
+Get Wallet Security from SecWareX
+De.Fi Scanner
+
+Creator Rugpull Risk
+Reentrancy Risk
+Rugpull Risk
+No
+Honeypot.is
+Honeypot
+No
+GT Internal Security
+New pool (less than 24 hours old)
+Community Reports
+
+Report
+There are currently 0 reports that this pool is suspicious
+TABIA to ETH Converter
+1
+TABIA
+TABIA
+0
+Select output token
+USD
+ETH
+ETH
+How do you feel about TABIA/ETH today?
+Be the first to submit a sentiment!
+🚀
+👎
+
+
+Transactions
+
+Holders
+3
+
+Traders
+
+Bubblemaps
+
+Gaming
+Ad
+Time
+Type
+
+Price ETH
+
+Price USD
+
+TABIA
+
+Value
+
+From
+
+TX
+No transactions found
+TABIA token info
+ETH token info
+About [invalid] (TABIA)
+
+Techbros are preparing their latest bandwagon.
+
+Update Token Info
+Links
+zora_logo
+Zora
+Tags
+zora content
+Past Token Info
+
+Current
+ORIGINAL
+TABIA/ETH Price Stats
+The current price of TABIA (TABIA/ETH) on Uniswap V4 (Base) is N/A, the price is up 0% in the last 24 hours. Its 24-hour trading volume is reported to be at $0.00 with a total of 0 transactions. TABIA/ETH contract address is 0xea7ffc38e3409045017e0659ff893d6919e2a4802e070063d601787264354d67, with a Fully Diluted Valuation (FDV) of N/A and a liquidity pool of N/A.
+
+
+Helper menu
+GeckoTerminal logo
+GeckoTerminal is the most comprehensive real-time DEX tracker, built by the team behind CoinGecko. Monitor crypto prices, volume, transactions, liquidity, and more on decentralized exchanges across all blockchains.
+
+Get it on Google Play
+Download on the App Store
+Resources
+ETH Wars
+About
+About Us
+Disclaimer
+Terms and Conditions
+Privacy Policy
+Ad Policy
+Cookie Preferences
+Bug Bounty
+IMPORTANT DISCLAIMER: All content provided herein our website, hyperlinked sites, associated applications, forums, blogs, social media accounts and other platforms (“Site”) is for your general information only, procured primarily from third party sources. We make no warranties of any kind in relation to our content and services (such as token swap functionalities), including but not limited to accuracy, security and updatedness. No part of the content and services that we provide constitutes financial advice, legal advice or any other form of advice meant for your specific reliance for any purpose, nor any dealing in (or promotion of) securities for which a license is required from the Monetary Authority of Singapore. Any use or reliance on our content and services is solely at your own risk and discretion. You should conduct your own research, review, analyze and verify our content and services before relying on or using them. Trading is a highly risky activity that can lead to major losses, please therefore consult your financial advisor before making any decision. No content on our Site is meant to be a solicitation or offer.
+
