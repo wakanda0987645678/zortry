@@ -83,9 +83,8 @@ export async function createZoraCoin(
       const ipfsHash = await uploadToPinata(metadataFile);
 
       if (ipfsHash) {
-        // Use Pinata's dedicated gateway for faster access
-        const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || 'yellow-patient-cheetah-559.mypinata.cloud';
-        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+        // Use Cloudflare's public IPFS gateway for validation (Zora SDK needs to fetch it)
+        metadataUri = `https://cloudflare-ipfs.com/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
@@ -170,9 +169,8 @@ export async function createZoraCoinWithWallet(
       const ipfsHash = await uploadToPinata(metadataFile);
 
       if (ipfsHash) {
-        // Use Pinata's dedicated gateway for faster access
-        const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || 'yellow-patient-cheetah-559.mypinata.cloud';
-        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+        // Use Cloudflare's public IPFS gateway for validation (Zora SDK needs to fetch it)
+        metadataUri = `https://cloudflare-ipfs.com/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
