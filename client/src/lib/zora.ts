@@ -52,24 +52,30 @@ export async function createZoraCoin(
       transport: http(rpcUrl),
     });
 
-    // Convert IPFS URI to HTTP URL for Zora SDK validation
-    let metadataUri = metadata.image || "";
-    if (metadataUri.startsWith('ipfs://')) {
-      const ipfsHash = metadataUri.replace('ipfs://', '');
+    // For Zora SDK, we need to provide a metadata URI that points to JSON metadata
+    // Since we're dealing with image URLs, let's create a simple metadata object
+    let metadataUri = "";
+    
+    // If we have an image URL, use it directly (most cases this will be a web URL)
+    if (metadata.image && !metadata.image.startsWith('ipfs://')) {
+      metadataUri = metadata.image;
+    } else if (metadata.image && metadata.image.startsWith('ipfs://')) {
+      // For IPFS URIs, convert to HTTP but this might be an image, not metadata JSON
+      const ipfsHash = metadata.image.replace('ipfs://', '');
       const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
       if (gatewayUrl) {
         metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
-        console.log(`Converting IPFS URI ${metadata.image} to HTTP URL ${metadataUri}`);
-      } else {
-        throw new Error("VITE_NEXT_PUBLIC_GATEWAY_URL not configured for IPFS conversion");
       }
     }
+    
+    // If no image URI, leave empty - Zora SDK can handle empty URIs
+    console.log(`Using metadata URI: ${metadataUri}`);
 
     // Create coin arguments matching SDK v0.2.1 API
     const createCoinArgs = {
       name: metadata.name,
       symbol: metadata.symbol,
-      uri: metadataUri,
+      uri: metadataUri || "", // Use empty string if no valid URI
       chainId,
       payoutRecipient: creatorAddress, // Creator receives payouts
       currency: DeployCurrency.ETH,
@@ -109,24 +115,28 @@ export async function createZoraCoinWithWallet(
       transport: http(rpcUrl),
     });
 
-    // Convert IPFS URI to HTTP URL for Zora SDK validation
+    // For Zora SDK, handle metadata URI properly
     let metadataUri = typeof metadata.image === 'string' ? metadata.image : "";
-    if (metadataUri.startsWith('ipfs://')) {
+    
+    // If we have an image URL, use it directly (most cases this will be a web URL)
+    if (metadataUri && !metadataUri.startsWith('ipfs://')) {
+      // Keep the original URL
+    } else if (metadataUri && metadataUri.startsWith('ipfs://')) {
+      // For IPFS URIs, convert to HTTP
       const ipfsHash = metadataUri.replace('ipfs://', '');
       const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
       if (gatewayUrl) {
         metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
-        console.log(`Converting IPFS URI ${metadata.image} to HTTP URL ${metadataUri}`);
-      } else {
-        throw new Error("VITE_NEXT_PUBLIC_GATEWAY_URL not configured for IPFS conversion");
       }
     }
+    
+    console.log(`Using metadata URI for wallet: ${metadataUri}`);
 
     // Create coin arguments matching SDK v0.2.1 API
     const createCoinArgs = {
       name: metadata.name,
       symbol: metadata.symbol,
-      uri: metadataUri,
+      uri: metadataUri || "", // Use empty string if no valid URI
       chainId,
       payoutRecipient: creatorAddress,
       currency: DeployCurrency.ETH,
