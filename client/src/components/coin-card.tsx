@@ -189,23 +189,30 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     try {
       const { tradeZoraCoin } = await import("@/lib/zora");
       
+      console.log("Starting trade for coin:", coinAddress, "with ETH amount:", ethAmount);
+      
       const result = await tradeZoraCoin({
         coinAddress,
         ethAmount,
         walletClient,
         publicClient,
         userAddress: address,
+        isBuying: true, // Always buying with ETH
       });
+      
+      console.log("Trade completed successfully:", result);
       
       if (result?.hash) {
         setTxHash(result.hash);
+        setTradeDialogOpen(false); // Close dialog on success
       } else {
-        throw new Error("No transaction hash returned");
+        throw new Error("Transaction completed but no hash returned");
       }
       
     } catch (err: unknown) {
       console.error("Trade error:", err);
-      setError((err as Error).message || "Trade failed");
+      const errorMessage = err instanceof Error ? err.message : "Trade failed with unknown error";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

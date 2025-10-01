@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Coin } from "@shared/schema";
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,10 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const [ethAmount, setEthAmount] = useState("0.001");
   const [isTrading, setIsTrading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+  
+  const { address, isConnected } = useAccount();
+  const { data: walletClient } = useWalletClient();
+  const publicClient = usePublicClient();
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -31,29 +36,65 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const estimatedTokens = parseFloat(ethAmount) * 1000000; // Mock rate
 
   const handleTrade = async () => {
+    if (!isConnected || !address || !walletClient || !publicClient) {
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!ethAmount || parseFloat(ethAmount) <= 0) {
+      toast({
+        title: "Invalid amount",
+        description: "Please enter a valid ETH amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsTrading(true);
     
     try {
-      // Note: Would need proper wallet integration for real trading
-      // For now keeping mock until wallet is properly connected to tradeCoin function
-      setTimeout(() => {
-        const mockTxHash = `0x${Math.random().toString(16).substring(2, 66)}`;
-        setTxHash(mockTxHash);
-        setIsTrading(false);
+      const { tradeZoraCoin } = await import("@/lib/zora");
+      
+      console.log("Starting trade from modal for coin:", coin.address, "with ETH amount:", ethAmount);
+      
+      const result = await tradeZoraCoin({
+        coinAddress: coin.address as `0x${string}`,
+        ethAmount,
+        walletClient,
+        publicClient,
+        userAddress: address,
+        isBuying: true,
+      });
+      
+      console.log("Trade completed successfully from modal:", result);
+      
+      if (result?.hash) {
+        setTxHash(result.hash);
         
         toast({
           title: "Trade successful!",
           description: `You received ${estimatedTokens.toLocaleString()} ${coin.symbol} tokens`,
         });
-      }, 2000);
+      } else {
+        throw new Error("Transaction completed but no hash returned");
+      }
+      
     } catch (error) {
       console.error("Trade failed:", error);
-      setIsTrading(false);
+      
+      const errorMessage = error instanceof Error ? error.message : "Trade failed";
+      
       toast({
         title: "Trade failed",
-        description: "Please try again",
+        description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setIsTrading(false);
     }
   };
 
@@ -168,24 +209,30 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               >
                 Cancel
               </Button>
-              <Button
-                className="flex-1 bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
-                onClick={handleTrade}
-                disabled={isTrading || !ethAmount || parseFloat(ethAmount) <= 0}
-                data-testid="button-confirm-trade"
-              >
-                {isTrading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Trading...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-5 h-5 mr-2" />
-                    Confirm Trade
-                  </>
-                )}
-              </Button>
+              {!isConnected ? (
+                <div className="flex-1 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <p className="text-sm text-yellow-600 text-center">Please connect your wallet to trade</p>
+                </div>
+              ) : (
+                <Button
+                  className="flex-1 bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
+                  onClick={handleTrade}
+                  disabled={isTrading || !ethAmount || parseFloat(ethAmount) <= 0}
+                  data-testid="button-confirm-trade"
+                >
+                  {isTrading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Trading...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-5 h-5 mr-2" />
+                      Confirm Trade
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           ) : (
             <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30">

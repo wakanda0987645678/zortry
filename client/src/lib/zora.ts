@@ -5,7 +5,7 @@ import {
   getCoinCreateFromLogs,
   CreateConstants
 } from "@zoralabs/coins-sdk";
-import { createPublicClient, createWalletClient, http, type Address, type Hash } from "viem";
+import { createPublicClient, createWalletClient, http, parseEther, type Address, type Hash } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
 // Set up Zora API key
@@ -228,35 +228,71 @@ export async function tradeZoraCoin({
   ethAmount,
   walletClient,
   publicClient,
-  userAddress
+  userAddress,
+  isBuying = true
 }: {
   coinAddress: Address;
   ethAmount: string;
   walletClient: any;
   publicClient: any;
   userAddress: Address;
+  isBuying?: boolean;
 }) {
+  if (!ZORA_API_KEY) {
+    throw new Error("Zora API key not configured");
+  }
+
   try {
     const { tradeCoin } = await import("@zoralabs/coins-sdk");
     
+    // Convert ETH amount to wei for the transaction
+    const amountInWei = parseEther(ethAmount);
+    
     const tradeParams = {
-      tokenIn: "ETH", // Trading ETH for the coin
-      tokenOut: coinAddress,
-      amountIn: ethAmount,
+      coinAddress,
+      amount: amountInWei.toString(),
       recipient: userAddress,
       slippagePercentage: 5, // 5% slippage tolerance
+      isBuy: isBuying, // true for buying coin with ETH, false for selling coin for ETH
     };
+
+    console.log("Trading with params:", tradeParams);
 
     const result = await tradeCoin({
       parameters: tradeParams,
       walletClient,
       publicClient,
+      chainId: base.id,
     });
 
-    return result;
+    console.log("Trade result:", result);
+
+    if (!result || !result.hash) {
+      throw new Error("Trade transaction failed - no hash returned");
+    }
+
+    return {
+      hash: result.hash,
+      success: true,
+      ...result
+    };
   } catch (error) {
     console.error("Trade error:", error);
-    throw new Error(`Trading failed: ${error}`);
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("insufficient funds")) {
+        throw new Error("Insufficient ETH balance for this trade");
+      } else if (error.message.includes("user rejected")) {
+        throw new Error("Transaction was cancelled by user");
+      } else if (error.message.includes("slippage")) {
+        throw new Error("Trade failed due to high slippage - try again with higher slippage tolerance");
+      } else {
+        throw new Error(`Trading failed: ${error.message}`);
+      }
+    }
+    
+    throw new Error("Trading failed - unknown error occurred");
   }
 }
 
