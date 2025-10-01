@@ -168,6 +168,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Record a new reward
+  app.post("/api/rewards", async (req, res) => {
+    try {
+      const rewardData = {
+        type: req.body.type, // 'platform' or 'trade'
+        coinAddress: req.body.coinAddress,
+        coinSymbol: req.body.coinSymbol,
+        transactionHash: req.body.transactionHash,
+        rewardAmount: req.body.rewardAmount, // In wei as string
+        rewardCurrency: req.body.rewardCurrency || 'ZORA',
+        recipientAddress: req.body.recipientAddress,
+      };
+
+      const reward = await storage.createReward(rewardData);
+      res.json(reward);
+    } catch (error) {
+      console.error('Create reward error:', error);
+      res.status(400).json({ error: 'Invalid reward data' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

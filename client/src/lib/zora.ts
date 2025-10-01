@@ -260,6 +260,10 @@ export async function tradeZoraCoin({
     // Convert ETH amount to wei for the transaction
     const amountInWei = parseEther(ethAmount);
 
+    // Admin trade referral address for earning 4% of this specific trade
+    const ADMIN_TRADE_REFERRAL = import.meta.env.VITE_ADMIN_REFERRAL_ADDRESS || 
+                                 "0xf25af781c4F1Df40Ac1D06e6B80c17815AD311F7";
+
     // Create trade parameters according to Zora SDK documentation
     const tradeParameters: TradeParameters = isBuying ? {
       // Buying coin with ETH
@@ -271,6 +275,7 @@ export async function tradeZoraCoin({
       amountIn: amountInWei,
       slippage: 0.05, // 5% slippage tolerance
       sender: userAddress,
+      tradeReferrer: ADMIN_TRADE_REFERRAL, // Earn 4% of this trade
     } : {
       // Selling coin for ETH
       sell: { 
@@ -281,6 +286,7 @@ export async function tradeZoraCoin({
       amountIn: amountInWei,
       slippage: 0.15, // 15% slippage tolerance for selling
       sender: userAddress,
+      tradeReferrer: ADMIN_TRADE_REFERRAL, // Earn 4% of this trade
     };
 
     console.log("Trading with parameters:", tradeParameters);
