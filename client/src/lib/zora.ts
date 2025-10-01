@@ -84,7 +84,7 @@ export async function createZoraCoin(
 
       if (ipfsHash) {
         // Use Cloudflare's public IPFS gateway for validation (Zora SDK needs to fetch it)
-        metadataUri = `https://cloudflare-ipfs.com/ipfs/${ipfsHash}`;
+        metadataUri = `https://dweb.link/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
@@ -170,7 +170,7 @@ export async function createZoraCoinWithWallet(
 
       if (ipfsHash) {
         // Use Cloudflare's public IPFS gateway for validation (Zora SDK needs to fetch it)
-        metadataUri = `https://cloudflare-ipfs.com/ipfs/${ipfsHash}`;
+        metadataUri = `https://dweb.link/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
