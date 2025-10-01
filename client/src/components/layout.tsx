@@ -16,6 +16,7 @@ import {
   Search,
   Award,
   Menu,
+  User,
 } from "lucide-react";
 import WalletConnectButton from "./wallet-connect-button";
 
@@ -42,6 +43,7 @@ export default function Layout({ children }: LayoutProps) {
     { href: "/search", icon: Search, label: "Search" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
+    { href: "/profile", icon: User, label: "Profile" },
     { href: "/rewards", icon: Award, label: "Analyzer" },
     { href: "/leaderboard", icon: Trophy, label: "Leaderboard" },
     { href: "/faq", icon: HelpCircle, label: "FAQ" },
