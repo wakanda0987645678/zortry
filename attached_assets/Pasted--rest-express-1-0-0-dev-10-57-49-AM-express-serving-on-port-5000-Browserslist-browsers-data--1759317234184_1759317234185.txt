@@ -1,0 +1,63 @@
+
+> rest-express@1.0.0 dev
+10:57:49 AM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 12 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+10:57:56 AM [express] GET /api/coins 304 in 2ms :: []
+10:58:10 AM [express] GET /api/coins 304 in 1ms :: []
+11:04:28 AM [vite] hmr update /src/index.css?v=bwY7rkCtUtTzGR3k43Cjt
+11:04:28 AM [vite] hmr update /src/pages/home.tsx, /src/index.css?v=bwY7rkCtUtTzGR3k43Cjt
+11:04:28 AM [vite] hmr update /src/components/coin-card.tsx, /src/index.css?v=bwY7rkCtUtTzGR3k43Cjt
+11:04:29 AM [vite] hmr update /src/components/url-input-form.tsx, /src/index.css?v=bwY7rkCtUtTzGR3k43Cjt
+11:04:31 AM [vite] hmr update /src/components/wallet-connect-button.tsx, /src/index.css?v=bwY7rkCtUtTzGR3k43Cjt
+11:04:34 AM [vite] Internal server error: Duplicate declaration "Home"
+  18 | } from "lucide-react";
+  19 |
+> 20 | export default function Home() {
+     |                         ^^^^
+  21 |   const [showPreview, setShowPreview] = useState(false);
+  22 |   const [scrapedData, setScrapedData] = useState<any>(null);
+  23 |
+  Plugin: vite:react-babel
+  File: /home/runner/workspace/client/src/pages/home.tsx
+      at buildCodeFrameError (/home/runner/workspace/node_modules/@babel/core/src/transformation/file/file.ts:257:12)
+      at checkBlockScopedCollisions (/home/runner/workspace/node_modules/@babel/traverse/src/scope/index.ts:665:27)
+      at registerBinding (/home/runner/workspace/node_modules/@babel/traverse/src/scope/index.ts:813:16)
+      at registerDeclaration (/home/runner/workspace/node_modules/@babel/traverse/src/scope/index.ts:727:12)
+      at BlockScoped (/home/runner/workspace/node_modules/@babel/traverse/src/scope/index.ts:365:12)
+      at Object.newFn (/home/runner/workspace/node_modules/@babel/traverse/src/visitors.ts:349:17)
+      at call (/home/runner/workspace/node_modules/@babel/traverse/src/path/context.ts:36:20)
+      at call (/home/runner/workspace/node_modules/@babel/traverse/src/path/context.ts:17:15)
+      at NodePath.visit (/home/runner/workspace/node_modules/@babel/traverse/src/path/context.ts:97:31)
+      at visitQueue (/home/runner/workspace/node_modules/@babel/traverse/src/context.ts:148:16)
+      at visitSingle (/home/runner/workspace/node_modules/@babel/traverse/src/context.ts:109:19)
+      at visit (/home/runner/workspace/node_modules/@babel/traverse/src/context.ts:180:19)
+      at traverseNode (/home/runner/workspace/node_modules/@babel/traverse/src/traverse-node.ts:208:17)
+      at NodePath.visit (/home/runner/workspace/node_modules/@babel/traverse/src/path/context.ts:104:33)
+      at visitQueue (/home/runner/workspace/node_modules/@babel/traverse/src/context.ts:148:16)
+      at visitMultiple (/home/runner/workspace/node_modules/@babel/traverse/src/context.ts:99:17)
+      at visit (/home/runner/workspace/node_modules/@babel/traverse/src/context.ts:178:19)
+      at traverseNode (/home/runner/workspace/node_modules/@babel/traverse/src/traverse-node.ts:208:17)
+      at traverse (/home/runner/workspace/node_modules/@babel/traverse/src/index.ts:84:15)
+      at traverse (/home/runner/workspace/node_modules/@babel/traverse/src/path/index.ts:163:13)
+      at crawl (/home/runner/workspace/node_modules/@babel/traverse/src/scope/index.ts:1046:10)
+      at init (/home/runner/workspace/node_modules/@babel/traverse/src/scope/index.ts:998:12)
+      at call (/home/runner/workspace/node_modules/@babel/traverse/src/path/context.ts:160:15)
+      at NodePath.setContext (/home/runner/workspace/node_modules/@babel/traverse/src/path/context.ts:180:12)
+      at new constructor (/home/runner/workspace/node_modules/@babel/core/src/transformation/file/file.ts:58:8)
+      at normalizeFile (/home/runner/workspace/node_modules/@babel/core/src/transformation/normalize-file.ts:101:10)
+      at normalizeFile.next (<anonymous>)
+      at run (/home/runner/workspace/node_modules/@babel/core/src/transformation/index.ts:40:36)
+      at run.next (<anonymous>)
+      at transform (/home/runner/workspace/node_modules/@babel/core/src/transform.ts:29:20)
+      at transform.next (<anonymous>)
+      at step (/home/runner/workspace/node_modules/gensync/index.js:261:32)
+      at /home/runner/workspace/node_modules/gensync/index.js:273:13
+      at async.call.result.err.err (/home/runner/workspace/node_modules/gensync/index.js:223:11)
+      at /home/runner/workspace/node_modules/gensync/index.js:189:28
+      at <anonymous> (/home/runner/workspace/node_modules/@babel/core/src/gensync-utils/async.ts:90:7)
+      at /home/runner/workspace/node_modules/gensync/index.js:113:33
+      at step (/home/runner/workspace/node_modules/gensync/index.js:287:14)
+      at /home/runner/workspace/node_modules/gensync/index.js:273:13
+      at async.call.result.err.err (/home/runner/workspace/node_modules/gensync/index.js:223:11)
