@@ -211,53 +211,7 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Footer */}
-            <footer className="border-t border-border p-8 mt-16">
-              <div className="max-w-6xl mx-auto">
-                <div className="grid md:grid-cols-4 gap-8 mb-8">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                        <Play className="w-4 h-4 text-black fill-current" />
-                      </div>
-                      <span className="text-xl font-bold text-white">CoinIT</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Transform blogs into blockchain coins on Zora
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white mb-4">Product</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                      <li><a href="#" className="hover:text-white transition-colors">How it Works</a></li>
-                      <li><a href="#" className="hover:text-white transition-colors">Roadmap</a></li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white mb-4">Resources</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                      <li><a href="#" className="hover:text-white transition-colors">API</a></li>
-                      <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white mb-4">Company</h4>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                      <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                      <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="border-t border-border pt-6 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    © 2024 CoinIT. All rights reserved.
-                  </p>
-                </div>
-              </div>
-            </footer>
+            
           </main>
         </div>
       </div>
