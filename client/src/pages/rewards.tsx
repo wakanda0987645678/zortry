@@ -49,7 +49,7 @@ export default function Rewards() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-black mb-4 text-white">
-              Admin <span className="spotify-green">Rewards</span>
+              Trading <span className="spotify-green">Analyzer</span>
             </h1>
             <p className="text-xl text-muted-foreground">
               Track earnings from coin creation and trading fees.
@@ -101,9 +101,9 @@ export default function Rewards() {
           {/* Rewards List */}
           <Card className="spotify-card">
             <CardHeader>
-              <CardTitle className="text-white">Reward History</CardTitle>
+              <CardTitle className="text-white">Trading Analysis</CardTitle>
               <CardDescription>
-                All rewards earned from the Zora platform
+                All rewards and trading activity from the Zora platform
               </CardDescription>
             </CardHeader>
             <CardContent>

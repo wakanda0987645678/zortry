@@ -38,11 +38,10 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   const navItems = [
-    { href: "/", icon: HomeIcon, label: "Home" },
-    { href: "/create", icon: Plus, label: "Create" },
+    { href: "/", icon: HomeIcon, label: "Explore" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
-    { href: "/rewards", icon: Award, label: "Rewards" },
+    { href: "/rewards", icon: Award, label: "Analyzer" },
     { href: "/leaderboard", icon: Trophy, label: "Leaderboard" },
     { href: "/faq", icon: HelpCircle, label: "FAQ" },
   ];
@@ -142,6 +141,12 @@ export default function Layout({ children }: LayoutProps) {
             </div>
             
             <div className="flex items-center gap-2">
+              <Link href="/create">
+                <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-3 py-1.5 rounded-lg transition-colors text-sm">
+                  <Plus className="w-3 h-3" />
+                  Create
+                </button>
+              </Link>
               <WalletConnectButton />
             </div>
           </header>
@@ -161,9 +166,31 @@ export default function Layout({ children }: LayoutProps) {
           </div>
 
           {/* Mobile Main Content */}
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto pb-16">
             {children}
           </main>
+
+          {/* Mobile Footer Navigation */}
+          <footer className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md border-t border-border z-40">
+            <div className="flex items-center justify-around py-2">
+              {navItems.slice(0, 5).map((item) => {
+                const Icon = item.icon;
+                const isActive = location === item.href;
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <div className={`flex flex-col items-center justify-center p-2 transition-colors ${
+                      isActive
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`}>
+                      <Icon className="w-5 h-5" />
+                      <span className="text-xs font-medium mt-1">{item.label}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </footer>
         </div>
       </div>
     );
@@ -190,6 +217,14 @@ export default function Layout({ children }: LayoutProps) {
               <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center opacity-60">
                 <span className="text-sm">→</span>
               </button>
+              
+              {/* Create Button */}
+              <Link href="/create">
+                <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-4 py-2 rounded-lg transition-colors">
+                  <Plus className="w-4 h-4" />
+                  Create
+                </button>
+              </Link>
             </div>
 
             {/* Desktop Search Bar */}
