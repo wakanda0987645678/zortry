@@ -86,50 +86,40 @@ export default function Creators() {
       <div className="p-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-black mb-4 text-white">
-              Top <span className="spotify-green">Creators</span>
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Discover the most successful content creators on CoinIT.
-            </p>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="stat-card rounded-xl p-6">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-muted-foreground font-semibold">Active Creators</span>
-                <Users className="w-6 h-6 text-primary" />
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h1 className="text-4xl font-black mb-4 text-white">
+                  Top <span className="spotify-green">Creators</span>
+                </h1>
+                <p className="text-xl text-muted-foreground">
+                  Discover the most successful content creators on CoinIT.
+                </p>
               </div>
-              <div className="text-3xl font-black text-white">
-                {filteredCreators.length}
+              
+              {/* Inline Stats */}
+              <div className="flex flex-wrap gap-6 text-right">
+                <div className="text-center lg:text-right">
+                  <div className="text-2xl font-black text-white">
+                    {filteredCreators.length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Active Creators</div>
+                </div>
+                <div className="text-center lg:text-right">
+                  <div className="text-2xl font-black text-white">
+                    {filteredCreators.reduce((acc, creator) => acc + parseFloat(creator.totalVolume), 0).toFixed(3)} ETH
+                  </div>
+                  <div className="text-sm text-muted-foreground">Total Volume</div>
+                </div>
+                <div className="text-center lg:text-right">
+                  <div className="text-2xl font-black text-white">
+                    {filteredCreators.length > 0 
+                      ? Math.round(filteredCreators.reduce((acc, creator) => acc + creator.totalCoins, 0) / filteredCreators.length)
+                      : 0
+                    }
+                  </div>
+                  <div className="text-sm text-muted-foreground">Avg. Coins</div>
+                </div>
               </div>
-              <div className="text-sm text-primary mt-1">With coins</div>
-            </div>
-
-            <div className="stat-card rounded-xl p-6">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-muted-foreground font-semibold">Total Volume</span>
-                <TrendingUp className="w-6 h-6 text-primary" />
-              </div>
-              <div className="text-3xl font-black text-white">
-                {filteredCreators.reduce((acc, creator) => acc + parseFloat(creator.totalVolume), 0).toFixed(3)} ETH
-              </div>
-              <div className="text-sm text-primary mt-1">Estimated</div>
-            </div>
-
-            <div className="stat-card rounded-xl p-6">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-muted-foreground font-semibold">Avg. Coins</span>
-                <Award className="w-6 h-6 text-primary" />
-              </div>
-              <div className="text-3xl font-black text-white">
-                {filteredCreators.length > 0 
-                  ? Math.round(filteredCreators.reduce((acc, creator) => acc + creator.totalCoins, 0) / filteredCreators.length)
-                  : 0
-                }
-              </div>
-              <div className="text-sm text-primary mt-1">Per creator</div>
             </div>
           </div>
 

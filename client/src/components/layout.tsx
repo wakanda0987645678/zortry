@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Play,
-  Home as HomeIcon,
+  Compass,
   Plus,
   Users,
   Trophy,
@@ -24,7 +24,7 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location, navigate] = useLocation();
@@ -38,7 +38,7 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   const navItems = [
-    { href: "/", icon: HomeIcon, label: "Explore" },
+    { href: "/", icon: Compass, label: "Explore" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
     { href: "/rewards", icon: Award, label: "Analyzer" },
@@ -210,13 +210,20 @@ export default function Layout({ children }: LayoutProps) {
         <div className="flex-1 flex flex-col">
           {/* Desktop Top Navigation Bar */}
           <header className="flex items-center justify-between p-4 bg-background/95 backdrop-blur-md border-b border-border">
-            <div className="flex items-center gap-4">
-              <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center opacity-60">
-                <span className="text-sm">←</span>
-              </button>
-              <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center opacity-60">
-                <span className="text-sm">→</span>
-              </button>
+            <div className="flex items-center gap-4 flex-1">
+              {/* Desktop Search Bar */}
+              <div className="flex-1 max-w-md">
+                <form onSubmit={handleSearch} className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search channels, coins, creators..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 bg-muted/20 border-border focus:bg-muted/30 transition-colors"
+                  />
+                </form>
+              </div>
               
               {/* Create Button */}
               <Link href="/create">
@@ -225,20 +232,6 @@ export default function Layout({ children }: LayoutProps) {
                   Create
                 </button>
               </Link>
-            </div>
-
-            {/* Desktop Search Bar */}
-            <div className="flex-1 max-w-md mx-8">
-              <form onSubmit={handleSearch} className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search channels, coins, creators..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-muted/20 border-border focus:bg-muted/30 transition-colors"
-                />
-              </form>
             </div>
 
             <WalletConnectButton />
