@@ -32,7 +32,7 @@ interface Channel {
 }
 
 export default function Channels() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [tradeModalOpen, setTradeModalOpen] = useState(false);
@@ -175,52 +175,39 @@ export default function Channels() {
   return (
     <Layout>
       {/* Header */}
-      <section className="p-8 bg-gradient-to-b from-primary/10 to-background">
+      <section className="p-4 md:p-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-4">
-            <Hash className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl font-bold gradient-text">Channels</h1>
-          </div>
-          <p className="text-xl text-muted-foreground mb-8">
-            Discover and explore different content channels transformed into tradeable digital assets.
-          </p>
-
-          {/* Search and Filter */}
+          {/* Channel Import Tab and Category Tabs */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                placeholder="Search channels..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-muted/20 border-border"
-              />
-            </div>
-            <Button variant="outline" className="flex items-center gap-2">
-              <Filter className="w-4 h-4" />
-              Filters
+            {/* Channel Import Tab */}
+            <Button 
+              onClick={() => navigate("/create")}
+              className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-6 py-2 rounded-lg transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Import Channel
             </Button>
-          </div>
-
-          {/* Category Tabs */}
-          <div className="flex flex-wrap gap-2 mb-8">
-            {categories.map((category) => {
-              const Icon = category.icon;
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                    selectedCategory === category.id
-                      ? "bg-primary text-black font-bold"
-                      : "bg-muted/20 text-muted-foreground hover:text-white hover:bg-muted/30"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {category.name}
-                </button>
-              );
-            })}
+            
+            {/* Category Tabs */}
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => {
+                const Icon = category.icon;
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                      selectedCategory === category.id
+                        ? "bg-primary text-black font-bold"
+                        : "bg-muted/20 text-muted-foreground hover:text-white hover:bg-muted/30"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {category.name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
