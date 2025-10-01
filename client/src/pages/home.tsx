@@ -107,23 +107,6 @@ export default function Home() {
       {/* Trending Coins Section */}
       <section className="p-4 sm:p-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-8">
-            <h2 className="text-2xl sm:text-2xl font-bold text-white mb-3 sm:mb-0">
-              Trending Coins
-            </h2>
-            <div className="flex gap-3">
-              <button
-                className="spotify-secondary-button"
-                data-testid="button-all-coins"
-              >
-                All Coins
-              </button>
-              <button className="spotify-button" data-testid="button-my-coins">
-                My Coins
-              </button>
-            </div>
-          </div>
-
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               {[...Array(8)].map((_, i) => (
