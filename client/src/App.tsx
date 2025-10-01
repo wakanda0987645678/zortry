@@ -7,6 +7,10 @@ import { config } from "./lib/wagmi";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
+import Create from "@/pages/create";
+import Creators from "@/pages/creators";
+import Leaderboard from "@/pages/leaderboard";
+import FAQ from "@/pages/faq";
 import NotFound from "@/pages/not-found";
 
 import "@rainbow-me/rainbowkit/styles.css";
@@ -15,6 +19,10 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/create" component={Create} />
+      <Route path="/creators" component={Creators} />
+      <Route path="/leaderboard" component={Leaderboard} />
+      <Route path="/faq" component={FAQ} />
       <Route component={NotFound} />
     </Switch>
   );

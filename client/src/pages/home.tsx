@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link, useLocation } from "wouter";
 import type { Coin } from "@shared/schema";
 import URLInputForm from "@/components/url-input-form";
 import ContentPreviewCard from "@/components/content-preview-card";
@@ -15,11 +16,15 @@ import {
   Search,
   Home as HomeIcon,
   Library,
+  Plus,
+  Trophy,
+  HelpCircle,
 } from "lucide-react";
 
 export default function Home() {
   const [showPreview, setShowPreview] = useState(false);
   const [scrapedData, setScrapedData] = useState<any>(null);
+  const [location] = useLocation();
 
   const { data: coins = [], isLoading } = useQuery<Coin[]>({
     queryKey: ["/api/coins"],
@@ -49,18 +54,50 @@ export default function Home() {
           </div>
 
           <nav className="space-y-4 mb-8">
-            <div className="flex items-center gap-3 text-white hover:text-white transition-colors cursor-pointer">
-              <HomeIcon className="w-6 h-6" />
-              <span className="font-bold">Home</span>
-            </div>
-            <div className="flex items-center gap-3 text-muted-foreground hover:text-white transition-colors cursor-pointer">
-              <Search className="w-6 h-6" />
-              <span className="font-bold">Browse</span>
-            </div>
-            <div className="flex items-center gap-3 text-muted-foreground hover:text-white transition-colors cursor-pointer">
-              <Library className="w-6 h-6" />
-              <span className="font-bold">Your Coins</span>
-            </div>
+            <Link href="/">
+              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
+                location === "/" ? "text-white" : "text-muted-foreground hover:text-white"
+              }`}>
+                <HomeIcon className="w-6 h-6" />
+                <span className="font-bold">Home</span>
+              </div>
+            </Link>
+            
+            <Link href="/create">
+              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
+                location === "/create" ? "text-white" : "text-muted-foreground hover:text-white"
+              }`}>
+                <Plus className="w-6 h-6" />
+                <span className="font-bold">Create</span>
+              </div>
+            </Link>
+
+            <Link href="/creators">
+              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
+                location === "/creators" ? "text-white" : "text-muted-foreground hover:text-white"
+              }`}>
+                <Users className="w-6 h-6" />
+                <span className="font-bold">Creators</span>
+              </div>
+            </Link>
+
+            <Link href="/leaderboard">
+              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
+                location === "/leaderboard" ? "text-white" : "text-muted-foreground hover:text-white"
+              }`}>
+                <Trophy className="w-6 h-6" />
+                <span className="font-bold">Leaderboard</span>
+              </div>
+            </Link>
+
+            <Link href="/faq">
+              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
+                location === "/faq" ? "text-white" : "text-muted-foreground hover:text-white"
+              }`}>
+                <HelpCircle className="w-6 h-6" />
+                <span className="font-bold">FAQ</span>
+              </div>
+            </Link>
           </nav>
 
           <div className="bg-muted/20 rounded-lg p-4 mt-auto">
@@ -68,9 +105,11 @@ export default function Home() {
             <p className="text-sm text-muted-foreground mb-3">
               Turn any blog post into a tradeable digital asset.
             </p>
-            <button className="spotify-button w-full">
-              Get Started
-            </button>
+            <Link href="/create">
+              <button className="spotify-button w-full">
+                Get Started
+              </button>
+            </Link>
           </div>
         </div>
 
@@ -199,7 +238,9 @@ export default function Home() {
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2">No coins yet</h3>
                     <p className="text-muted-foreground mb-6">Be the first to create a coin from your favorite blog!</p>
-                    <button className="spotify-button">Create First Coin</button>
+                    <Link href="/create">
+                      <button className="spotify-button">Create First Coin</button>
+                    </Link>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
