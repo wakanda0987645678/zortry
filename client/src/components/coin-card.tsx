@@ -11,6 +11,9 @@ import { ExternalLink, Calendar, User, Coins, Copy, Check, TrendingUp } from 'lu
 import { useState, useEffect } from 'react';
 import { parseEther, formatEther } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { getCoin } from "@zoralabs/coins-sdk";
+import { base } from "viem/chains";
+import "@/lib/zora";
 
 const GATEWAY_URL = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || 'yellow-patient-cheetah-559.mypinata.cloud';
 
@@ -93,6 +96,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
   const [volume24h, setVolume24h] = useState<string | null>(null);
   const [uniqueHolders, setUniqueHolders] = useState<number | null>(null);
   const [creatorEarnings, setCreatorEarnings] = useState<Array<{ amount: { currencyAddress: string; amountRaw: string; amountDecimal: number }; amountUsd?: string }> | null>(null);
+  const [coinImage, setCoinImage] = useState<string | null>(null);
 
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -102,29 +106,45 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     let isMounted = true;
     async function fetchCoinStats() {
       try {
-        const BASE_API_KEY = import.meta.env.VITE_BASE_API_KEY;
-        if (!BASE_API_KEY) {
-          console.warn("BASE_API_KEY not configured");
-          return;
-        }
+        const response = await getCoin({
+          address: coin.address,
+          chain: base.id,
+        });
 
-        // Mock stats for now since we don't have the actual Base SDK implementation
-        if (isMounted) {
-          setPrice("0.001");
-          setMarketCap("10000");
-          setVolume24h("500");
-          setUniqueHolders(42);
-          setCreatorEarnings([{
-            amount: {
-              currencyAddress: "0x0000000000000000000000000000000000000000",
-              amountRaw: "1000000000000000000",
-              amountDecimal: 1
-            },
-            amountUsd: "3000"
-          }]);
+        const coinData = response.data?.zora20Token;
+        
+        if (isMounted && coinData) {
+          // Set market cap
+          if (coinData.marketCap) {
+            setMarketCap(parseFloat(coinData.marketCap).toFixed(2));
+          }
+          
+          // Set 24h volume
+          if (coinData.volume24h) {
+            setVolume24h(parseFloat(coinData.volume24h).toFixed(2));
+          }
+          
+          // Set unique holders
+          if (coinData.uniqueHolders) {
+            setUniqueHolders(coinData.uniqueHolders);
+          }
+          
+          // Set creator earnings if available
+          if (coinData.creatorEarnings) {
+            setCreatorEarnings(coinData.creatorEarnings);
+          }
+          
+          // Set coin image from mediaContent (use medium size for better quality)
+          if (coinData.mediaContent?.previewImage) {
+            const previewImage = coinData.mediaContent.previewImage as any;
+            setCoinImage(previewImage.medium || previewImage.small || null);
+          }
         }
       } catch (e) {
         console.error("Error fetching coin stats:", e);
+        if (e && typeof e === 'object') {
+          console.error("Error details:", JSON.stringify(e, null, 2));
+        }
       }
     }
     if (typeof window !== "undefined") fetchCoinStats();
@@ -240,24 +260,27 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             {coin.metadata.description && (
               <div className="truncate text-xs text-gray-500">{coin.metadata.description}</div>
             )}
-            {coin.metadata.image && (
-              <div className="rounded-md overflow-hidden" style={{ width: '100%', height: 100 }}>
-                <img
-                  src={getImageSrc(coin.metadata.image) || ''}
-                  alt={coin.metadata.title || coin.name}
-                  width={CARD_WIDTH}
-                  height={100}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  onError={e => {
-                    console.error('CoinCard image failed to load:', {
-                      src: e.currentTarget.src,
-                      alt: e.currentTarget.alt,
-                      coin,
-                    });
-                  }}
-                />
-              </div>
-            )}
+          </div>
+        )}
+        
+        {/* Coin Image/Art from SDK */}
+        {(coinImage || coin.metadata?.image) && (
+          <div className="rounded-md overflow-hidden" style={{ width: '100%', height: 100 }}>
+            <img
+              src={coinImage || getImageSrc(coin.metadata?.image) || ''}
+              alt={coin.metadata?.title || coin.name}
+              width={CARD_WIDTH}
+              height={100}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={e => {
+                console.error('CoinCard image failed to load:', {
+                  src: e.currentTarget.src,
+                  alt: e.currentTarget.alt,
+                  coin,
+                });
+              }}
+              data-testid={`img-coin-${coin.address}`}
+            />
           </div>
         )}
 
