@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import Create from "@/pages/create";
+import Channels from "@/pages/channels";
 import Creators from "@/pages/creators";
 import Leaderboard from "@/pages/leaderboard";
 import FAQ from "@/pages/faq";
@@ -20,6 +21,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/create" component={Create} />
+      <Route path="/channels" component={Channels} />
       <Route path="/creators" component={Creators} />
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/faq" component={FAQ} />

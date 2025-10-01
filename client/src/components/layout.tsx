@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import { Input } from "@/components/ui/input";
 import {
   Play,
   Home as HomeIcon,
@@ -9,6 +10,8 @@ import {
   HelpCircle,
   ChevronLeft,
   ChevronRight,
+  Hash,
+  Search,
 } from "lucide-react";
 import WalletConnectButton from "./wallet-connect-button";
 
@@ -18,11 +21,20 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [location] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [location, navigate] = useLocation();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/channels?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const navItems = [
     { href: "/", icon: HomeIcon, label: "Home" },
     { href: "/create", icon: Plus, label: "Create" },
+    { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
     { href: "/leaderboard", icon: Trophy, label: "Leaderboard" },
     { href: "/faq", icon: HelpCircle, label: "FAQ" },
@@ -105,6 +117,21 @@ export default function Layout({ children }: LayoutProps) {
                 <span className="text-sm">→</span>
               </button>
             </div>
+            
+            {/* Search Bar */}
+            <div className="flex-1 max-w-md mx-8">
+              <form onSubmit={handleSearch} className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search channels, coins, creators..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-muted/20 border-border focus:bg-muted/30 transition-colors"
+                />
+              </form>
+            </div>
+            
             <WalletConnectButton />
           </header>
 
