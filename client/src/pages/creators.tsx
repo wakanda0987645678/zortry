@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Creator, Coin } from "@shared/schema";
@@ -22,7 +21,7 @@ export default function Creators() {
     const creatorCoins = coins.filter(coin => 
       coin.creator.toLowerCase() === creator.address.toLowerCase()
     );
-    
+
     return {
       ...creator,
       totalCoins: creatorCoins.length,
@@ -84,7 +83,7 @@ export default function Creators() {
   return (
     <Layout>
       <div className="p-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
@@ -95,7 +94,7 @@ export default function Creators() {
                   Discover the most successful content creators on CoinIT.
                 </p>
               </div>
-              
+
               {/* Inline Stats */}
               <div className="flex flex-wrap gap-6 text-right">
                 <div className="text-center lg:text-right">

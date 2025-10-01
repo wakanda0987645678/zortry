@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Reward } from "@shared/schema";
@@ -46,7 +45,7 @@ export default function Rewards() {
   return (
     <Layout>
       <div className="p-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-black mb-4 text-white">
               Trading <span className="spotify-green">Analyzer</span>

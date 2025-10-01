@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
@@ -66,7 +65,7 @@ export default function Channels() {
       id: "2",
       name: "Titan Fries",
       creator: "rangegouraji",
-      image: "https://images.unsplash.com/photo-1630409346775-b79db5c5e0bb?w=400&h=300&fit=crop",
+      image: "https://images.unsplash.com/photo-1630409346775-8765a0bb0bb?w=400&h=300&fit=crop",
       marketCap: "$49.3",
       price: "$0.30",
       holders: 3,
@@ -176,7 +175,7 @@ export default function Channels() {
     <Layout>
       {/* Header */}
       <section className="p-4 md:p-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Channel Import Tab and Category Tabs */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             {/* Channel Import Tab */}
@@ -187,7 +186,7 @@ export default function Channels() {
               <Plus className="w-4 h-4" />
               Import Channel
             </Button>
-            
+
             {/* Category Tabs */}
             <div className="flex flex-wrap gap-1">
               {categories.map((category) => {
@@ -241,7 +240,7 @@ export default function Channels() {
                   <span className="text-muted-foreground ml-2">({filteredChannels.length})</span>
                 </h2>
               </div>
-              
+
               {/* Responsive Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {filteredChannels.map((channel) => (
@@ -268,11 +267,11 @@ export default function Channels() {
                             ({channel.symbol})
                           </span>
                         </h3>
-                        
+
                         <div className="text-xs text-muted-foreground">
                           market cap: <span className="text-primary font-semibold">{channel.marketCap}</span>
                         </div>
-                        
+
                         <div className="text-xs text-muted-foreground">
                           replies: <span className="text-white font-semibold">{channel.holders * 30 + Math.floor(Math.random() * 50)}</span>
                         </div>

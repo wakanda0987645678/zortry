@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Coin } from "@shared/schema";
@@ -39,7 +38,7 @@ export default function Leaderboard() {
   return (
     <Layout>
       <div className="p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-black mb-4 text-white">
             <span className="spotify-green">Leaderboard</span>
@@ -135,7 +134,7 @@ export default function Leaderboard() {
           <div className="p-4 border-b border-border">
             <h2 className="text-xl font-bold text-white">Full Rankings</h2>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-muted/10">

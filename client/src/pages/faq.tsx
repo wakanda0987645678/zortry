@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
 import Layout from "@/components/layout";
@@ -89,7 +88,7 @@ export default function FAQ() {
   return (
     <Layout>
       <div className="p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
         <div className="mb-8 text-center">
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <HelpCircle className="w-8 h-8 text-black" />
@@ -134,7 +133,7 @@ export default function FAQ() {
                   <ChevronDown className="w-5 h-5 text-primary flex-shrink-0" />
                 )}
               </button>
-              
+
               {openItems.includes(index) && (
                 <div className="px-6 pb-6">
                   <div className="border-t border-border pt-4">
