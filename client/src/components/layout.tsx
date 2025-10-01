@@ -39,6 +39,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const navItems = [
     { href: "/", icon: Compass, label: "Explore" },
+    { href: "/search", icon: Search, label: "Search" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
     { href: "/rewards", icon: Award, label: "Analyzer" },

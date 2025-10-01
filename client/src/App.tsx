@@ -15,6 +15,7 @@ import FAQ from "@/pages/faq";
 import Rewards from "./pages/rewards";
 import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
+import Search from "@/pages/search";
 
 import "@rainbow-me/rainbowkit/styles.css";
 
@@ -22,13 +23,14 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/create" component={Create} />
+      <Route path="/search" component={Search} />
       <Route path="/channels" component={Channels} />
+      <Route path="/create" component={Create} />
       <Route path="/creators" component={Creators} />
       <Route path="/leaderboard" component={Leaderboard} />
+      <Route path="/rewards" component={Rewards} />
       <Route path="/faq" component={FAQ} />
-      <Route path="/rewards" element={<Rewards />} />
-      <Route path="*" element={<NotFound />} />
+      <Route component={NotFound} />
     </Switch>
   );
 }
