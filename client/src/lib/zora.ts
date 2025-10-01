@@ -115,22 +115,47 @@ export async function createZoraCoinWithWallet(
       transport: http(rpcUrl),
     });
 
-    // For Zora SDK, handle metadata URI properly
-    let metadataUri = typeof metadata.image === 'string' ? metadata.image : "";
-    
-    // If we have an image URL, use it directly (most cases this will be a web URL)
-    if (metadataUri && !metadataUri.startsWith('ipfs://')) {
-      // Keep the original URL
-    } else if (metadataUri && metadataUri.startsWith('ipfs://')) {
-      // For IPFS URIs, convert to HTTP
-      const ipfsHash = metadataUri.replace('ipfs://', '');
+    // Create proper JSON metadata for Zora SDK
+    const jsonMetadata = {
+      name: metadata.name,
+      description: metadata.description || `A coin representing ${metadata.title}`,
+      image: metadata.image || "",
+      external_url: metadata.url || "",
+      attributes: [
+        {
+          trait_type: "Platform",
+          value: metadata.platform || "web"
+        },
+        {
+          trait_type: "Creator",
+          value: metadata.author || "Unknown"
+        }
+      ]
+    };
+
+    // Upload JSON metadata to Pinata
+    let metadataUri = "";
+    try {
+      const { uploadToPinata } = await import('./pinata');
+      const metadataBlob = new Blob([JSON.stringify(jsonMetadata, null, 2)], { 
+        type: 'application/json' 
+      });
+      const metadataFile = new File([metadataBlob], `${metadata.symbol || 'coin'}-metadata.json`, { 
+        type: 'application/json' 
+      });
+      
+      const ipfsHash = await uploadToPinata(metadataFile);
       const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
-      if (gatewayUrl) {
+      
+      if (gatewayUrl && ipfsHash) {
         metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+        console.log(`Created metadata URI: ${metadataUri}`);
       }
+    } catch (uploadError) {
+      console.error('Failed to upload metadata to Pinata:', uploadError);
+      // Fall back to empty URI which Zora SDK accepts
+      metadataUri = "";
     }
-    
-    console.log(`Using metadata URI for wallet: ${metadataUri}`);
 
     // Create coin arguments matching SDK v0.2.1 API
     const createCoinArgs = {
