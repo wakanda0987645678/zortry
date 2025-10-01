@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAccount } from "wagmi";
 import {
   Play,
   Compass,
@@ -30,6 +31,7 @@ export default function Layout({ children }: LayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [location, navigate] = useLocation();
   const isMobile = useIsMobile();
+  const { isConnected } = useAccount();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,52 +40,62 @@ export default function Layout({ children }: LayoutProps) {
     }
   };
 
-  const navItems = [
+  const desktopNavItems = [
     { href: "/", icon: Compass, label: "Explore" },
     { href: "/search", icon: Search, label: "Search" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
-    { href: "/profile", icon: User, label: "Profile" },
     { href: "/rewards", icon: Award, label: "Analyzer" },
     { href: "/leaderboard", icon: Trophy, label: "Leaderboard" },
     { href: "/faq", icon: HelpCircle, label: "FAQ" },
   ];
 
-  const SidebarContent = ({ mobile = false }: { mobile?: boolean }) => (
-    <div className={`bg-black/90 ${mobile ? 'p-4' : 'p-6'} flex flex-col h-full`}>
-      <div className="flex items-center gap-2 mb-8">
-        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-          <Play className="w-4 h-4 text-black fill-current" />
+  const mobileNavItems = [
+    { href: "/", icon: Compass, label: "Explore" },
+    { href: "/search", icon: Search, label: "Search" },
+    { href: "/channels", icon: Hash, label: "Channels" },
+    { href: "/creators", icon: Users, label: "Creators" },
+    { href: "/profile", icon: User, label: "Profile" },
+  ];
+
+  const SidebarContent = ({ mobile = false }: { mobile?: boolean }) => {
+    const items = mobile ? mobileNavItems : desktopNavItems;
+    
+    return (
+      <div className={`bg-black/90 ${mobile ? 'p-4' : 'p-6'} flex flex-col h-full`}>
+        <div className="flex items-center gap-2 mb-8">
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <Play className="w-4 h-4 text-black fill-current" />
+          </div>
+          {(!sidebarCollapsed || mobile) && (
+            <span className="text-2xl font-bold text-white">CoinIT</span>
+          )}
         </div>
-        {(!sidebarCollapsed || mobile) && (
-          <span className="text-2xl font-bold text-white">CoinIT</span>
-        )}
-      </div>
 
-      <nav className="space-y-4 mb-8 flex-1">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = location === item.href;
+        <nav className="space-y-4 mb-8 flex-1">
+          {items.map((item) => {
+            const Icon = item.icon;
+            const isActive = location === item.href;
 
-          return (
-            <Link key={item.href} href={item.href}>
-              <div 
-                className={`flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer ${
-                  isActive
-                    ? "text-white bg-primary/20"
-                    : "text-muted-foreground hover:text-white hover:bg-muted/10"
-                }`}
-                onClick={() => mobile && setMobileMenuOpen(false)}
-              >
-                <Icon className="w-6 h-6 flex-shrink-0" />
-                {(!sidebarCollapsed || mobile) && (
-                  <span className="font-bold">{item.label}</span>
-                )}
-              </div>
-            </Link>
-          );
-        })}
-      </nav>
+            return (
+              <Link key={item.href} href={item.href}>
+                <div 
+                  className={`flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer ${
+                    isActive
+                      ? "text-white bg-primary/20"
+                      : "text-muted-foreground hover:text-white hover:bg-muted/10"
+                  }`}
+                  onClick={() => mobile && setMobileMenuOpen(false)}
+                >
+                  <Icon className="w-6 h-6 flex-shrink-0" />
+                  {(!sidebarCollapsed || mobile) && (
+                    <span className="font-bold">{item.label}</span>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
+        </nav>
 
       {(!sidebarCollapsed || mobile) && (
         <div className="bg-muted/20 rounded-lg p-4">
@@ -114,8 +126,9 @@ export default function Layout({ children }: LayoutProps) {
           )}
         </button>
       )}
-    </div>
-  );
+      </div>
+    );
+  };
 
   if (isMobile) {
     return (
@@ -162,7 +175,7 @@ export default function Layout({ children }: LayoutProps) {
           {/* Mobile Footer Navigation */}
           <footer className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md border-t border-border z-40">
             <div className="flex items-center justify-around py-2">
-              {navItems.slice(0, 5).map((item) => {
+              {mobileNavItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location === item.href;
                 return (
@@ -223,7 +236,20 @@ export default function Layout({ children }: LayoutProps) {
               </Link>
             </div>
 
-            <WalletConnectButton />
+            <div className="flex items-center gap-3">
+              {isConnected && (
+                <Link href="/profile">
+                  <button 
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/20 transition-colors text-muted-foreground hover:text-white"
+                    data-testid="button-profile"
+                  >
+                    <User className="w-5 h-5" />
+                    <span className="font-medium">Profile</span>
+                  </button>
+                </Link>
+              )}
+              <WalletConnectButton />
+            </div>
           </header>
 
           {/* Desktop Page Content */}
