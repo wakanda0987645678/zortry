@@ -156,6 +156,7 @@ export default function Creators() {
           ))}
         </div>
       </div>
+      </div>
     </Layout>
   );
 }
