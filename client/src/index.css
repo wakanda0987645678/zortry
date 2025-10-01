@@ -186,6 +186,27 @@
     @apply backdrop-blur-sm border border-border/50 rounded-xl p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:transform hover:scale-[1.02];
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
   }
+
+  /* Mobile-specific utilities */
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
+  }
+
+  .mobile-card {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+
+  .mobile-text {
+    @apply text-sm sm:text-base;
+  }
+
+  .mobile-spacing {
+    @apply space-y-3 sm:space-y-4 md:space-y-6;
+  }
+
+  .mobile-button {
+    @apply text-sm sm:text-base px-4 py-2 sm:px-6 sm:py-3;
+  }
 }
 
 @keyframes pulse {

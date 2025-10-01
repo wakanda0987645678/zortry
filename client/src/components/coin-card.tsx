@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -112,28 +111,28 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         });
 
         const coinData = response.data?.zora20Token;
-        
+
         if (isMounted && coinData) {
           // Set market cap
           if (coinData.marketCap) {
             setMarketCap(parseFloat(coinData.marketCap).toFixed(2));
           }
-          
+
           // Set 24h volume
           if (coinData.volume24h) {
             setVolume24h(parseFloat(coinData.volume24h).toFixed(2));
           }
-          
+
           // Set unique holders
           if (coinData.uniqueHolders) {
             setUniqueHolders(coinData.uniqueHolders);
           }
-          
+
           // Set creator earnings if available
           if (coinData.creatorEarnings) {
             setCreatorEarnings(coinData.creatorEarnings);
           }
-          
+
           // Set coin image from mediaContent (use medium size for better quality)
           if (coinData.mediaContent?.previewImage) {
             const previewImage = coinData.mediaContent.previewImage as any;
@@ -188,9 +187,9 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
 
     try {
       const { tradeZoraCoin } = await import("@/lib/zora");
-      
+
       console.log("Starting trade for coin:", coinAddress, "with ETH amount:", ethAmount);
-      
+
       const result = await tradeZoraCoin({
         coinAddress,
         ethAmount,
@@ -199,16 +198,16 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         userAddress: address,
         isBuying: true, // Always buying with ETH
       });
-      
+
       console.log("Trade completed successfully:", result);
-      
+
       if (result?.hash) {
         setTxHash(result.hash);
         setTradeDialogOpen(false); // Close dialog on success
       } else {
         throw new Error("Transaction completed but no hash returned");
       }
-      
+
     } catch (err: unknown) {
       console.error("Trade error:", err);
       const errorMessage = err instanceof Error ? err.message : "Trade failed with unknown error";
@@ -266,7 +265,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
           uniqueHolders={uniqueHolders}
           earnings={creatorEarnings && creatorEarnings.length > 0 ? `${creatorEarnings[0].amount.amountDecimal} (${creatorEarnings[0].amount.currencyAddress})${creatorEarnings[0].amountUsd ? ` ≈ $${creatorEarnings[0].amountUsd}` : ''}` : null}
         />
-        
+
         {/* Blog Metadata (compact) */}
         {coin.metadata && (
           <div className="space-y-1">
@@ -278,7 +277,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             )}
           </div>
         )}
-        
+
         {/* Coin Image/Art from SDK */}
         {(coinImage || coin.metadata?.image) && (
           <div className="rounded-md overflow-hidden" style={{ width: '100%', height: 100 }}>
@@ -386,7 +385,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
                       <p className="text-yellow-800">Please connect your wallet to trade.</p>
                     </div>
                   ) : (
-                    <Button 
+                    <Button
                       onClick={() => handleTrade(coin.address as `0x${string}`)}
                       disabled={loading || !ethAmount || parseFloat(ethAmount) <= 0}
                       className="w-full text-xs h-7"
