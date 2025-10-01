@@ -152,20 +152,6 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           </header>
 
-          {/* Mobile Search Bar */}
-          <div className="p-4 border-b border-border">
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-muted/20 border-border focus:bg-muted/30 transition-colors"
-              />
-            </form>
-          </div>
-
           {/* Mobile Main Content */}
           <main className="flex-1 overflow-y-auto pb-16">
             {children}
