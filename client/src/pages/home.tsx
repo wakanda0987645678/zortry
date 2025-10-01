@@ -13,7 +13,7 @@ import {
   Coins as CoinsIcon,
   Play,
   Search,
-  Home,
+  Home as HomeIcon,
   Library,
 } from "lucide-react";
 
@@ -50,7 +50,7 @@ export default function Home() {
 
           <nav className="space-y-4 mb-8">
             <div className="flex items-center gap-3 text-white hover:text-white transition-colors cursor-pointer">
-              <Home className="w-6 h-6" />
+              <HomeIcon className="w-6 h-6" />
               <span className="font-bold">Home</span>
             </div>
             <div className="flex items-center gap-3 text-muted-foreground hover:text-white transition-colors cursor-pointer">
