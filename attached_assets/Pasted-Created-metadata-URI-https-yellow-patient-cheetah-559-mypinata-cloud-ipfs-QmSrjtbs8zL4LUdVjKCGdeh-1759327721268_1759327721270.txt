@@ -1,0 +1,63 @@
+Created metadata URI: https://yellow-patient-cheetah-559.mypinata.cloud/ipfs/QmSrjtbs8zL4LUdVjKCGdehCemn8Y7TMukzjXsVejHMbo4
+zora.ts:109  GET https://yellow-patient-cheetah-559.mypinata.cloud/ipfs/QmSrjtbs8zL4LUdVjKCGdehCemn8Y7TMukzjXsVejHMbo4 401 (Unauthorized)
+validateMetadataURIContent @ @zoralabs_coins-sdk.js?v=cbbaab87:2422
+createCoinCall @ @zoralabs_coins-sdk.js?v=cbbaab87:2511
+createZoraCoin @ zora.ts:109
+await in createZoraCoin
+mutationFn @ content-preview-card.tsx:58
+await in mutationFn
+fn @ chunk-7X75LGXT.js?v=cbbaab87:1189
+run @ chunk-7X75LGXT.js?v=cbbaab87:494
+start @ chunk-7X75LGXT.js?v=cbbaab87:536
+execute @ chunk-7X75LGXT.js?v=cbbaab87:1225
+await in execute
+mutate @ chunk-7X75LGXT.js?v=cbbaab87:2630
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:3295
+onClick @ content-preview-card.tsx:167
+callCallback2 @ chunk-Z2GUPSCO.js?v=cbbaab87:3674
+invokeGuardedCallbackDev @ chunk-Z2GUPSCO.js?v=cbbaab87:3699
+invokeGuardedCallback @ chunk-Z2GUPSCO.js?v=cbbaab87:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-Z2GUPSCO.js?v=cbbaab87:3736
+executeDispatch @ chunk-Z2GUPSCO.js?v=cbbaab87:7014
+processDispatchQueueItemsInOrder @ chunk-Z2GUPSCO.js?v=cbbaab87:7034
+processDispatchQueue @ chunk-Z2GUPSCO.js?v=cbbaab87:7043
+dispatchEventsForPlugins @ chunk-Z2GUPSCO.js?v=cbbaab87:7051
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:7174
+batchedUpdates$1 @ chunk-Z2GUPSCO.js?v=cbbaab87:18913
+batchedUpdates @ chunk-Z2GUPSCO.js?v=cbbaab87:3579
+dispatchEventForPluginEventSystem @ chunk-Z2GUPSCO.js?v=cbbaab87:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-Z2GUPSCO.js?v=cbbaab87:5478
+dispatchEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5472
+dispatchDiscreteEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5449Understand this error
+zora.ts:115 Zora coin creation error: Error: Metadata fetch failed
+    at validateMetadataURIContent (@zoralabs_coins-sdk.js?v=cbbaab87:2424:11)
+    at async createCoinCall (@zoralabs_coins-sdk.js?v=cbbaab87:2511:3)
+    at async createZoraCoin (zora.ts:109:21)
+    at async Object.mutationFn (content-preview-card.tsx:58:30)
+createZoraCoin @ zora.ts:115
+await in createZoraCoin
+mutationFn @ content-preview-card.tsx:58
+await in mutationFn
+fn @ chunk-7X75LGXT.js?v=cbbaab87:1189
+run @ chunk-7X75LGXT.js?v=cbbaab87:494
+start @ chunk-7X75LGXT.js?v=cbbaab87:536
+execute @ chunk-7X75LGXT.js?v=cbbaab87:1225
+await in execute
+mutate @ chunk-7X75LGXT.js?v=cbbaab87:2630
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:3295
+onClick @ content-preview-card.tsx:167
+callCallback2 @ chunk-Z2GUPSCO.js?v=cbbaab87:3674
+invokeGuardedCallbackDev @ chunk-Z2GUPSCO.js?v=cbbaab87:3699
+invokeGuardedCallback @ chunk-Z2GUPSCO.js?v=cbbaab87:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-Z2GUPSCO.js?v=cbbaab87:3736
+executeDispatch @ chunk-Z2GUPSCO.js?v=cbbaab87:7014
+processDispatchQueueItemsInOrder @ chunk-Z2GUPSCO.js?v=cbbaab87:7034
+processDispatchQueue @ chunk-Z2GUPSCO.js?v=cbbaab87:7043
+dispatchEventsForPlugins @ chunk-Z2GUPSCO.js?v=cbbaab87:7051
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:7174
+batchedUpdates$1 @ chunk-Z2GUPSCO.js?v=cbbaab87:18913
+batchedUpdates @ chunk-Z2GUPSCO.js?v=cbbaab87:3579
+dispatchEventForPluginEventSystem @ chunk-Z2GUPSCO.js?v=cbbaab87:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-Z2GUPSCO.js?v=cbbaab87:5478
+dispatchEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5472
+dispatchDiscreteEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5449Understand this error
