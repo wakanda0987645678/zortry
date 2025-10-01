@@ -44,6 +44,8 @@
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@tanstack/react-query": "^5.60.5",
     "@zoralabs/coins-sdk": "^0.2.1",
+    "@zoralabs/protocol-sdk": "^0.13.13",
+    "@zoralabs/zdk": "^2.4.0",
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",
     "class-variance-authority": "^0.7.1",
