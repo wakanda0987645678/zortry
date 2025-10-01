@@ -2,6 +2,7 @@
 import { useState } from "react";
 import URLInputForm from "@/components/url-input-form";
 import ContentPreviewCard from "@/components/content-preview-card";
+import Layout from "@/components/layout";
 
 export default function Create() {
   const [showPreview, setShowPreview] = useState(false);
@@ -18,7 +19,8 @@ export default function Create() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-8">
+    <Layout>
+      <div className="p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-black mb-4 text-white">
@@ -66,6 +68,6 @@ export default function Create() {
           </div>
         )}
       </div>
-    </div>
+    </Layout>
   );
 }

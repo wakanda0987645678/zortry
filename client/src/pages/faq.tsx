@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
+import Layout from "@/components/layout";
 
 interface FAQItem {
   question: string;
@@ -86,7 +87,8 @@ export default function FAQ() {
   ] as const;
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-8">
+    <Layout>
+      <div className="p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8 text-center">
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
@@ -160,6 +162,6 @@ export default function FAQ() {
           </button>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

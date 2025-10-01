@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Coin } from "@shared/schema";
 import { Trophy, TrendingUp, DollarSign, Coins as CoinsIcon } from "lucide-react";
+import Layout from "@/components/layout";
 
 export default function Leaderboard() {
   const [selectedPeriod, setSelectedPeriod] = useState<"24h" | "7d" | "30d" | "all">("24h");
@@ -36,7 +37,8 @@ export default function Leaderboard() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-8">
+    <Layout>
+      <div className="p-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-black mb-4 text-white">
@@ -181,6 +183,6 @@ export default function Leaderboard() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

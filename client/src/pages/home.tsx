@@ -1,30 +1,22 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import type { Coin } from "@shared/schema";
 import URLInputForm from "@/components/url-input-form";
 import ContentPreviewCard from "@/components/content-preview-card";
 import CoinCard from "@/components/coin-card";
-import WalletConnectButton from "@/components/wallet-connect-button";
+import Layout from "@/components/layout";
 import {
   TrendingUp,
   Users,
   DollarSign,
   Coins as CoinsIcon,
-  Play,
-  Search,
-  Home as HomeIcon,
-  Library,
-  Plus,
-  Trophy,
-  HelpCircle,
 } from "lucide-react";
 
 export default function Home() {
   const [showPreview, setShowPreview] = useState(false);
   const [scrapedData, setScrapedData] = useState<any>(null);
-  const [location] = useLocation();
 
   const { data: coins = [], isLoading } = useQuery<Coin[]>({
     queryKey: ["/api/coins"],
@@ -41,110 +33,19 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Spotify-style Layout */}
-      <div className="flex h-screen">
-        {/* Left Sidebar */}
-        <div className="w-64 bg-black/90 p-6 flex flex-col">
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <Play className="w-4 h-4 text-black fill-current" />
-            </div>
-            <span className="text-2xl font-bold text-white">CoinIT</span>
-          </div>
-
-          <nav className="space-y-4 mb-8">
-            <Link href="/">
-              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
-                location === "/" ? "text-white" : "text-muted-foreground hover:text-white"
-              }`}>
-                <HomeIcon className="w-6 h-6" />
-                <span className="font-bold">Home</span>
-              </div>
-            </Link>
-            
-            <Link href="/create">
-              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
-                location === "/create" ? "text-white" : "text-muted-foreground hover:text-white"
-              }`}>
-                <Plus className="w-6 h-6" />
-                <span className="font-bold">Create</span>
-              </div>
-            </Link>
-
-            <Link href="/creators">
-              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
-                location === "/creators" ? "text-white" : "text-muted-foreground hover:text-white"
-              }`}>
-                <Users className="w-6 h-6" />
-                <span className="font-bold">Creators</span>
-              </div>
-            </Link>
-
-            <Link href="/leaderboard">
-              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
-                location === "/leaderboard" ? "text-white" : "text-muted-foreground hover:text-white"
-              }`}>
-                <Trophy className="w-6 h-6" />
-                <span className="font-bold">Leaderboard</span>
-              </div>
-            </Link>
-
-            <Link href="/faq">
-              <div className={`flex items-center gap-3 transition-colors cursor-pointer ${
-                location === "/faq" ? "text-white" : "text-muted-foreground hover:text-white"
-              }`}>
-                <HelpCircle className="w-6 h-6" />
-                <span className="font-bold">FAQ</span>
-              </div>
-            </Link>
-          </nav>
-
-          <div className="bg-muted/20 rounded-lg p-4 mt-auto">
-            <h3 className="font-bold text-white mb-2">Create Your First Coin</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              Turn any blog post into a tradeable digital asset.
+    <Layout>
+      {/* Hero Section */}
+      <section className="relative p-8 bg-gradient-to-b from-primary/20 via-background/50 to-background">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-8">
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              Import content from any URL and mint it as a tradeable coin on the Zora blockchain.
             </p>
-            <Link href="/create">
-              <button className="spotify-button w-full">
-                Get Started
-              </button>
-            </Link>
           </div>
+
+          <URLInputForm onScraped={handleScrapedData} />
         </div>
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Top Navigation Bar */}
-          <header className="flex items-center justify-between p-4 bg-background/95 backdrop-blur-md border-b border-border">
-            <div className="flex items-center gap-4">
-              <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center opacity-60">
-                <span className="text-sm">←</span>
-              </button>
-              <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center opacity-60">
-                <span className="text-sm">→</span>
-              </button>
-            </div>
-            <WalletConnectButton />
-          </header>
-
-          {/* Scrollable Content */}
-          <main className="flex-1 overflow-y-auto">
-            {/* Hero Section */}
-            <section className="relative p-8 bg-gradient-to-b from-primary/20 via-background/50 to-background">
-              <div className="max-w-6xl mx-auto">
-                <div className="mb-8">
-                  <h1 className="text-6xl font-black mb-4 text-white">
-                    Transform Blogs into <span className="spotify-green">Digital Assets</span>
-                  </h1>
-                  <p className="text-xl text-muted-foreground max-w-2xl">
-                    Import content from any URL and mint it as a tradeable coin on the Zora blockchain.
-                  </p>
-                </div>
-
-                <URLInputForm onScraped={handleScrapedData} />
-              </div>
-            </section>
+      </section>
 
             {/* Content Preview Section */}
             {showPreview && scrapedData && (
@@ -253,9 +154,6 @@ export default function Home() {
             </section>
 
             
-          </main>
-        </div>
-      </div>
-    </div>
+          </Layout>
   );
 }
