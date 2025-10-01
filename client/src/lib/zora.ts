@@ -3,7 +3,9 @@ import {
   createCoinCall,
   setApiKey,
   getCoinCreateFromLogs,
-  CreateConstants
+  CreateConstants,
+  tradeCoin,
+  TradeParameters
 } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, http, parseEther, type Address, type Hash } from "viem";
 import { base, baseSepolia } from "viem/chains";
@@ -243,38 +245,59 @@ export async function tradeZoraCoin({
   }
 
   try {
-    const { tradeCoin } = await import("@zoralabs/coins-sdk");
+    const { tradeCoin, TradeParameters } = await import("@zoralabs/coins-sdk");
     
     // Convert ETH amount to wei for the transaction
     const amountInWei = parseEther(ethAmount);
     
-    const tradeParams = {
-      coinAddress,
-      amount: amountInWei.toString(),
-      recipient: userAddress,
-      slippagePercentage: 5, // 5% slippage tolerance
-      isBuy: isBuying, // true for buying coin with ETH, false for selling coin for ETH
+    // Create trade parameters according to Zora SDK documentation
+    const tradeParameters: TradeParameters = isBuying ? {
+      // Buying coin with ETH
+      sell: { type: "eth" },
+      buy: { 
+        type: "erc20", 
+        address: coinAddress 
+      },
+      amountIn: amountInWei,
+      slippage: 0.05, // 5% slippage tolerance
+      sender: userAddress,
+    } : {
+      // Selling coin for ETH
+      sell: { 
+        type: "erc20", 
+        address: coinAddress 
+      },
+      buy: { type: "eth" },
+      amountIn: amountInWei,
+      slippage: 0.15, // 15% slippage tolerance for selling
+      sender: userAddress,
     };
 
-    console.log("Trading with params:", tradeParams);
+    console.log("Trading with parameters:", tradeParameters);
 
-    const result = await tradeCoin({
-      parameters: tradeParams,
+    // Get account from wallet client
+    const account = walletClient.account;
+    if (!account) {
+      throw new Error("No account found in wallet client");
+    }
+
+    const receipt = await tradeCoin({
+      tradeParameters,
       walletClient,
+      account,
       publicClient,
-      chainId: base.id,
     });
 
-    console.log("Trade result:", result);
+    console.log("Trade receipt:", receipt);
 
-    if (!result || !result.hash) {
-      throw new Error("Trade transaction failed - no hash returned");
+    if (!receipt || !receipt.transactionHash) {
+      throw new Error("Trade transaction failed - no transaction hash returned");
     }
 
     return {
-      hash: result.hash,
+      hash: receipt.transactionHash,
       success: true,
-      ...result
+      receipt
     };
   } catch (error) {
     console.error("Trade error:", error);
@@ -287,6 +310,10 @@ export async function tradeZoraCoin({
         throw new Error("Transaction was cancelled by user");
       } else if (error.message.includes("slippage")) {
         throw new Error("Trade failed due to high slippage - try again with higher slippage tolerance");
+      } else if (error.message.includes("Slippage must be less than 1")) {
+        throw new Error("Invalid slippage configuration");
+      } else if (error.message.includes("Amount in must be greater than 0")) {
+        throw new Error("Trade amount must be greater than 0");
       } else {
         throw new Error(`Trading failed: ${error.message}`);
       }
