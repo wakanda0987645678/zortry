@@ -110,9 +110,22 @@ export class MemStorage implements IStorage {
   }
 
   async getAllCoins(): Promise<Coin[]> {
-    return Array.from(this.coins.values()).sort(
+    const coins = Array.from(this.coins.values()).sort(
       (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
     );
+    
+    return coins.map(coin => {
+      if (coin.scrapedContentId) {
+        const content = this.scrapedContent.get(coin.scrapedContentId);
+        if (content) {
+          return {
+            ...coin,
+            platform: content.platform
+          };
+        }
+      }
+      return coin;
+    });
   }
 
   async getCoinsByCreator(creator: string): Promise<Coin[]> {
