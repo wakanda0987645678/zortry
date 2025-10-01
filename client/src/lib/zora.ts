@@ -1,10 +1,10 @@
-
-import { 
-  createCoin, 
-  createCoinCall, 
+import {
+  createCoin,
+  createCoinCall,
   setApiKey,
   getCoinCreateFromLogs,
-  DeployCurrency
+  DeployCurrency,
+  createCoinsClient // Import createCoinsClient
 } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, http, type Address, type Hash } from "viem";
 import { base, baseSepolia } from "viem/chains";
@@ -44,7 +44,7 @@ export async function createZoraCoin(
   try {
     // Set up clients for the specified chain
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
-    const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL || 
+    const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL ||
                    `https://base-mainnet.g.alchemy.com/v2/${import.meta.env.VITE_ALCHEMY_API_KEY}`;
 
     const publicClient = createPublicClient({
@@ -65,7 +65,7 @@ export async function createZoraCoin(
     // For client-side, we'll return the call data instead of executing
     // The actual transaction will be handled by the wallet client
     const txCalls = await createCoinCall(createCoinArgs);
-    
+
     // Return mock result for now - in real implementation, this would be handled by wallet
     return {
       hash: `0x${Math.random().toString(16).substring(2)}` as Hash,
@@ -92,7 +92,7 @@ export async function createZoraCoinWithWallet(
   try {
     // Set up clients
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
-    const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL || 
+    const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL ||
                    `https://base-mainnet.g.alchemy.com/v2/${import.meta.env.VITE_ALCHEMY_API_KEY}`;
 
     const publicClient = createPublicClient({
