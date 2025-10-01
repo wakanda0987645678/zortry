@@ -52,24 +52,47 @@ export async function createZoraCoin(
       transport: http(rpcUrl),
     });
 
-    // For Zora SDK, we need to provide a metadata URI that points to JSON metadata
-    // Since we're dealing with image URLs, let's create a simple metadata object
+    // Create proper JSON metadata for Zora SDK
+    const jsonMetadata = {
+      name: metadata.name,
+      description: metadata.description || `A coin representing ${metadata.name}`,
+      image: metadata.image || "",
+      external_url: metadata.externalUrl || "",
+      attributes: [
+        {
+          trait_type: "Platform",
+          value: "web"
+        },
+        {
+          trait_type: "Creator",
+          value: creatorAddress
+        }
+      ]
+    };
+
+    // Upload JSON metadata to Pinata
     let metadataUri = "";
-    
-    // If we have an image URL, use it directly (most cases this will be a web URL)
-    if (metadata.image && !metadata.image.startsWith('ipfs://')) {
-      metadataUri = metadata.image;
-    } else if (metadata.image && metadata.image.startsWith('ipfs://')) {
-      // For IPFS URIs, convert to HTTP but this might be an image, not metadata JSON
-      const ipfsHash = metadata.image.replace('ipfs://', '');
+    try {
+      const { uploadToPinata } = await import('./pinata');
+      const metadataBlob = new Blob([JSON.stringify(jsonMetadata, null, 2)], { 
+        type: 'application/json' 
+      });
+      const metadataFile = new File([metadataBlob], `${metadata.symbol || 'coin'}-metadata.json`, { 
+        type: 'application/json' 
+      });
+      
+      const ipfsHash = await uploadToPinata(metadataFile);
       const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
-      if (gatewayUrl) {
+      
+      if (gatewayUrl && ipfsHash) {
         metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+        console.log(`Created metadata URI: ${metadataUri}`);
       }
+    } catch (uploadError) {
+      console.error('Failed to upload metadata to Pinata:', uploadError);
+      // Fall back to empty URI which Zora SDK accepts
+      metadataUri = "";
     }
-    
-    // If no image URI, leave empty - Zora SDK can handle empty URIs
-    console.log(`Using metadata URI: ${metadataUri}`);
 
     // Create coin arguments matching SDK v0.2.1 API
     const createCoinArgs = {

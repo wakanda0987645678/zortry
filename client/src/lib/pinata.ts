@@ -42,3 +42,41 @@ export async function uploadToIPFS(metadata: any): Promise<string> {
     throw new Error("Failed to upload metadata to IPFS");
   }
 }
+
+export async function uploadToPinata(file: File): Promise<string> {
+  const PINATA_JWT = import.meta.env.VITE_PINATA_JWT;
+  
+  if (!PINATA_JWT) {
+    throw new Error("PINATA_JWT not configured");
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('pinataMetadata', JSON.stringify({
+      name: file.name,
+    }));
+
+    const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${PINATA_JWT}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(`Pinata file upload failed: ${response.statusText} - ${JSON.stringify(errorData)}`);
+    }
+
+    const data = await response.json();
+    return data.IpfsHash;
+  } catch (error) {
+    console.error("Pinata file upload error:", error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Failed to upload file to Pinata");
+  }
+}
