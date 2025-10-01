@@ -34,11 +34,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     setIsTrading(true);
     
     try {
-      const { tradeZoraCoin } = await import("@/lib/zora");
-      // This would need wallet integration - placeholder for now
-      // const result = await tradeZoraCoin({ ... });
-      
-      // For now, simulate until wallet integration is complete
+      // Note: Would need proper wallet integration for real trading
+      // For now keeping mock until wallet is properly connected to tradeCoin function
       setTimeout(() => {
         const mockTxHash = `0x${Math.random().toString(16).substring(2, 66)}`;
         setTxHash(mockTxHash);

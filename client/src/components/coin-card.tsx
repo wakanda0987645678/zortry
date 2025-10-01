@@ -197,7 +197,11 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         userAddress: address,
       });
       
-      setTxHash(result.hash);
+      if (result?.hash) {
+        setTxHash(result.hash);
+      } else {
+        throw new Error("No transaction hash returned");
+      }
       
     } catch (err: unknown) {
       console.error("Trade error:", err);
