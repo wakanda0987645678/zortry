@@ -189,20 +189,20 @@ export default function Channels() {
             </Button>
             
             {/* Category Tabs */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1">
               {categories.map((category) => {
                 const Icon = category.icon;
                 return (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${
                       selectedCategory === category.id
-                        ? "bg-primary text-black font-bold"
+                        ? "bg-primary text-black font-semibold"
                         : "bg-muted/20 text-muted-foreground hover:text-white hover:bg-muted/30"
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-3.5 h-3.5" />
                     {category.name}
                   </button>
                 );
