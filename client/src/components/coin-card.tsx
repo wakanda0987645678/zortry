@@ -233,7 +233,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       {/* Coin Image/Art - Top Section - Clickable */}
       <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
         <DialogTrigger asChild disabled={isOwnCoin}>
-          <div className={`relative aspect-square bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}>
+          <div className={`relative w-full h-32 bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}>
             {(coinImage || coin.metadata?.image) ? (
               <img
                 src={coinImage || getImageSrc(coin.metadata?.image) || ''}
@@ -250,12 +250,12 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <Coins className="w-12 h-12 text-primary/40" />
+                <Coins className="w-8 h-8 text-primary/40" />
               </div>
             )}
             {!isOwnCoin && (
               <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-                <TrendingUp className="w-8 h-8 text-white drop-shadow-lg" />
+                <TrendingUp className="w-6 h-6 text-white drop-shadow-lg" />
               </div>
             )}
           </div>
@@ -353,38 +353,38 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       </Dialog>
 
       {/* Content Section */}
-      <div className="p-3 space-y-2 flex-1 flex flex-col">
+      <div className="p-2 space-y-1.5 flex-1 flex flex-col">
         <div className="flex-1">
-          <h3 className="font-bold text-sm truncate text-white">
+          <h3 className="font-bold text-xs truncate text-white">
             {coin.name}
           </h3>
-          <p className="text-xs text-muted-foreground truncate">
+          <p className="text-[10px] text-muted-foreground truncate">
             {coin.symbol}
           </p>
         </div>
 
         {/* Stats Section */}
-        <div className="space-y-1.5 pt-2 border-t border-border/50">
+        <div className="space-y-1 pt-1.5 border-t border-border/50">
           {/* Market Cap and Creator */}
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1">
-              <Coins className="h-3 w-3 text-blue-500" />
+          <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center gap-0.5">
+              <Coins className="h-2.5 w-2.5 text-blue-500" />
               <span className="text-muted-foreground">MC:</span>
               <span className="font-semibold text-white">
                 {marketCap ? `$${marketCap}` : '-'}
               </span>
             </div>
             <div className="flex items-center gap-1" title={coin.creator}>
-              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[8px] font-bold text-white">
+              <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[7px] font-bold text-white">
                 {coin.creator.slice(2, 4).toUpperCase()}
               </div>
             </div>
           </div>
 
           {/* Earnings and Holders */}
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1">
-              <TrendingUp className="h-3 w-3 text-green-500" />
+          <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center gap-0.5">
+              <TrendingUp className="h-2.5 w-2.5 text-green-500" />
               <span className="text-muted-foreground">Earn:</span>
               <span className="font-semibold text-white">
                 {creatorEarnings && creatorEarnings.length > 0
@@ -392,8 +392,8 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
                   : '-'}
               </span>
             </div>
-            <div className="flex items-center gap-1">
-              <User className="h-3 w-3 text-orange-500" />
+            <div className="flex items-center gap-0.5">
+              <User className="h-2.5 w-2.5 text-orange-500" />
               <span className="font-semibold text-white">
                 {uniqueHolders || 0}
               </span>
