@@ -12,6 +12,7 @@ import Channels from "@/pages/channels";
 import Creators from "@/pages/creators";
 import Leaderboard from "@/pages/leaderboard";
 import FAQ from "@/pages/faq";
+import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
 import "@rainbow-me/rainbowkit/styles.css";
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/creators" component={Creators} />
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/faq" component={FAQ} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );

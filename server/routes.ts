@@ -5,6 +5,7 @@ import { insertScrapedContentSchema, insertCoinSchema } from "@shared/schema";
 import axios from "axios";
 import { detectPlatform } from "./platform-detector";
 import { scrapeByPlatform } from "./platform-scrapers";
+import { migrateOldData } from "./migrate-old-data";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -102,6 +103,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Get coin error:', error);
       res.status(500).json({ error: 'Failed to fetch coin' });
+    }
+  });
+
+  // Migrate old data endpoint
+  app.post("/api/migrate", async (_req, res) => {
+    try {
+      const result = await migrateOldData();
+      res.json(result);
+    } catch (error) {
+      console.error('Migration error:', error);
+      res.status(500).json({ error: 'Migration failed' });
     }
   });
 
