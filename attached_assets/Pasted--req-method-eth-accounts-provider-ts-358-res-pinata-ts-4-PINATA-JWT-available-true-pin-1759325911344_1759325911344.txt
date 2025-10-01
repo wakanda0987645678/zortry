@@ -1,0 +1,39 @@
+-> req {method: 'eth_accounts'}
+provider.ts:358 <- res []
+pinata.ts:4 PINATA_JWT available: true
+pinata.ts:5 Environment variables: {VITE_PINATA_JWT: true, VITE_PINATA_API_KEY: true, VITE_NEXT_PUBLIC_GATEWAY_URL: true}
+zora.ts:85 Zora coin creation error: Error: Invalid currency
+    at getPoolConfig (@zoralabs_coins-sdk.js?v=cbbaab87:2491:13)
+    at createCoinCall (@zoralabs_coins-sdk.js?v=cbbaab87:2510:22)
+    at createZoraCoin (zora.ts:75:27)
+    at Object.mutationFn (content-preview-card.tsx:58:38)
+createZoraCoin @ zora.ts:85
+await in createZoraCoin
+mutationFn @ content-preview-card.tsx:58
+await in mutationFn
+fn @ chunk-7X75LGXT.js?v=cbbaab87:1189
+run @ chunk-7X75LGXT.js?v=cbbaab87:494
+start @ chunk-7X75LGXT.js?v=cbbaab87:536
+execute @ chunk-7X75LGXT.js?v=cbbaab87:1225
+await in execute
+mutate @ chunk-7X75LGXT.js?v=cbbaab87:2630
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:3295
+onClick @ content-preview-card.tsx:185
+callCallback2 @ chunk-Z2GUPSCO.js?v=cbbaab87:3674
+invokeGuardedCallbackDev @ chunk-Z2GUPSCO.js?v=cbbaab87:3699
+invokeGuardedCallback @ chunk-Z2GUPSCO.js?v=cbbaab87:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-Z2GUPSCO.js?v=cbbaab87:3736
+executeDispatch @ chunk-Z2GUPSCO.js?v=cbbaab87:7014
+processDispatchQueueItemsInOrder @ chunk-Z2GUPSCO.js?v=cbbaab87:7034
+processDispatchQueue @ chunk-Z2GUPSCO.js?v=cbbaab87:7043
+dispatchEventsForPlugins @ chunk-Z2GUPSCO.js?v=cbbaab87:7051
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:7174
+batchedUpdates$1 @ chunk-Z2GUPSCO.js?v=cbbaab87:18913
+batchedUpdates @ chunk-Z2GUPSCO.js?v=cbbaab87:3579
+dispatchEventForPluginEventSystem @ chunk-Z2GUPSCO.js?v=cbbaab87:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-Z2GUPSCO.js?v=cbbaab87:5478
+dispatchEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5472
+dispatchDiscreteEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5449Understand this error
+content-preview-card.tsx:74 Zora coin creation failed, using mock: Error: Failed to create Zora coin: Error: Invalid currency
+    at createZoraCoin (zora.ts:86:11)
+    at async Object.mutationFn (content-preview-card.tsx:58:32)

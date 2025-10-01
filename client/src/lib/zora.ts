@@ -3,7 +3,8 @@ import {
   createCoin, 
   createCoinCall, 
   setApiKey,
-  getCoinCreateFromLogs
+  getCoinCreateFromLogs,
+  DeployCurrency
 } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, http, type Address, type Hash } from "viem";
 import { base, baseSepolia } from "viem/chains";
@@ -41,16 +42,6 @@ export async function createZoraCoin(
   }
 
   try {
-    // Create metadata parameters directly
-    const metadataParams = {
-      name: metadata.name,
-      symbol: metadata.symbol,
-      metadata: {
-        type: "RAW_URI" as const,
-        uri: metadata.image || ""
-      }
-    };
-
     // Set up clients for the specified chain
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
     const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL || 
@@ -61,13 +52,14 @@ export async function createZoraCoin(
       transport: http(rpcUrl),
     });
 
-    // Create coin arguments
+    // Create coin arguments matching SDK v0.2.1 API
     const createCoinArgs = {
-      creator: creatorAddress,
-      ...metadataParams,
-      currency: "ETH", // Use ETH for Base
+      name: metadata.name,
+      symbol: metadata.symbol,
+      uri: metadata.image || "",
       chainId,
-      startingMarketCap: "LOW",
+      payoutRecipient: creatorAddress, // Creator receives payouts
+      currency: DeployCurrency.ETH,
     };
 
     // For client-side, we'll return the call data instead of executing
@@ -78,7 +70,7 @@ export async function createZoraCoin(
     return {
       hash: `0x${Math.random().toString(16).substring(2)}` as Hash,
       address: `0x${Math.random().toString(16).substring(2, 42)}` as Address,
-      deployment: txCalls[0]
+      deployment: txCalls
     };
 
   } catch (error) {
@@ -98,16 +90,6 @@ export async function createZoraCoinWithWallet(
   }
 
   try {
-    // Create metadata parameters directly
-    const createMetadataParameters = {
-      name: metadata.name,
-      symbol: metadata.symbol,
-      metadata: {
-        type: "RAW_URI" as const,
-        uri: typeof metadata.image === 'string' ? metadata.image : ""
-      }
-    };
-
     // Set up clients
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
     const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL || 
@@ -118,20 +100,33 @@ export async function createZoraCoinWithWallet(
       transport: http(rpcUrl),
     });
 
-    // Create coin using high-level function
-    const result = await createCoin({
-      call: {
-        creator: creatorAddress,
-        ...createMetadataParameters,
-        currency: "ETH",
-        chainId,
-        startingMarketCap: "LOW",
-      },
-      walletClient,
-      publicClient,
-    });
+    // Create coin arguments matching SDK v0.2.1 API
+    const createCoinArgs = {
+      name: metadata.name,
+      symbol: metadata.symbol,
+      uri: typeof metadata.image === 'string' ? metadata.image : "",
+      chainId,
+      payoutRecipient: creatorAddress,
+      currency: DeployCurrency.ETH,
+    };
 
-    return result;
+    // Create coin using high-level function with SDK v0.2.1 signature
+    const result = await createCoin(
+      createCoinArgs,
+      walletClient,
+      publicClient
+    );
+
+    // Ensure address is defined
+    if (!result.address) {
+      throw new Error("Coin address not returned from creation");
+    }
+
+    return {
+      hash: result.hash,
+      address: result.address,
+      deployment: result.deployment
+    };
 
   } catch (error) {
     console.error("Zora coin creation with wallet error:", error);
