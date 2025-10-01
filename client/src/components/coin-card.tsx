@@ -228,140 +228,178 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
 
   return (
     <div
-      className={`spotify-card rounded-lg overflow-hidden ${isOwnCoin ? 'ring-2 ring-primary/50' : ''}`}
-      style={{ display: 'flex', flexDirection: 'column' }}
+      className={`spotify-card rounded-lg overflow-hidden ${isOwnCoin ? 'ring-2 ring-primary/50' : ''} h-full flex flex-col`}
     >
-      {/* Coin Image/Art - Top Section */}
-      <div className="relative aspect-square bg-gradient-to-br from-muted/20 to-muted/10">
-        {(coinImage || coin.metadata?.image) ? (
-          <img
-            src={coinImage || getImageSrc(coin.metadata?.image) || ''}
-            alt={coin.metadata?.title || coin.name}
-            className="w-full h-full object-cover"
-            onError={e => {
-              console.error('CoinCard image failed to load:', {
-                src: e.currentTarget.src,
-                alt: e.currentTarget.alt,
-                coin,
-              });
-            }}
-            data-testid={`img-coin-${coin.address}`}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Coins className="w-12 h-12 text-primary/40" />
+      {/* Coin Image/Art - Top Section - Clickable */}
+      <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
+        <DialogTrigger asChild disabled={isOwnCoin}>
+          <div className={`relative aspect-square bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}>
+            {(coinImage || coin.metadata?.image) ? (
+              <img
+                src={coinImage || getImageSrc(coin.metadata?.image) || ''}
+                alt={coin.metadata?.title || coin.name}
+                className="w-full h-full object-cover"
+                onError={e => {
+                  console.error('CoinCard image failed to load:', {
+                    src: e.currentTarget.src,
+                    alt: e.currentTarget.alt,
+                    coin,
+                  });
+                }}
+                data-testid={`img-coin-${coin.address}`}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Coins className="w-12 h-12 text-primary/40" />
+              </div>
+            )}
+            {!isOwnCoin && (
+              <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+                <TrendingUp className="w-8 h-8 text-white drop-shadow-lg" />
+              </div>
+            )}
           </div>
+        </DialogTrigger>
+
+        {/* Trade Modal */}
+        {!isOwnCoin && (
+          <DialogContent className="sm:max-w-xs p-3">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-sm">
+                <TrendingUp className="h-4 w-4" />
+                Trade {coin.symbol}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-2">
+              <div className="p-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between mb-1 text-xs">
+                  <span className="font-medium">Coin</span>
+                  <span>{coin.name}</span>
+                </div>
+                <div className="flex items-center justify-between mb-1 text-xs">
+                  <span className="font-medium">Symbol</span>
+                  <span>${coin.symbol}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-medium">Address</span>
+                  <span className="font-mono">{formatAddress(coin.address)}</span>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="ethAmount" className="text-xs font-medium">
+                  ETH to Trade
+                </Label>
+                <Input
+                  id="ethAmount"
+                  type="number"
+                  step="0.0001"
+                  min="0"
+                  value={ethAmount}
+                  onChange={(e) => setEthAmount(e.target.value)}
+                  placeholder="ETH amount"
+                  className="mt-1 text-xs h-7"
+                />
+              </div>
+              <div className="p-2 bg-blue-50 rounded-lg text-xs">
+                <div className="flex justify-between mb-1">
+                  <span>You pay:</span>
+                  <span>{ethAmount} ETH</span>
+                </div>
+                <div className="flex justify-between mb-1">
+                  <span>You receive:</span>
+                  <span>${coin.symbol} tokens</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Slippage:</span>
+                  <span>5%</span>
+                </div>
+              </div>
+              {!isConnected ? (
+                <div className="p-2 bg-yellow-50 rounded-lg text-xs">
+                  <p className="text-yellow-800">Please connect your wallet to trade.</p>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => handleTrade(coin.address as `0x${string}`)}
+                  disabled={loading || !ethAmount || parseFloat(ethAmount) <= 0}
+                  className="w-full text-xs h-7"
+                >
+                  {loading ? "Trading..." : `Trade ${ethAmount} ETH`}
+                </Button>
+              )}
+              {error && (
+                <div className="p-2 bg-red-50 rounded-lg text-xs">
+                  <p className="text-red-800">❌ {error}</p>
+                </div>
+              )}
+              {txHash && (
+                <div className="p-2 bg-green-50 rounded-lg text-xs">
+                  <p className="text-green-800">✅ Success!</p>
+                  <a
+                    href={`https://basescan.org/tx/${txHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                    data-testid="link-tx-explorer"
+                  >
+                    View on BaseScan
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              )}
+            </div>
+          </DialogContent>
         )}
-      </div>
+      </Dialog>
 
       {/* Content Section */}
-      <div className="p-3 space-y-1">
-        <h3 className="font-bold text-sm truncate text-white">
-          {coin.name}
-        </h3>
-        <p className="text-xs text-muted-foreground truncate">
-          {coin.symbol}
-        </p>
+      <div className="p-3 space-y-2 flex-1 flex flex-col">
+        <div className="flex-1">
+          <h3 className="font-bold text-sm truncate text-white">
+            {coin.name}
+          </h3>
+          <p className="text-xs text-muted-foreground truncate">
+            {coin.symbol}
+          </p>
+        </div>
 
-        {/* Trade Button - Compact */}
-        {!isOwnCoin && (
-          <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                className="spotify-button w-full text-xs h-7 px-2 mt-2"
-              >
-                <TrendingUp className="h-3 w-3 mr-1" />
-                Trade
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-xs p-3">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2 text-sm">
-                  <TrendingUp className="h-4 w-4" />
-                  Trade {coin.symbol}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-2">
-                <div className="p-2 bg-gray-50 rounded-lg">
-                  <div className="flex items-center justify-between mb-1 text-xs">
-                    <span className="font-medium">Coin</span>
-                    <span>{coin.name}</span>
-                  </div>
-                  <div className="flex items-center justify-between mb-1 text-xs">
-                    <span className="font-medium">Symbol</span>
-                    <span>${coin.symbol}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium">Address</span>
-                    <span className="font-mono">{formatAddress(coin.address)}</span>
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="ethAmount" className="text-xs font-medium">
-                    ETH to Trade
-                  </Label>
-                  <Input
-                    id="ethAmount"
-                    type="number"
-                    step="0.0001"
-                    min="0"
-                    value={ethAmount}
-                    onChange={(e) => setEthAmount(e.target.value)}
-                    placeholder="ETH amount"
-                    className="mt-1 text-xs h-7"
-                  />
-                </div>
-                <div className="p-2 bg-blue-50 rounded-lg text-xs">
-                  <div className="flex justify-between mb-1">
-                    <span>You pay:</span>
-                    <span>{ethAmount} ETH</span>
-                  </div>
-                  <div className="flex justify-between mb-1">
-                    <span>You receive:</span>
-                    <span>${coin.symbol} tokens</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Slippage:</span>
-                    <span>5%</span>
-                  </div>
-                </div>
-                {!isConnected ? (
-                  <div className="p-2 bg-yellow-50 rounded-lg text-xs">
-                    <p className="text-yellow-800">Please connect your wallet to trade.</p>
-                  </div>
-                ) : (
-                  <Button
-                    onClick={() => handleTrade(coin.address as `0x${string}`)}
-                    disabled={loading || !ethAmount || parseFloat(ethAmount) <= 0}
-                    className="w-full text-xs h-7"
-                  >
-                    {loading ? "Trading..." : `Trade ${ethAmount} ETH`}
-                  </Button>
-                )}
-                {error && (
-                  <div className="p-2 bg-red-50 rounded-lg text-xs">
-                    <p className="text-red-800">❌ {error}</p>
-                  </div>
-                )}
-                {txHash && (
-                  <div className="p-2 bg-green-50 rounded-lg text-xs">
-                    <p className="text-green-800">✅ Success!</p>
-                    <a
-                      href={`https://basescan.org/tx/${txHash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-                      data-testid="link-tx-explorer"
-                    >
-                      View on BaseScan
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                )}
+        {/* Stats Section */}
+        <div className="space-y-1.5 pt-2 border-t border-border/50">
+          {/* Market Cap and Creator */}
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1">
+              <Coins className="h-3 w-3 text-blue-500" />
+              <span className="text-muted-foreground">MC:</span>
+              <span className="font-semibold text-white">
+                {marketCap ? `$${marketCap}` : '-'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1" title={coin.creator}>
+              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[8px] font-bold text-white">
+                {coin.creator.slice(2, 4).toUpperCase()}
               </div>
-            </DialogContent>
-          </Dialog>
-        )}
+            </div>
+          </div>
+
+          {/* Earnings and Holders */}
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1">
+              <TrendingUp className="h-3 w-3 text-green-500" />
+              <span className="text-muted-foreground">Earn:</span>
+              <span className="font-semibold text-white">
+                {creatorEarnings && creatorEarnings.length > 0
+                  ? `$${parseFloat(creatorEarnings[0].amountUsd || '0').toFixed(2)}`
+                  : '-'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <User className="h-3 w-3 text-orange-500" />
+              <span className="font-semibold text-white">
+                {uniqueHolders || 0}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
