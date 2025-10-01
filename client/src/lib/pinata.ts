@@ -1,8 +1,15 @@
 export async function uploadToIPFS(metadata: any): Promise<string> {
-  const PINATA_JWT = import.meta.env.VITE_PINATA_JWT || "";
+  const PINATA_JWT = import.meta.env.VITE_PINATA_JWT;
+  
+  console.log("PINATA_JWT available:", !!PINATA_JWT);
+  console.log("Environment variables:", {
+    VITE_PINATA_JWT: !!import.meta.env.VITE_PINATA_JWT,
+    VITE_PINATA_API_KEY: !!import.meta.env.VITE_PINATA_API_KEY,
+    VITE_NEXT_PUBLIC_GATEWAY_URL: !!import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL
+  });
   
   if (!PINATA_JWT) {
-    throw new Error("PINATA_JWT not configured. Please set VITE_PINATA_JWT environment variable.");
+    throw new Error("PINATA_JWT not configured. Please ensure VITE_PINATA_JWT is set in your environment variables and accessible to the client.");
   }
 
   try {
