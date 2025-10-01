@@ -162,6 +162,7 @@ export default function FAQ() {
           </button>
         </div>
       </div>
+      </div>
     </Layout>
   );
 }
