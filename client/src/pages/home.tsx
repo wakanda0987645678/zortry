@@ -44,25 +44,27 @@ export default function Home() {
     <Layout>
       {/* Category Bar */}
       <section className="p-4 sm:p-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-            {categories.map((category) => {
-              const count = getCoinCount(category.id);
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
-                    selectedCategory === category.id
-                      ? "bg-primary text-black"
-                      : "bg-muted/20 text-muted-foreground hover:bg-muted/30 hover:text-white"
-                  }`}
-                  data-testid={`button-category-${category.id}`}
-                >
-                  {category.label} ({count})
-                </button>
-              );
-            })}
+        <div className="max-w-6xl mx-auto">
+          <div className="relative overflow-hidden">
+            <div className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {categories.map((category) => {
+                const count = getCoinCount(category.id);
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                      selectedCategory === category.id
+                        ? "bg-primary text-black"
+                        : "bg-muted/20 text-muted-foreground hover:bg-muted/30 hover:text-white"
+                    }`}
+                    data-testid={`button-category-${category.id}`}
+                  >
+                    {category.label} ({count})
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
