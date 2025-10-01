@@ -1,4 +1,4 @@
-import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin } from "@shared/schema";
+import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -11,6 +11,7 @@ export interface IStorage {
   getCoin(id: string): Promise<Coin | undefined>;
   getCoinByAddress(address: string): Promise<Coin | undefined>;
   createCoin(coin: InsertCoin): Promise<Coin>;
+  updateCoin(id: string, update: UpdateCoin): Promise<Coin | undefined>;
   getAllCoins(): Promise<Coin[]>;
   getCoinsByCreator(creator: string): Promise<Coin[]>;
 }
@@ -56,7 +57,7 @@ export class MemStorage implements IStorage {
 
   async getCoinByAddress(address: string): Promise<Coin | undefined> {
     return Array.from(this.coins.values()).find(
-      (coin) => coin.address.toLowerCase() === address.toLowerCase()
+      (coin) => coin.address?.toLowerCase() === address.toLowerCase()
     );
   }
 
@@ -64,6 +65,8 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const coin: Coin = { 
       ...insertCoin,
+      address: insertCoin.address ?? null,
+      status: insertCoin.status ?? 'pending',
       scrapedContentId: insertCoin.scrapedContentId ?? null,
       ipfsUri: insertCoin.ipfsUri ?? null,
       id,
@@ -71,6 +74,20 @@ export class MemStorage implements IStorage {
     };
     this.coins.set(id, coin);
     return coin;
+  }
+
+  async updateCoin(id: string, update: UpdateCoin): Promise<Coin | undefined> {
+    const coin = this.coins.get(id);
+    if (!coin) return undefined;
+    
+    const updatedCoin: Coin = {
+      ...coin,
+      ...(update.address !== undefined && { address: update.address }),
+      ...(update.status !== undefined && { status: update.status }),
+    };
+    
+    this.coins.set(id, updatedCoin);
+    return updatedCoin;
   }
 
   async getAllCoins(): Promise<Coin[]> {

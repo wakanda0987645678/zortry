@@ -21,8 +21,9 @@ export const coins = pgTable("coins", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   symbol: text("symbol").notNull(),
-  address: text("address").notNull().unique(),
+  address: text("address"),
   creator: text("creator").notNull(),
+  status: text("status").notNull().default('pending'),
   scrapedContentId: varchar("scraped_content_id").references(() => scrapedContent.id),
   ipfsUri: text("ipfs_uri"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -33,13 +34,25 @@ export const insertScrapedContentSchema = createInsertSchema(scrapedContent).omi
   scrapedAt: true,
 });
 
+export const coinStatusSchema = z.enum(['pending', 'active', 'failed']);
+export type CoinStatus = z.infer<typeof coinStatusSchema>;
+
 export const insertCoinSchema = createInsertSchema(coins).omit({
   id: true,
   createdAt: true,
+}).extend({
+  status: coinStatusSchema.optional(),
+  address: z.string().optional(),
+});
+
+export const updateCoinSchema = z.object({
+  address: z.string().optional(),
+  status: coinStatusSchema.optional(),
 });
 
 export type InsertScrapedContent = z.infer<typeof insertScrapedContentSchema>;
 export type ScrapedContent = typeof scrapedContent.$inferSelect;
 
 export type InsertCoin = z.infer<typeof insertCoinSchema>;
+export type UpdateCoin = z.infer<typeof updateCoinSchema>;
 export type Coin = typeof coins.$inferSelect;

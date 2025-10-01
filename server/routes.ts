@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertScrapedContentSchema, insertCoinSchema } from "@shared/schema";
+import { insertScrapedContentSchema, insertCoinSchema, updateCoinSchema } from "@shared/schema";
 import axios from "axios";
 import { detectPlatform } from "./platform-detector";
 import { scrapeByPlatform } from "./platform-scrapers";
@@ -88,6 +88,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Create coin error:', error);
       res.status(400).json({ error: 'Invalid coin data' });
+    }
+  });
+
+  // Update coin
+  app.patch("/api/coins/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = updateCoinSchema.parse(req.body);
+      const coin = await storage.updateCoin(id, validatedData);
+      if (!coin) {
+        return res.status(404).json({ error: 'Coin not found' });
+      }
+      res.json(coin);
+    } catch (error) {
+      console.error('Update coin error:', error);
+      res.status(400).json({ error: 'Invalid update data' });
     }
   });
 

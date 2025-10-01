@@ -47,40 +47,61 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
 
       const ipfsUri = await uploadToIPFS(metadata);
 
-      // Create coin on Zora using the SDK
-      const coinMetadata = {
+      // Create pending coin record in database first (decouple from Zora blockchain)
+      const pendingCoinData = {
         name: scrapedData.title,
         symbol: coinSymbol,
-        description: scrapedData.description,
-        image: scrapedData.image, // This can be a URL or File
-      };
-
-      // Create coin on Zora using the SDK with wallet
-      const { createZoraCoinWithWallet } = await import('@/lib/zora');
-      
-      if (!walletClient) {
-        throw new Error("Wallet client not available. Please ensure your wallet is properly connected.");
-      }
-      
-      const zoraCoinResult = await createZoraCoinWithWallet(coinMetadata, walletAddress, walletClient);
-      
-      // Create coin record in our database
-      const coinData = {
-        name: scrapedData.title,
-        symbol: coinSymbol,
-        address: zoraCoinResult.address,
         creator: walletAddress,
         scrapedContentId: scrapedData.id,
         ipfsUri,
+        status: 'pending' as const,
       };
 
-      const res = await apiRequest("POST", "/api/coins", coinData);
-      return { ...res.json(), zoraCoinResult };
+      const createRes = await apiRequest("POST", "/api/coins", pendingCoinData);
+      const createdCoin = await createRes.json();
+
+      // Try to create on Zora blockchain (optional, won't block database save)
+      let zoraCoinResult = null;
+      try {
+        const coinMetadata = {
+          name: scrapedData.title,
+          symbol: coinSymbol,
+          description: scrapedData.description,
+          image: scrapedData.image,
+        };
+
+        const { createZoraCoinWithWallet } = await import('@/lib/zora');
+        
+        if (walletClient) {
+          zoraCoinResult = await createZoraCoinWithWallet(coinMetadata, walletAddress, walletClient);
+          
+          // Update coin with address and active status
+          await apiRequest("PATCH", `/api/coins/${createdCoin.id}`, {
+            address: zoraCoinResult.address,
+            status: 'active' as const,
+          });
+        }
+      } catch (zoraError) {
+        console.warn("Zora blockchain creation failed, but coin saved to database:", zoraError);
+        
+        // Update status to failed since Zora creation didn't work
+        try {
+          await apiRequest("PATCH", `/api/coins/${createdCoin.id}`, {
+            status: 'failed' as const,
+          });
+        } catch (updateError) {
+          console.error("Failed to update coin status:", updateError);
+        }
+      }
+
+      return { coin: createdCoin, zoraCoinResult };
     },
     onSuccess: (data) => {
       toast({
         title: "Coin created successfully!",
-        description: "Your coin is now live on Zora!",
+        description: data.zoraCoinResult 
+          ? "Your coin is now live on Zora!" 
+          : "Coin saved! Blockchain deployment pending.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/coins"] });
       onCoinCreated();
