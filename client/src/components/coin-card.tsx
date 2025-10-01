@@ -84,9 +84,9 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
   const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Fixed card size for uniformity
-  const CARD_WIDTH = 241;
-  const CARD_HEIGHT = 375;
+  // Responsive card size - smaller for mobile
+  const CARD_WIDTH = 'auto';
+  const CARD_HEIGHT = 'auto';
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ethAmount, setEthAmount] = useState("0.0001");
@@ -229,19 +229,19 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
   return (
     <div
       className={`spotify-card rounded-xl overflow-hidden ${isOwnCoin ? 'ring-2 ring-primary/50' : ''}`}
-      style={{ width: CARD_WIDTH, height: CARD_HEIGHT, minWidth: CARD_WIDTH, minHeight: CARD_HEIGHT, maxWidth: CARD_WIDTH, maxHeight: CARD_HEIGHT, display: 'flex', flexDirection: 'column' }}
+      style={{ display: 'flex', flexDirection: 'column', minHeight: '320px' }}
     >
-      <div className="pb-2 px-4 pt-4">
-        <div className="flex items-center justify-between gap-2">
+      <div className="pb-1 px-2 sm:px-4 pt-2 sm:pt-4">
+        <div className="flex items-center justify-between gap-1">
           <div className="flex-1 min-w-0">
-            <h3 className="flex items-center gap-2 text-lg font-bold truncate text-white">
-              <Coins className="h-5 w-5 text-primary" />
+            <h3 className="flex items-center gap-1 text-sm sm:text-lg font-bold truncate text-white">
+              <Coins className="h-3 w-3 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
               <span className="truncate">{coin.name}</span>
               {isOwnCoin && (
-                <Badge className="bg-primary/20 text-primary border-primary/30 ml-1 text-xs">yours</Badge>
+                <Badge className="bg-primary/20 text-primary border-primary/30 ml-1 text-xs hidden sm:inline-flex">yours</Badge>
               )}
             </h3>
-            <p className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+            <p className="flex items-center gap-1 mt-0.5 text-[10px] sm:text-xs text-muted-foreground">
               <span className="truncate font-mono">{formatAddress(coin.address)}</span>
             </p>
           </div>
@@ -249,43 +249,43 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             variant="ghost"
             size="sm"
             onClick={() => handleCopy(coin.address)}
-            className="ml-1 h-8 w-8 p-0 hover:bg-primary/20"
+            className="ml-1 h-6 w-6 sm:h-8 sm:w-8 p-0 hover:bg-primary/20 flex-shrink-0"
           >
-            {copied ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4 text-muted-foreground" />}
+            {copied ? <Check className="h-3 w-3 sm:h-4 sm:w-4 text-primary" /> : <Copy className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />}
           </Button>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col gap-3 px-4 py-2">
+      <div className="flex-1 flex flex-col gap-1.5 sm:gap-3 px-2 sm:px-4 py-1 sm:py-2">
         {/* Stats with icons */}
-        <CoinStatsIcons
-          price={price}
-          marketCap={marketCap}
-          volume24h={volume24h}
-          uniqueHolders={uniqueHolders}
-          earnings={creatorEarnings && creatorEarnings.length > 0 ? `${creatorEarnings[0].amount.amountDecimal} (${creatorEarnings[0].amount.currencyAddress})${creatorEarnings[0].amountUsd ? ` ≈ $${creatorEarnings[0].amountUsd}` : ''}` : null}
-        />
+        <div className="text-[10px] sm:text-xs">
+          <CoinStatsIcons
+            price={price}
+            marketCap={marketCap}
+            volume24h={volume24h}
+            uniqueHolders={uniqueHolders}
+            earnings={creatorEarnings && creatorEarnings.length > 0 ? `${creatorEarnings[0].amount.amountDecimal} (${creatorEarnings[0].amount.currencyAddress})${creatorEarnings[0].amountUsd ? ` ≈ $${creatorEarnings[0].amountUsd}` : ''}` : null}
+          />
+        </div>
 
         {/* Blog Metadata (compact) */}
         {coin.metadata && (
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {coin.metadata.title && (
-              <div className="truncate text-xs text-gray-800 font-medium">{coin.metadata.title}</div>
+              <div className="truncate text-[10px] sm:text-xs text-gray-800 font-medium">{coin.metadata.title}</div>
             )}
             {coin.metadata.description && (
-              <div className="truncate text-xs text-gray-500">{coin.metadata.description}</div>
+              <div className="truncate text-[10px] sm:text-xs text-gray-500">{coin.metadata.description}</div>
             )}
           </div>
         )}
 
         {/* Coin Image/Art from SDK */}
         {(coinImage || coin.metadata?.image) && (
-          <div className="rounded-md overflow-hidden" style={{ width: '100%', height: 100 }}>
+          <div className="rounded-md overflow-hidden" style={{ width: '100%', height: '80px' }}>
             <img
               src={coinImage || getImageSrc(coin.metadata?.image) || ''}
               alt={coin.metadata?.title || coin.name}
-              width={CARD_WIDTH}
-              height={100}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={e => {
                 console.error('CoinCard image failed to load:', {
@@ -300,33 +300,34 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         )}
 
         {/* Coin Details (compact) */}
-        <div className="flex items-center justify-between text-xs pt-1 border-t border-gray-100 mt-1">
-          <div className="flex items-center gap-1 text-gray-600">
-            <User className="h-3 w-3" />
-            <span>Creator</span>
+        <div className="flex items-center justify-between text-[10px] sm:text-xs pt-0.5 border-t border-gray-100 mt-0.5">
+          <div className="flex items-center gap-0.5 text-gray-600">
+            <User className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+            <span className="hidden sm:inline">Creator</span>
           </div>
           <span className="font-mono">{formatAddress(coin.creator)}</span>
         </div>
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1 text-gray-600">
+        <div className="flex items-center justify-between text-[10px] sm:text-xs">
+          <div className="flex items-center gap-0.5 text-gray-600">
             <span className="font-semibold">Symbol</span>: {coin.symbol}
           </div>
-          <div className="flex items-center gap-1 text-gray-600">
-            <Calendar className="h-3 w-3" />
+          <div className="flex items-center gap-0.5 text-gray-600">
+            <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             <span>{formatAge(coin.createdAt)}</span>
           </div>
         </div>
 
         {/* Actions (compact) */}
-        <div className="flex gap-1 pt-1">
+        <div className="flex gap-1 pt-0.5">
           {!isOwnCoin && (
             <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
               <DialogTrigger asChild>
                 <Button
-                  className="spotify-button flex-1 text-xs h-8"
+                  className="spotify-button flex-1 text-[10px] sm:text-xs h-6 sm:h-8 px-2"
                 >
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  Trade
+                  <TrendingUp className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
+                  <span className="hidden sm:inline">Trade</span>
+                  <span className="sm:hidden">Buy</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-xs p-3">
