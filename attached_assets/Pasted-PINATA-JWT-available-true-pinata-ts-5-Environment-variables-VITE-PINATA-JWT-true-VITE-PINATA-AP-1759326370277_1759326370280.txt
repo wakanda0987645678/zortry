@@ -1,0 +1,118 @@
+PINATA_JWT available: true
+pinata.ts:5 Environment variables: {VITE_PINATA_JWT: true, VITE_PINATA_API_KEY: true, VITE_NEXT_PUBLIC_GATEWAY_URL: true}
+zora.ts:77 Zora coin creation error: Error: Metadata is not a valid JSON or plain text response type
+    at validateMetadataURIContent (@zoralabs_coins-sdk.js?v=cbbaab87:2429:11)
+    at async createCoinCall (@zoralabs_coins-sdk.js?v=cbbaab87:2511:3)
+    at async createZoraCoin (zora.ts:67:21)
+    at async Object.mutationFn (content-preview-card.tsx:58:32)
+createZoraCoin @ zora.ts:77
+await in createZoraCoin
+mutationFn @ content-preview-card.tsx:58
+await in mutationFn
+fn @ chunk-7X75LGXT.js?v=cbbaab87:1189
+run @ chunk-7X75LGXT.js?v=cbbaab87:494
+start @ chunk-7X75LGXT.js?v=cbbaab87:536
+execute @ chunk-7X75LGXT.js?v=cbbaab87:1225
+await in execute
+mutate @ chunk-7X75LGXT.js?v=cbbaab87:2630
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:3295
+onClick @ content-preview-card.tsx:185
+callCallback2 @ chunk-Z2GUPSCO.js?v=cbbaab87:3674
+invokeGuardedCallbackDev @ chunk-Z2GUPSCO.js?v=cbbaab87:3699
+invokeGuardedCallback @ chunk-Z2GUPSCO.js?v=cbbaab87:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-Z2GUPSCO.js?v=cbbaab87:3736
+executeDispatch @ chunk-Z2GUPSCO.js?v=cbbaab87:7014
+processDispatchQueueItemsInOrder @ chunk-Z2GUPSCO.js?v=cbbaab87:7034
+processDispatchQueue @ chunk-Z2GUPSCO.js?v=cbbaab87:7043
+dispatchEventsForPlugins @ chunk-Z2GUPSCO.js?v=cbbaab87:7051
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:7174
+batchedUpdates$1 @ chunk-Z2GUPSCO.js?v=cbbaab87:18913
+batchedUpdates @ chunk-Z2GUPSCO.js?v=cbbaab87:3579
+dispatchEventForPluginEventSystem @ chunk-Z2GUPSCO.js?v=cbbaab87:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-Z2GUPSCO.js?v=cbbaab87:5478
+dispatchEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5472
+dispatchDiscreteEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5449Understand this error
+content-preview-card.tsx:74 Zora coin creation failed, using mock: Error: Failed to create Zora coin: Error: Metadata is not a valid JSON or plain text response type
+    at createZoraCoin (zora.ts:78:11)
+    at async Object.mutationFn (content-preview-card.tsx:58:32)
+mutationFn @ content-preview-card.tsx:74
+await in mutationFn
+fn @ chunk-7X75LGXT.js?v=cbbaab87:1189
+run @ chunk-7X75LGXT.js?v=cbbaab87:494
+start @ chunk-7X75LGXT.js?v=cbbaab87:536
+execute @ chunk-7X75LGXT.js?v=cbbaab87:1225
+await in execute
+mutate @ chunk-7X75LGXT.js?v=cbbaab87:2630
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:3295
+onClick @ content-preview-card.tsx:185
+callCallback2 @ chunk-Z2GUPSCO.js?v=cbbaab87:3674
+invokeGuardedCallbackDev @ chunk-Z2GUPSCO.js?v=cbbaab87:3699
+invokeGuardedCallback @ chunk-Z2GUPSCO.js?v=cbbaab87:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-Z2GUPSCO.js?v=cbbaab87:3736
+executeDispatch @ chunk-Z2GUPSCO.js?v=cbbaab87:7014
+processDispatchQueueItemsInOrder @ chunk-Z2GUPSCO.js?v=cbbaab87:7034
+processDispatchQueue @ chunk-Z2GUPSCO.js?v=cbbaab87:7043
+dispatchEventsForPlugins @ chunk-Z2GUPSCO.js?v=cbbaab87:7051
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:7174
+batchedUpdates$1 @ chunk-Z2GUPSCO.js?v=cbbaab87:18913
+batchedUpdates @ chunk-Z2GUPSCO.js?v=cbbaab87:3579
+dispatchEventForPluginEventSystem @ chunk-Z2GUPSCO.js?v=cbbaab87:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-Z2GUPSCO.js?v=cbbaab87:5478
+dispatchEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5472
+dispatchDiscreteEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5449Understand this warning
+coin-card.tsx:107 BASE_API_KEY not configured
+fetchCoinStats @ coin-card.tsx:107
+(anonymous) @ coin-card.tsx:130
+commitHookEffectListMount @ chunk-Z2GUPSCO.js?v=cbbaab87:16915
+commitPassiveMountOnFiber @ chunk-Z2GUPSCO.js?v=cbbaab87:18156
+commitPassiveMountEffects_complete @ chunk-Z2GUPSCO.js?v=cbbaab87:18129
+commitPassiveMountEffects_begin @ chunk-Z2GUPSCO.js?v=cbbaab87:18119
+commitPassiveMountEffects @ chunk-Z2GUPSCO.js?v=cbbaab87:18109
+flushPassiveEffectsImpl @ chunk-Z2GUPSCO.js?v=cbbaab87:19490
+flushPassiveEffects @ chunk-Z2GUPSCO.js?v=cbbaab87:19447
+commitRootImpl @ chunk-Z2GUPSCO.js?v=cbbaab87:19416
+commitRoot @ chunk-Z2GUPSCO.js?v=cbbaab87:19277
+performSyncWorkOnRoot @ chunk-Z2GUPSCO.js?v=cbbaab87:18895
+flushSyncCallbacks @ chunk-Z2GUPSCO.js?v=cbbaab87:9119
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:18627
+setTimeout
+scheduleFn @ chunk-7X75LGXT.js?v=cbbaab87:555
+flush @ chunk-7X75LGXT.js?v=cbbaab87:569
+batch @ chunk-7X75LGXT.js?v=cbbaab87:587
+dispatch_fn @ chunk-7X75LGXT.js?v=cbbaab87:996
+setData @ chunk-7X75LGXT.js?v=cbbaab87:696
+onSuccess @ chunk-7X75LGXT.js?v=cbbaab87:897
+resolve @ chunk-7X75LGXT.js?v=cbbaab87:456
+Promise.then
+run @ chunk-7X75LGXT.js?v=cbbaab87:498
+start @ chunk-7X75LGXT.js?v=cbbaab87:536
+fetch @ chunk-7X75LGXT.js?v=cbbaab87:926
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:1726
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:1725
+batch @ chunk-7X75LGXT.js?v=cbbaab87:583
+refetchQueries @ chunk-7X75LGXT.js?v=cbbaab87:1724
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:1716
+batch @ chunk-7X75LGXT.js?v=cbbaab87:583
+invalidateQueries @ chunk-7X75LGXT.js?v=cbbaab87:1705
+onSuccess @ content-preview-card.tsx:96
+execute @ chunk-7X75LGXT.js?v=cbbaab87:1233
+await in execute
+mutate @ chunk-7X75LGXT.js?v=cbbaab87:2630
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:3295
+onClick @ content-preview-card.tsx:185
+callCallback2 @ chunk-Z2GUPSCO.js?v=cbbaab87:3674
+invokeGuardedCallbackDev @ chunk-Z2GUPSCO.js?v=cbbaab87:3699
+invokeGuardedCallback @ chunk-Z2GUPSCO.js?v=cbbaab87:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-Z2GUPSCO.js?v=cbbaab87:3736
+executeDispatch @ chunk-Z2GUPSCO.js?v=cbbaab87:7014
+processDispatchQueueItemsInOrder @ chunk-Z2GUPSCO.js?v=cbbaab87:7034
+processDispatchQueue @ chunk-Z2GUPSCO.js?v=cbbaab87:7043
+dispatchEventsForPlugins @ chunk-Z2GUPSCO.js?v=cbbaab87:7051
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:7174
+batchedUpdates$1 @ chunk-Z2GUPSCO.js?v=cbbaab87:18913
+batchedUpdates @ chunk-Z2GUPSCO.js?v=cbbaab87:3579
+dispatchEventForPluginEventSystem @ chunk-Z2GUPSCO.js?v=cbbaab87:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-Z2GUPSCO.js?v=cbbaab87:5478
+dispatchEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5472
+dispatchDiscreteEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5449Understand this warning
+chunk-Z2GUPSCO.js?v=cbbaab87:18625 [Violation] 'setTimeout' handler took 98ms
