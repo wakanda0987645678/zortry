@@ -2,7 +2,7 @@
 // Note: Actual Base SDK implementation would go here
 // This file provides type definitions and helper functions for Base integration
 
-export interface ZoraConfig {
+export interface BaseConfig {
   apiKey: string;
   network: "mainnet" | "testnet";
 }
@@ -47,7 +47,7 @@ export async function getCoinStats(coinAddress: string) {
   }
 
   try {
-    // const stats = await getCoin({ address: coinAddress });
+    // const stats = await getBaseCoin({ address: coinAddress });
     // return stats;
     
     return null;
