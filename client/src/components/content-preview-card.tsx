@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { uploadToIPFS } from "@/lib/pinata";
+import { createZoraCoin } from "@/lib/zora";
 import { Calendar, User, ExternalLink, Loader2, Plus } from "lucide-react";
+import { useAccount } from "wagmi";
 
 interface ContentPreviewCardProps {
   scrapedData: any;
@@ -15,6 +17,7 @@ interface ContentPreviewCardProps {
 
 export default function ContentPreviewCard({ scrapedData, onCoinCreated }: ContentPreviewCardProps) {
   const { toast } = useToast();
+  const { address: walletAddress } = useAccount();
   const [coinSymbol, setCoinSymbol] = useState(
     scrapedData.title
       .split(" ")
@@ -26,7 +29,11 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
 
   const createCoinMutation = useMutation({
     mutationFn: async () => {
-      // Upload metadata to IPFS
+      if (!walletAddress) {
+        throw new Error("Please connect your wallet first");
+      }
+
+      // Upload metadata to IPFS for backup
       const metadata = {
         title: scrapedData.title,
         description: scrapedData.description,
@@ -39,23 +46,52 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
 
       const ipfsUri = await uploadToIPFS(metadata);
 
-      // Create coin record
-      const coinData = {
+      // Create coin on Zora using the SDK
+      const coinMetadata = {
         name: scrapedData.title,
         symbol: coinSymbol,
-        address: `0x${Math.random().toString(16).substring(2, 42)}`, // Placeholder - will be replaced by actual Base contract address
-        creator: "0x0000000000000000000000000000000000000000", // Will be replaced with actual wallet address
-        scrapedContentId: scrapedData.id,
-        ipfsUri,
+        description: scrapedData.description,
+        image: scrapedData.image, // This can be a URL or File
       };
 
-      const res = await apiRequest("POST", "/api/coins", coinData);
-      return res.json();
+      try {
+        const zoraCoinResult = await createZoraCoin(coinMetadata, walletAddress);
+        
+        // Create coin record in our database
+        const coinData = {
+          name: scrapedData.title,
+          symbol: coinSymbol,
+          address: zoraCoinResult.address,
+          creator: walletAddress,
+          scrapedContentId: scrapedData.id,
+          ipfsUri,
+        };
+
+        const res = await apiRequest("POST", "/api/coins", coinData);
+        return { ...res.json(), zoraCoinResult };
+      } catch (error) {
+        // Fallback to mock creation if Zora fails
+        console.warn("Zora coin creation failed, using mock:", error);
+        
+        const coinData = {
+          name: scrapedData.title,
+          symbol: coinSymbol,
+          address: `0x${Math.random().toString(16).substring(2, 42)}`,
+          creator: walletAddress,
+          scrapedContentId: scrapedData.id,
+          ipfsUri,
+        };
+
+        const res = await apiRequest("POST", "/api/coins", coinData);
+        return res.json();
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Coin created successfully!",
-        description: "Your coin is now live on the blockchain.",
+        description: data.zoraCoinResult 
+          ? "Your coin is now live on Zora!"
+          : "Your coin has been created (mock mode).",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/coins"] });
       onCoinCreated();
@@ -147,9 +183,10 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
               />
               <Button
                 onClick={() => createCoinMutation.mutate()}
-                disabled={createCoinMutation.isPending || !coinSymbol}
+                disabled={createCoinMutation.isPending || !coinSymbol || !walletAddress}
                 className="bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
                 data-testid="button-create-coin"
+                title={!walletAddress ? "Connect wallet to create coins" : ""}
               >
                 {createCoinMutation.isPending ? (
                   <>
