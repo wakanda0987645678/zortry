@@ -1,20 +1,42 @@
-'use client';
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ExternalLink, Calendar, User, Coins, Copy, Check, TrendingUp } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  ExternalLink,
+  Calendar,
+  User,
+  Coins,
+  Copy,
+  Check,
+  TrendingUp,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import { parseEther, formatEther } from "viem";
-import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import "@/lib/zora";
 
-const GATEWAY_URL = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || 'yellow-patient-cheetah-559.mypinata.cloud';
+const GATEWAY_URL =
+  import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL ||
+  "yellow-patient-cheetah-559.mypinata.cloud";
 
 interface CoinStatsIconsProps {
   price?: string | null;
@@ -24,7 +46,13 @@ interface CoinStatsIconsProps {
   earnings?: string | null;
 }
 
-function CoinStatsIcons({ price, marketCap, volume24h, uniqueHolders, earnings }: CoinStatsIconsProps) {
+function CoinStatsIcons({
+  price,
+  marketCap,
+  volume24h,
+  uniqueHolders,
+  earnings,
+}: CoinStatsIconsProps) {
   return (
     <div className="grid grid-cols-2 gap-2 text-xs">
       {price && (
@@ -85,8 +113,8 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
   const [loading, setLoading] = useState(false);
 
   // Responsive card size - smaller for mobile
-  const CARD_WIDTH = 'auto';
-  const CARD_HEIGHT = 'auto';
+  const CARD_WIDTH = "auto";
+  const CARD_HEIGHT = "auto";
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ethAmount, setEthAmount] = useState("0.0001");
@@ -94,7 +122,14 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
   const [marketCap, setMarketCap] = useState<string | null>(null);
   const [volume24h, setVolume24h] = useState<string | null>(null);
   const [uniqueHolders, setUniqueHolders] = useState<number | null>(null);
-  const [creatorEarnings, setCreatorEarnings] = useState<Array<{ amount: { currencyAddress: string; amountRaw: string; amountDecimal: number }; amountUsd?: string }> | null>(null);
+  const [creatorEarnings, setCreatorEarnings] = useState<Array<{
+    amount: {
+      currencyAddress: string;
+      amountRaw: string;
+      amountDecimal: number;
+    };
+    amountUsd?: string;
+  }> | null>(null);
   const [coinImage, setCoinImage] = useState<string | null>(null);
 
   const { address, isConnected } = useAccount();
@@ -141,13 +176,15 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         }
       } catch (e) {
         console.error("Error fetching coin stats:", e);
-        if (e && typeof e === 'object') {
+        if (e && typeof e === "object") {
           console.error("Error details:", JSON.stringify(e, null, 2));
         }
       }
     }
     if (typeof window !== "undefined") fetchCoinStats();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [coin.address]);
 
   const handleCopy = async (text: string) => {
@@ -166,10 +203,10 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     const created = new Date(dateString);
     const diff = now.getTime() - created.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days < 1) return 'today';
-    if (days < 30) return days + 'd';
-    if (days < 365) return Math.floor(days / 30) + 'm';
-    return Math.floor(days / 365) + 'y';
+    if (days < 1) return "today";
+    if (days < 30) return days + "d";
+    if (days < 365) return Math.floor(days / 30) + "m";
+    return Math.floor(days / 365) + "y";
   };
 
   const handleTrade = async (coinAddress: `0x${string}`) => {
@@ -188,7 +225,12 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     try {
       const { tradeZoraCoin } = await import("@/lib/zora");
 
-      console.log("Starting trade for coin:", coinAddress, "with ETH amount:", ethAmount);
+      console.log(
+        "Starting trade for coin:",
+        coinAddress,
+        "with ETH amount:",
+        ethAmount,
+      );
 
       const result = await tradeZoraCoin({
         coinAddress,
@@ -207,10 +249,10 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       } else {
         throw new Error("Transaction completed but no hash returned");
       }
-
     } catch (err: unknown) {
       console.error("Trade error:", err);
-      const errorMessage = err instanceof Error ? err.message : "Trade failed with unknown error";
+      const errorMessage =
+        err instanceof Error ? err.message : "Trade failed with unknown error";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -219,8 +261,8 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
 
   const getImageSrc = (imageUrl?: string) => {
     if (!imageUrl) return null;
-    if (imageUrl.startsWith('ipfs://')) {
-      const hash = imageUrl.replace('ipfs://', '');
+    if (imageUrl.startsWith("ipfs://")) {
+      const hash = imageUrl.replace("ipfs://", "");
       return `https://${GATEWAY_URL}/ipfs/${hash}`;
     }
     return imageUrl;
@@ -228,19 +270,21 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
 
   return (
     <div
-      className={`spotify-card rounded-lg overflow-hidden ${isOwnCoin ? 'ring-2 ring-primary/50' : ''} h-full flex flex-col`}
+      className={`spotify-card rounded-lg overflow-hidden ${isOwnCoin ? "ring-2 ring-primary/50" : ""} h-full flex flex-col`}
     >
       {/* Coin Image/Art - Top Section - Clickable */}
       <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
         <DialogTrigger asChild disabled={isOwnCoin}>
-          <div className={`relative w-full h-32 bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`}>
-            {(coinImage || coin.metadata?.image) ? (
+          <div
+            className={`relative w-full h-33 bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
+          >
+            {coinImage || coin.metadata?.image ? (
               <img
-                src={coinImage || getImageSrc(coin.metadata?.image) || ''}
+                src={coinImage || getImageSrc(coin.metadata?.image) || ""}
                 alt={coin.metadata?.title || coin.name}
                 className="w-full h-full object-cover"
-                onError={e => {
-                  console.error('CoinCard image failed to load:', {
+                onError={(e) => {
+                  console.error("CoinCard image failed to load:", {
                     src: e.currentTarget.src,
                     alt: e.currentTarget.alt,
                     coin,
@@ -282,7 +326,9 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-medium">Address</span>
-                  <span className="font-mono">{formatAddress(coin.address)}</span>
+                  <span className="font-mono">
+                    {formatAddress(coin.address)}
+                  </span>
                 </div>
               </div>
               <div>
@@ -316,7 +362,9 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
               </div>
               {!isConnected ? (
                 <div className="p-2 bg-yellow-50 rounded-lg text-xs">
-                  <p className="text-yellow-800">Please connect your wallet to trade.</p>
+                  <p className="text-yellow-800">
+                    Please connect your wallet to trade.
+                  </p>
                 </div>
               ) : (
                 <Button
@@ -355,9 +403,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       {/* Content Section */}
       <div className="p-2 space-y-1.5 flex-1 flex flex-col">
         <div className="flex-1">
-          <h3 className="font-bold text-xs truncate text-white">
-            {coin.name}
-          </h3>
+          <h3 className="font-bold text-xs truncate text-white">{coin.name}</h3>
           <p className="text-[10px] text-muted-foreground truncate">
             {coin.symbol}
           </p>
@@ -371,7 +417,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
               <Coins className="h-2.5 w-2.5 text-blue-500" />
               <span className="text-muted-foreground">MC:</span>
               <span className="font-semibold text-white">
-                {marketCap ? `$${marketCap}` : '-'}
+                {marketCap ? `$${marketCap}` : "-"}
               </span>
             </div>
             <div className="flex items-center gap-1" title={coin.creator}>
@@ -388,8 +434,8 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
               <span className="text-muted-foreground">Earn:</span>
               <span className="font-semibold text-white">
                 {creatorEarnings && creatorEarnings.length > 0
-                  ? `$${parseFloat(creatorEarnings[0].amountUsd || '0').toFixed(2)}`
-                  : '-'}
+                  ? `$${parseFloat(creatorEarnings[0].amountUsd || "0").toFixed(2)}`
+                  : "-"}
               </span>
             </div>
             <div className="flex items-center gap-0.5">
