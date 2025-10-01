@@ -223,5 +223,42 @@ export async function getCoinStats(coinAddress: string) {
   return null;
 }
 
+export async function tradeZoraCoin({
+  coinAddress,
+  ethAmount,
+  walletClient,
+  publicClient,
+  userAddress
+}: {
+  coinAddress: Address;
+  ethAmount: string;
+  walletClient: any;
+  publicClient: any;
+  userAddress: Address;
+}) {
+  try {
+    const { tradeCoin } = await import("@zoralabs/coins-sdk");
+    
+    const tradeParams = {
+      tokenIn: "ETH", // Trading ETH for the coin
+      tokenOut: coinAddress,
+      amountIn: ethAmount,
+      recipient: userAddress,
+      slippagePercentage: 5, // 5% slippage tolerance
+    };
+
+    const result = await tradeCoin({
+      parameters: tradeParams,
+      walletClient,
+      publicClient,
+    });
+
+    return result;
+  } catch (error) {
+    console.error("Trade error:", error);
+    throw new Error(`Trading failed: ${error}`);
+  }
+}
+
 // Export for compatibility
 export const createBaseCoin = createZoraCoin;

@@ -33,17 +33,31 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const handleTrade = async () => {
     setIsTrading(true);
     
-    // Simulate blockchain transaction
-    setTimeout(() => {
-      const mockTxHash = `0x${Math.random().toString(16).substring(2, 66)}`;
-      setTxHash(mockTxHash);
-      setIsTrading(false);
+    try {
+      const { tradeZoraCoin } = await import("@/lib/zora");
+      // This would need wallet integration - placeholder for now
+      // const result = await tradeZoraCoin({ ... });
       
+      // For now, simulate until wallet integration is complete
+      setTimeout(() => {
+        const mockTxHash = `0x${Math.random().toString(16).substring(2, 66)}`;
+        setTxHash(mockTxHash);
+        setIsTrading(false);
+        
+        toast({
+          title: "Trade successful!",
+          description: `You received ${estimatedTokens.toLocaleString()} ${coin.symbol} tokens`,
+        });
+      }, 2000);
+    } catch (error) {
+      console.error("Trade failed:", error);
+      setIsTrading(false);
       toast({
-        title: "Trade successful!",
-        description: `You received ${estimatedTokens.toLocaleString()} ${coin.symbol} tokens`,
+        title: "Trade failed",
+        description: "Please try again",
+        variant: "destructive",
       });
-    }, 2000);
+    }
   };
 
   const handleClose = () => {

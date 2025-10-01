@@ -174,7 +174,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
   };
 
   const handleTrade = async (coinAddress: `0x${string}`) => {
-    if (!isConnected || !address) {
+    if (!isConnected || !address || !walletClient || !publicClient) {
       setError("Please connect your wallet first");
       return;
     }
@@ -187,12 +187,17 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     setTxHash(null);
 
     try {
-      // Mock trade implementation - replace with actual Base SDK when available
-      console.log("Trading", ethAmount, "ETH for", coinAddress);
+      const { tradeZoraCoin } = await import("@/lib/zora");
       
-      // Simulate a transaction hash
-      const mockTxHash = `0x${Math.random().toString(16).substring(2, 66)}`;
-      setTxHash(mockTxHash);
+      const result = await tradeZoraCoin({
+        coinAddress,
+        ethAmount,
+        walletClient,
+        publicClient,
+        userAddress: address,
+      });
+      
+      setTxHash(result.hash);
       
     } catch (err: unknown) {
       console.error("Trade error:", err);
