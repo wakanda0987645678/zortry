@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import type { Coin } from "@shared/schema";
@@ -11,15 +11,21 @@ import {
   Grid3x3, 
   List,
   Copy,
-  Check
+  Check,
+  DollarSign,
+  TrendingUp
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getCoin } from "@zoralabs/coins-sdk";
+import { base } from "viem/chains";
 
 export default function Profile() {
   const { address, isConnected } = useAccount();
   const [selectedTab, setSelectedTab] = useState<"created" | "owned">("created");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [copied, setCopied] = useState(false);
+  const [totalEarnings, setTotalEarnings] = useState<number>(0);
+  const [isLoadingEarnings, setIsLoadingEarnings] = useState(false);
   const { toast } = useToast();
 
   const { data: coins = [], isLoading } = useQuery<Coin[]>({
@@ -38,6 +44,50 @@ export default function Profile() {
   }, []);
 
   const displayedCoins = selectedTab === "created" ? createdCoins : ownedCoins;
+
+  useEffect(() => {
+    if (!createdCoins.length) {
+      setTotalEarnings(0);
+      return;
+    }
+
+    let isMounted = true;
+    setIsLoadingEarnings(true);
+
+    async function fetchAllEarnings() {
+      let total = 0;
+
+      for (const coin of createdCoins) {
+        if (!coin.address) continue;
+
+        try {
+          const response = await getCoin({
+            address: coin.address,
+            chain: base.id,
+          });
+
+          const coinData = response.data?.zora20Token;
+          if (coinData?.creatorEarnings && coinData.creatorEarnings.length > 0) {
+            const earnings = parseFloat(coinData.creatorEarnings[0].amountUsd || "0");
+            total += earnings;
+          }
+        } catch (error) {
+          console.error(`Error fetching earnings for coin ${coin.symbol}:`, error);
+        }
+      }
+
+      if (isMounted) {
+        setTotalEarnings(total);
+        setIsLoadingEarnings(false);
+      }
+    }
+
+    fetchAllEarnings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [createdCoins]);
 
   const formatAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -163,17 +213,35 @@ export default function Profile() {
           </div>
 
           {createdCoins.length > 0 && (
-            <div className="w-full bg-gradient-to-br from-muted/40 to-muted/20 rounded-2xl p-4 mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-yellow-500/20 to-pink-500/20 rounded-full">
-                  <span className="text-xs font-semibold text-white">$ {createdCoins[0].symbol}</span>
+            <div className="w-full bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-2xl p-4 mb-6 border border-green-500/30">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
+                    <DollarSign className="w-5 h-5 text-green-500" />
+                  </div>
+                  <span className="text-sm font-semibold text-muted-foreground">Total Earnings</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-green-500">
+                  <TrendingUp className="w-3 h-3" />
+                  <span>Live</span>
                 </div>
               </div>
-              <div className="text-3xl font-bold text-white mb-1">$0.09</div>
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <span className="w-2 h-2 bg-primary rounded-full"></span>
-                Available in the Creator Pool
-              </div>
+              {isLoadingEarnings ? (
+                <div className="space-y-2">
+                  <div className="h-8 bg-muted/20 rounded w-32 shimmer"></div>
+                  <div className="h-4 bg-muted/20 rounded w-48 shimmer"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="text-3xl font-bold text-white mb-1">
+                    ${totalEarnings.toFixed(2)}
+                  </div>
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    From {createdCoins.length} coin{createdCoins.length !== 1 ? 's' : ''}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
