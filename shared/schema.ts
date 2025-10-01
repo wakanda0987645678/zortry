@@ -6,6 +6,7 @@ import { z } from "zod";
 export const scrapedContent = pgTable("scraped_content", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   url: text("url").notNull(),
+  platform: text("platform").notNull().default('blog'),
   title: text("title").notNull(),
   description: text("description"),
   author: text("author"),
