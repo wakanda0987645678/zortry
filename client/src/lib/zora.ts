@@ -43,8 +43,9 @@ export async function createZoraCoin(
   try {
     // Set up clients for the specified chain
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
-    const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL ||
-                   `https://base-mainnet.g.alchemy.com/v2/${import.meta.env.VITE_ALCHEMY_API_KEY}`;
+    const alchemyApiKey = import.meta.env.VITE_ALCHEMY_API_KEY || "o3VW3WRXrsXXMRX3l7jZxLUqhWyZzXBy";
+    const rpcUrl = import.meta.env.VITE_ZORA_RPC_URL || 
+                   `https://base-mainnet.g.alchemy.com/v2/${alchemyApiKey}`;
 
     const publicClient = createPublicClient({
       chain,
@@ -130,8 +131,9 @@ export async function createZoraCoinWithWallet(
   try {
     // Set up clients
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
-    const rpcUrl = import.meta.env.VITE_NEXT_PUBLIC_ZORA_RPC_URL ||
-                   `https://base-mainnet.g.alchemy.com/v2/${import.meta.env.VITE_ALCHEMY_API_KEY}`;
+    const alchemyApiKey = import.meta.env.VITE_ALCHEMY_API_KEY || "o3VW3WRXrsXXMRX3l7jZxLUqhWyZzXBy";
+    const rpcUrl = import.meta.env.VITE_ZORA_RPC_URL || 
+                   `https://base-mainnet.g.alchemy.com/v2/${alchemyApiKey}`;
 
     const publicClient = createPublicClient({
       chain,
