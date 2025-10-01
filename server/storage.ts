@@ -1,4 +1,4 @@
-import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward } from "@shared/schema";
+import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward, type Creator, type InsertCreator, type UpdateCreator } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -21,17 +21,27 @@ export interface IStorage {
   getAllRewards(): Promise<Reward[]>;
   getRewardsByCoin(coinAddress: string): Promise<Reward[]>;
   getRewardsByRecipient(recipientAddress: string): Promise<Reward[]>;
+  
+  // Creators
+  getCreator(id: string): Promise<Creator | undefined>;
+  getCreatorByAddress(address: string): Promise<Creator | undefined>;
+  createCreator(creator: InsertCreator): Promise<Creator>;
+  updateCreator(id: string, update: UpdateCreator): Promise<Creator | undefined>;
+  getAllCreators(): Promise<Creator[]>;
+  getTopCreators(): Promise<Creator[]>;
 }
 
 export class MemStorage implements IStorage {
   private scrapedContent: Map<string, ScrapedContent>;
   private coins: Map<string, Coin>;
   private rewards: Map<string, Reward>;
+  private creators: Map<string, Creator>;
 
   constructor() {
     this.scrapedContent = new Map();
     this.coins = new Map();
     this.rewards = new Map();
+    this.creators = new Map();
   }
 
   async getScrapedContent(id: string): Promise<ScrapedContent | undefined> {
@@ -142,6 +152,67 @@ export class MemStorage implements IStorage {
     return Array.from(this.rewards.values()).filter(
       (reward) => reward.recipientAddress.toLowerCase() === recipientAddress.toLowerCase()
     ).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getCreator(id: string): Promise<Creator | undefined> {
+    return this.creators.get(id);
+  }
+
+  async getCreatorByAddress(address: string): Promise<Creator | undefined> {
+    return Array.from(this.creators.values()).find(
+      (creator) => creator.address.toLowerCase() === address.toLowerCase()
+    );
+  }
+
+  async createCreator(insertCreator: InsertCreator): Promise<Creator> {
+    const id = randomUUID();
+    const creator: Creator = {
+      ...insertCreator,
+      verified: insertCreator.verified ?? 'false',
+      totalCoins: insertCreator.totalCoins ?? '0',
+      totalVolume: insertCreator.totalVolume ?? '0',
+      followers: insertCreator.followers ?? '0',
+      name: insertCreator.name ?? null,
+      bio: insertCreator.bio ?? null,
+      avatar: insertCreator.avatar ?? null,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.creators.set(id, creator);
+    return creator;
+  }
+
+  async updateCreator(id: string, update: UpdateCreator): Promise<Creator | undefined> {
+    const creator = this.creators.get(id);
+    if (!creator) return undefined;
+    
+    const updatedCreator: Creator = {
+      ...creator,
+      ...(update.name !== undefined && { name: update.name }),
+      ...(update.bio !== undefined && { bio: update.bio }),
+      ...(update.avatar !== undefined && { avatar: update.avatar }),
+      ...(update.verified !== undefined && { verified: update.verified }),
+      ...(update.totalCoins !== undefined && { totalCoins: update.totalCoins }),
+      ...(update.totalVolume !== undefined && { totalVolume: update.totalVolume }),
+      ...(update.followers !== undefined && { followers: update.followers }),
+      updatedAt: new Date()
+    };
+    
+    this.creators.set(id, updatedCreator);
+    return updatedCreator;
+  }
+
+  async getAllCreators(): Promise<Creator[]> {
+    return Array.from(this.creators.values()).sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  async getTopCreators(): Promise<Creator[]> {
+    return Array.from(this.creators.values()).sort(
+      (a, b) => parseInt(b.totalCoins) - parseInt(a.totalCoins)
+    );
   }
 }
 

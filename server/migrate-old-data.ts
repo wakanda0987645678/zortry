@@ -151,7 +151,7 @@ export async function migrateOldData() {
   const startTime = Date.now();
   const errors: string[] = [];
   let migratedCount = 0;
-  
+
   for (const oldCoin of oldCoinsData) {
     try {
       // Check if coin already exists by address
@@ -173,28 +173,45 @@ export async function migrateOldData() {
         content: oldCoin.metadata.content || '',
         tags: oldCoin.metadata.tags || [],
       });
-      
-      // Create coin linked to scraped content
-      await storage.createCoin({
+
+      // Create coin and creator, linked to scraped content
+      const coin = await storage.createCoin({
         name: oldCoin.name,
         symbol: oldCoin.symbol,
-        address: oldCoin.coin_address,
         creator: oldCoin.creator_wallet,
-        scrapedContentId: scrapedContent.id,
-        ipfsUri: oldCoin.ipfs_uri,
+        address: oldCoin.coin_address,
+        status: 'active',
+        scrapedContentId: scrapedContent?.id || null,
+        ipfsUri: oldCoin.ipfs_uri || null,
       });
-      
+
+      // Create or update creator
+      let creator = await storage.getCreatorByAddress(oldCoin.creator_wallet);
+      if (!creator) {
+        creator = await storage.createCreator({
+          address: oldCoin.creator_wallet,
+          totalCoins: '1',
+          totalVolume: '0',
+          followers: '0',
+        });
+      } else {
+        const newTotalCoins = (parseInt(creator.totalCoins) + 1).toString();
+        await storage.updateCreator(creator.id, {
+          totalCoins: newTotalCoins,
+        });
+      }
+
       migratedCount++;
     } catch (error) {
       const errorMsg = `Failed to migrate coin ${oldCoin.id}: ${error}`;
       errors.push(errorMsg);
     }
   }
-  
+
   const duration = Date.now() - startTime;
-  return { 
-    success: true, 
-    count: migratedCount, 
+  return {
+    success: true,
+    count: migratedCount,
     total: oldCoinsData.length,
     errors,
     duration: `${duration}ms`

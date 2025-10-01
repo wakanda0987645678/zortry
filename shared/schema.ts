@@ -75,3 +75,37 @@ export const insertRewardSchema = createInsertSchema(rewards).omit({
 
 export type InsertReward = z.infer<typeof insertRewardSchema>;
 export type Reward = typeof rewards.$inferSelect;
+
+export const creators = pgTable("creators", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  address: text("address").notNull().unique(),
+  name: text("name"),
+  bio: text("bio"),
+  avatar: text("avatar"),
+  verified: text("verified").notNull().default('false'),
+  totalCoins: text("total_coins").notNull().default('0'),
+  totalVolume: text("total_volume").notNull().default('0'),
+  followers: text("followers").notNull().default('0'),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertCreatorSchema = createInsertSchema(creators).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const updateCreatorSchema = z.object({
+  name: z.string().optional(),
+  bio: z.string().optional(),
+  avatar: z.string().optional(),
+  verified: z.string().optional(),
+  totalCoins: z.string().optional(),
+  totalVolume: z.string().optional(),
+  followers: z.string().optional(),
+});
+
+export type InsertCreator = z.infer<typeof insertCreatorSchema>;
+export type UpdateCreator = z.infer<typeof updateCreatorSchema>;
+export type Creator = typeof creators.$inferSelect;

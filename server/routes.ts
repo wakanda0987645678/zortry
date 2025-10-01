@@ -84,6 +84,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertCoinSchema.parse(req.body);
       const coin = await storage.createCoin(validatedData);
+      
+      // Auto-create or update creator
+      let creator = await storage.getCreatorByAddress(coin.creator);
+      if (!creator) {
+        // Create new creator
+        creator = await storage.createCreator({
+          address: coin.creator,
+          totalCoins: '1',
+          totalVolume: '0',
+          followers: '0',
+        });
+      } else {
+        // Update existing creator's coin count
+        const newTotalCoins = (parseInt(creator.totalCoins) + 1).toString();
+        await storage.updateCreator(creator.id, {
+          totalCoins: newTotalCoins,
+        });
+      }
+      
       res.json(coin);
     } catch (error) {
       console.error('Create coin error:', error);
@@ -186,6 +205,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Create reward error:', error);
       res.status(400).json({ error: 'Invalid reward data' });
+    }
+  });
+
+  // Get all creators
+  app.get("/api/creators", async (req, res) => {
+    try {
+      const creators = await storage.getAllCreators();
+      res.json(creators);
+    } catch (error) {
+      console.error('Get creators error:', error);
+      res.status(500).json({ error: 'Failed to fetch creators' });
+    }
+  });
+
+  // Get top creators
+  app.get("/api/creators/top", async (req, res) => {
+    try {
+      const creators = await storage.getTopCreators();
+      res.json(creators);
+    } catch (error) {
+      console.error('Get top creators error:', error);
+      res.status(500).json({ error: 'Failed to fetch top creators' });
+    }
+  });
+
+  // Get creator by address
+  app.get("/api/creators/address/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      const creator = await storage.getCreatorByAddress(address);
+      if (!creator) {
+        return res.status(404).json({ error: 'Creator not found' });
+      }
+      res.json(creator);
+    } catch (error) {
+      console.error('Get creator error:', error);
+      res.status(500).json({ error: 'Failed to fetch creator' });
+    }
+  });
+
+  // Create or update creator
+  app.post("/api/creators", async (req, res) => {
+    try {
+      const { address } = req.body;
+      
+      // Check if creator already exists
+      const existingCreator = await storage.getCreatorByAddress(address);
+      if (existingCreator) {
+        return res.json(existingCreator);
+      }
+
+      // Create new creator
+      const creatorData = {
+        address: req.body.address,
+        name: req.body.name || null,
+        bio: req.body.bio || null,
+        avatar: req.body.avatar || null,
+        verified: req.body.verified || 'false',
+        totalCoins: req.body.totalCoins || '0',
+        totalVolume: req.body.totalVolume || '0',
+        followers: req.body.followers || '0',
+      };
+
+      const creator = await storage.createCreator(creatorData);
+      res.json(creator);
+    } catch (error) {
+      console.error('Create creator error:', error);
+      res.status(400).json({ error: 'Invalid creator data' });
+    }
+  });
+
+  // Update creator
+  app.patch("/api/creators/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = {
+        name: req.body.name,
+        bio: req.body.bio,
+        avatar: req.body.avatar,
+        verified: req.body.verified,
+        totalCoins: req.body.totalCoins,
+        totalVolume: req.body.totalVolume,
+        followers: req.body.followers,
+      };
+
+      const creator = await storage.updateCreator(id, updateData);
+      if (!creator) {
+        return res.status(404).json({ error: 'Creator not found' });
+      }
+      res.json(creator);
+    } catch (error) {
+      console.error('Update creator error:', error);
+      res.status(400).json({ error: 'Invalid update data' });
     }
   });
 
