@@ -213,7 +213,7 @@ export default function Channels() {
       </section>
 
       {/* Channels Grid */}
-      <section className="p-4 md:p-8">
+      <section className="px-4 md:px-8 pb-4 md:pb-8">
         <div className="max-w-7xl mx-auto">
           {filteredChannels.length === 0 ? (
             <div className="text-center py-16">
