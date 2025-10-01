@@ -3,65 +3,74 @@ import { Link } from "wouter";
 import type { Coin } from "@shared/schema";
 import CoinCard from "@/components/coin-card";
 import Layout from "@/components/layout";
-import {
-  TrendingUp,
-  Users,
-  DollarSign,
-  Coins as CoinsIcon,
-} from "lucide-react";
+import { Coins as CoinsIcon } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
   const { data: coins = [], isLoading } = useQuery<Coin[]>({
     queryKey: ["/api/coins"],
   });
 
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const categories = [
+    { id: "all", label: "All" },
+    { id: "youtube", label: "YouTube" },
+    { id: "spotify", label: "Spotify" },
+    { id: "medium", label: "Medium" },
+    { id: "substack", label: "Substack" },
+    { id: "gitcoin", label: "Gitcoin" },
+    { id: "giveth", label: "Giveth" },
+    { id: "tiktok", label: "TikTok" },
+    { id: "instagram", label: "Instagram" },
+    { id: "twitter", label: "Twitter" },
+    { id: "github", label: "GitHub" },
+  ];
+
   return (
     <Layout>
       {/* Stats Section */}
-            <section className="p-4 sm:p-8">
-              <div className="max-w-6xl mx-auto">
-                <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-white">Platform Stats</h2>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="stat-card rounded-xl p-4 sm:p-6 hover-lift">
-                    <div className="flex items-center justify-between mb-2 sm:mb-3">
-                      <span className="text-muted-foreground font-semibold text-sm sm:text-base">Total Coins</span>
-                      <CoinsIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                    </div>
-                    <div className="text-2xl sm:text-3xl font-black text-white" data-testid="text-total-coins">{coins.length}</div>
-                    <div className="text-xs sm:text-sm text-primary mt-1">All time</div>
-                  </div>
+      <section className="p-4 sm:p-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-muted-foreground mb-6">
+            <span data-testid="text-total-coins">
+              <span className="font-semibold text-white">{coins.length}</span> Total Coins
+            </span>
+            <span className="text-border">•</span>
+            <span data-testid="text-total-volume">
+              <span className="font-semibold text-white">Base</span> Network
+            </span>
+            <span className="text-border">•</span>
+            <span data-testid="text-active-traders">
+              <span className="font-semibold text-white">Live</span> Traders
+            </span>
+            <span className="text-border">•</span>
+            <span data-testid="text-blockchain">
+              <span className="font-semibold text-white">Active</span> Status
+            </span>
+          </div>
 
-                  <div className="stat-card rounded-xl p-4 sm:p-6 hover-lift">
-                    <div className="flex items-center justify-between mb-2 sm:mb-3">
-                      <span className="text-muted-foreground font-semibold text-sm sm:text-base">Network</span>
-                      <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                    </div>
-                    <div className="text-2xl sm:text-3xl font-black text-white" data-testid="text-total-volume">Base</div>
-                    <div className="text-xs sm:text-sm text-primary mt-1">Blockchain</div>
-                  </div>
+          {/* Category Bar */}
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                  selectedCategory === category.id
+                    ? "bg-primary text-black"
+                    : "bg-muted/20 text-muted-foreground hover:bg-muted/30 hover:text-white"
+                }`}
+                data-testid={`button-category-${category.id}`}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
 
-                  <div className="stat-card rounded-xl p-4 sm:p-6 hover-lift">
-                    <div className="flex items-center justify-between mb-2 sm:mb-3">
-                      <span className="text-muted-foreground font-semibold text-sm sm:text-base">Traders</span>
-                      <Users className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                    </div>
-                    <div className="text-2xl sm:text-3xl font-black text-white" data-testid="text-active-traders">Live</div>
-                    <div className="text-xs sm:text-sm text-primary mt-1">On-chain</div>
-                  </div>
-
-                  <div className="stat-card rounded-xl p-4 sm:p-6 hover-lift">
-                    <div className="flex items-center justify-between mb-2 sm:mb-3">
-                      <span className="text-muted-foreground font-semibold text-sm sm:text-base">Status</span>
-                      <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                    </div>
-                    <div className="text-2xl sm:text-3xl font-black text-white" data-testid="text-blockchain">Active</div>
-                    <div className="text-xs sm:text-sm text-primary mt-1">Network</div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Trending Coins Section */}
+      {/* Trending Coins Section */}
             <section className="p-4 sm:p-8">
               <div className="max-w-6xl mx-auto">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-8">
