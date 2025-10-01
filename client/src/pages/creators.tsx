@@ -4,10 +4,10 @@ import type { Creator, Coin } from "@shared/schema";
 import { Users, TrendingUp, Award, Star, ExternalLink, Coins as CoinsIcon } from "lucide-react";
 import Layout from "@/components/layout";
 import { formatEther } from "viem";
-import { useNavigate } from "react-router-dom"; // Assuming you're using react-router-dom for navigation
+import { useLocation } from "wouter";
 
 export default function Creators() {
-  const navigate = useNavigate(); // Initialize navigate
+  const [, navigate] = useLocation();
   const [selectedTab, setSelectedTab] = useState<"top" | "rising" | "new">("top");
 
   const { data: creators = [], isLoading: creatorsLoading } = useQuery<Creator[]>({
