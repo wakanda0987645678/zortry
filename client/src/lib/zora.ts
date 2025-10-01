@@ -2,9 +2,7 @@
 import { 
   createCoin, 
   createCoinCall, 
-  setApiKey, 
-  createMetadataBuilder, 
-  createZoraUploaderForCreator,
+  setApiKey,
   getCoinCreateFromLogs
 } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, http, type Address, type Hash } from "viem";
@@ -43,30 +41,15 @@ export async function createZoraCoin(
   }
 
   try {
-    // Create metadata using Zora's metadata builder
-    let metadataParams;
-    
-    if (metadata.image instanceof File) {
-      // Upload file using Zora's uploader
-      const { createMetadataParameters } = await createMetadataBuilder()
-        .withName(metadata.name)
-        .withSymbol(metadata.symbol)
-        .withDescription(metadata.description || "")
-        .withImage(metadata.image)
-        .upload(createZoraUploaderForCreator(creatorAddress));
-      
-      metadataParams = createMetadataParameters;
-    } else {
-      // Use provided URI
-      metadataParams = {
-        name: metadata.name,
-        symbol: metadata.symbol,
-        metadata: {
-          type: "RAW_URI" as const,
-          uri: metadata.image || ""
-        }
-      };
-    }
+    // Create metadata parameters directly
+    const metadataParams = {
+      name: metadata.name,
+      symbol: metadata.symbol,
+      metadata: {
+        type: "RAW_URI" as const,
+        uri: metadata.image || ""
+      }
+    };
 
     // Set up clients for the specified chain
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
@@ -115,13 +98,15 @@ export async function createZoraCoinWithWallet(
   }
 
   try {
-    // Create metadata using Zora's metadata builder
-    const { createMetadataParameters } = await createMetadataBuilder()
-      .withName(metadata.name)
-      .withSymbol(metadata.symbol)
-      .withDescription(metadata.description || "")
-      .withImage(metadata.image instanceof File ? metadata.image : new File([""], "placeholder.png", { type: "image/png" }))
-      .upload(createZoraUploaderForCreator(creatorAddress));
+    // Create metadata parameters directly
+    const createMetadataParameters = {
+      name: metadata.name,
+      symbol: metadata.symbol,
+      metadata: {
+        type: "RAW_URI" as const,
+        uri: typeof metadata.image === 'string' ? metadata.image : ""
+      }
+    };
 
     // Set up clients
     const chain = chainId === baseSepolia.id ? baseSepolia : base;
