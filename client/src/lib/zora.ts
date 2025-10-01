@@ -5,7 +5,6 @@ import {
   setApiKey, 
   createMetadataBuilder, 
   createZoraUploaderForCreator,
-  CreateConstants,
   getCoinCreateFromLogs
 } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, http, type Address, type Hash } from "viem";
@@ -83,9 +82,9 @@ export async function createZoraCoin(
     const createCoinArgs = {
       creator: creatorAddress,
       ...metadataParams,
-      currency: CreateConstants.ContentCoinCurrencies.ETH, // Use ETH for Base
+      currency: "ETH", // Use ETH for Base
       chainId,
-      startingMarketCap: CreateConstants.StartingMarketCaps.LOW,
+      startingMarketCap: "LOW",
     };
 
     // For client-side, we'll return the call data instead of executing
@@ -139,9 +138,9 @@ export async function createZoraCoinWithWallet(
       call: {
         creator: creatorAddress,
         ...createMetadataParameters,
-        currency: CreateConstants.ContentCoinCurrencies.ETH,
+        currency: "ETH",
         chainId,
-        startingMarketCap: CreateConstants.StartingMarketCaps.LOW,
+        startingMarketCap: "LOW",
       },
       walletClient,
       publicClient,
