@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import Layout from "@/components/layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import TradeModal from "@/components/trade-modal";
 import {
   Hash,
   TrendingUp,
@@ -26,12 +27,16 @@ interface Channel {
   holders: number;
   timeAgo: string;
   priceChange: number;
+  address: string;
+  symbol: string;
 }
 
 export default function Channels() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [tradeModalOpen, setTradeModalOpen] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
 
   // Extract search parameter from URL
   useEffect(() => {
@@ -53,7 +58,9 @@ export default function Channels() {
       price: "$16.36",
       holders: 3,
       timeAgo: "9m",
-      priceChange: 12.5
+      priceChange: 12.5,
+      address: "0x1234567890123456789012345678901234567890",
+      symbol: "MEET"
     },
     {
       id: "2",
@@ -64,7 +71,9 @@ export default function Channels() {
       price: "$0.30",
       holders: 3,
       timeAgo: "13m",
-      priceChange: 8.2
+      priceChange: 8.2,
+      address: "0x2345678901234567890123456789012345678901",
+      symbol: "FRIES"
     },
     {
       id: "3",
@@ -75,7 +84,9 @@ export default function Channels() {
       price: "$1.24",
       holders: 3,
       timeAgo: "16m",
-      priceChange: 15.7
+      priceChange: 15.7,
+      address: "0x3456789012345678901234567890123456789012",
+      symbol: "ANGEL"
     },
     {
       id: "4",
@@ -86,7 +97,9 @@ export default function Channels() {
       price: "$3.42",
       holders: 8,
       timeAgo: "22m",
-      priceChange: -2.1
+      priceChange: -2.1,
+      address: "0x4567890123456789012345678901234567890123",
+      symbol: "DREAMS"
     },
     {
       id: "5",
@@ -97,7 +110,9 @@ export default function Channels() {
       price: "$2.15",
       holders: 5,
       timeAgo: "28m",
-      priceChange: 7.3
+      priceChange: 7.3,
+      address: "0x5678901234567890123456789012345678901234",
+      symbol: "NEON"
     },
     {
       id: "6",
@@ -108,7 +123,9 @@ export default function Channels() {
       price: "$5.67",
       holders: 12,
       timeAgo: "35m",
-      priceChange: 9.8
+      priceChange: 9.8,
+      address: "0x6789012345678901234567890123456789012345",
+      symbol: "SPACE"
     },
     {
       id: "7",
@@ -119,7 +136,9 @@ export default function Channels() {
       price: "$1.89",
       holders: 6,
       timeAgo: "42m",
-      priceChange: -0.5
+      priceChange: -0.5,
+      address: "0x7890123456789012345678901234567890123456",
+      symbol: "WAVES"
     },
     {
       id: "8",
@@ -130,7 +149,9 @@ export default function Channels() {
       price: "$1.23",
       holders: 4,
       timeAgo: "1h",
-      priceChange: 3.2
+      priceChange: 3.2,
+      address: "0x8901234567890123456789012345678901234567",
+      symbol: "FOREST"
     }
   ];
 
@@ -145,6 +166,11 @@ export default function Channels() {
     channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     channel.creator.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleTradeChannel = (channel: Channel) => {
+    setSelectedChannel(channel);
+    setTradeModalOpen(true);
+  };
 
   return (
     <Layout>
@@ -285,6 +311,18 @@ export default function Channels() {
                           <span className="text-white font-semibold">{channel.holders}</span>
                         </div>
                       </div>
+
+                      {/* Trade Button */}
+                      <div className="pt-3 border-t border-border/20">
+                        <Button
+                          onClick={() => handleTradeChannel(channel)}
+                          className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-glow transition-all duration-200"
+                          size="sm"
+                        >
+                          <TrendingUp className="w-4 h-4 mr-2" />
+                          Trade ${channel.symbol}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -293,6 +331,22 @@ export default function Channels() {
           )}
         </div>
       </section>
+
+      {/* Trade Modal */}
+      {selectedChannel && (
+        <TradeModal
+          coin={{
+            id: selectedChannel.id,
+            name: selectedChannel.name,
+            symbol: selectedChannel.symbol,
+            address: selectedChannel.address,
+            creator: selectedChannel.creator,
+            createdAt: new Date().toISOString(),
+          }}
+          open={tradeModalOpen}
+          onOpenChange={setTradeModalOpen}
+        />
+      )}
     </Layout>
   );
 }
