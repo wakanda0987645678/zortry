@@ -64,6 +64,26 @@ const oldCoinsData: OldCoin[] = [
     symbol: 'VICTO'
   },
   {
+    id: 'f3f15db4-b357-47f1-bff3-7537933845a0',
+    coin_address: '0x123...',
+    creator_wallet: '0xabc...',
+    transaction_hash: '0xhash...',
+    created_at: '2025-09-13 12:21:24.872099',
+    ipfs_uri: 'ipfs://uri',
+    metadata: {
+      tags: [],
+      image: '',
+      title: 'Recovered Blog Coin',
+      author: '',
+      content: '',
+      description: 'A recovered blog coin from the old system',
+      originalUrl: '',
+      publishDate: ''
+    },
+    name: 'Recovered Blog Coin',
+    symbol: 'BLOGFIX'
+  },
+  {
     id: 'f4248ea3-59b2-4448-92ae-bfc7f59e9d12',
     coin_address: '0xDE7C9a53eDd5Ef151210Aa7C1Da9dC80068547Ab',
     creator_wallet: '0xb843A2D0D4B9E628500d2E0f6f0382e063C14a95',
@@ -75,15 +95,57 @@ const oldCoinsData: OldCoin[] = [
       image: 'https://miro.medium.com/v2/da:true/resize:fit:1200/0*jCeSNt_UZku7uzGM',
       title: 'Why Every Senior Developer I Know Is Planning Their Exit | by Harishsingh | Sep, 2025 | Medium',
       author: 'Harishsingh',
-      content: 'Member-only storyWhy Every Senior Developer I Know Is Planning Their ExitHarishsingh4 min read·Sep 4, 2025--62ShareAfter 10 years in software development...',
-      description: 'Why Every Senior Developer I Know Is Planning Their Exit After 10 years in software development, with the last three in high-frequency trading...',
+      content: 'Member-only storyWhy Every Senior Developer I Know Is Planning Their ExitHarishsingh4 min read·Sep 4, 2025--62ShareAfter 10 years in software development, with the last three in high-frequency trading, I\'m witnessing something unprecedented: every senior developer in my network is planning their exit from traditional employment. Not just job-hopping , complete career pivots.Press enter or click to view image in full sizeAI-generated digital illustrationThe reasons go deeper than burnout or better pay. The fundamental relationship between developers and the industry has shifted, and the smart money is already moving.The Invisible Productivity TaxModern development has become an exercise in navigating bureaucracy rather than solving problems. Here\'s what my day looked like this week:Time Breakdown (40-hour week):Actual coding: 12 hours (30%)Meetings about meetings: 8 hours (20%)Process compliance: 8 hours (20%)Documentation for audit trails: 6 hours (15%)Context switching overhead: 6 hours (15%)In HFT, microseconds matter. Yet I spend more time in Jira than optimizing algorithms. The irony is suffocating.// What I want to writefunc optimizeOrderExecution(order *Order) (*Execution, error) { return executeWithMinimalLatency(order)}// What compliance…',
+      description: 'Why Every Senior Developer I Know Is Planning Their Exit After 10 years in software development, with the last three in high-frequency trading, I\'m witnessing something unprecedented: every senior …',
       originalUrl: 'https://medium.com/@harishsingh8529/why-every-senior-developer-i-know-is-planning-their-exit-8294cc17b7c7',
       publishDate: '2025-09-10T04:50:40.894Z'
     },
     name: 'Test this test that',
     symbol: 'TESTEST'
+  },
+  {
+    id: 'fc0604ca-6e8a-4fed-b7e0-078ca63b6a09',
+    coin_address: '0x285f10f443aA139C1d0982815BF1B039aE438a3a',
+    creator_wallet: '0xf25af781c4F1Df40Ac1D06e6B80c17815AD311F7',
+    transaction_hash: '',
+    created_at: '2025-09-28 16:26:39.379569',
+    ipfs_uri: 'ipfs://bafkreicvvt4qxbyqjle5lkn472eyucggenrflzlkflozv2dpo5aj6jnvxm',
+    metadata: {
+      tags: [],
+      image: 'ipfs://bafybeifknagau4jdfz2bym4y7nurtjtop53wnamy5lzx573pzjpmxrg7mu',
+      title: 'CreatorEarning',
+      author: '',
+      content: '',
+      description: 'A coin representing the image: CreatorEarning',
+      originalUrl: '',
+      publishDate: ''
+    },
+    name: 'CreatorEarning',
+    symbol: 'CREATEANDEARN'
+  },
+  {
+    id: 'fd630af5-fad3-426b-920a-22aa86fee84e',
+    coin_address: '0xe8aFE7B4687abad8603495deC3b9Fd37D697b663',
+    creator_wallet: '0xf25af781c4F1Df40Ac1D06e6B80c17815AD311F7',
+    transaction_hash: '0x0a679ca18599d1401806dc9f1ce6211d9d8eeae35cc728bd0863624b8ea085a4',
+    created_at: '2025-09-25 14:47:07.161196',
+    ipfs_uri: 'ipfs://bafkreifzddskxxtsmqpjzutdg3hpf4qagowixd7bjem4y6jifzy3vi7oey',
+    metadata: {
+      tags: [],
+      image: 'ipfs://bafkreifzddskxxtsmqpjzutdg3hpf4qagowixd7bjem4y6jifzy3vi7oey',
+      title: 'YELLOW',
+      author: '',
+      content: '',
+      description: '',
+      originalUrl: '',
+      publishDate: ''
+    },
+    name: 'YELLOW',
+    symbol: 'YELLOW'
   }
 ];
+
+let migrationCompleted = false;
 
 export async function migrateOldData() {
   const startTime = Date.now();
@@ -92,6 +154,13 @@ export async function migrateOldData() {
   
   for (const oldCoin of oldCoinsData) {
     try {
+      // Check if coin already exists by address
+      const existingCoin = await storage.getCoinByAddress(oldCoin.coin_address);
+      if (existingCoin) {
+        console.log(`Coin ${oldCoin.coin_address} already exists, skipping`);
+        continue;
+      }
+
       // Create scraped content from metadata
       const scrapedContent = await storage.createScrapedContent({
         url: oldCoin.metadata.originalUrl || `https://etherscan.io/tx/${oldCoin.transaction_hash}`,
@@ -130,6 +199,31 @@ export async function migrateOldData() {
     errors,
     duration: `${duration}ms`
   };
+}
+
+export async function autoMigrateOnStartup() {
+  if (migrationCompleted) {
+    return { message: "Migration already completed" };
+  }
+
+  try {
+    // Check if any coins exist already
+    const existingCoins = await storage.getAllCoins();
+    if (existingCoins.length === 0) {
+      console.log("No coins found, running automatic migration...");
+      const result = await migrateOldData();
+      migrationCompleted = true;
+      console.log(`Migration completed: ${result.count}/${result.total} coins imported`);
+      return result;
+    } else {
+      console.log(`Found ${existingCoins.length} existing coins, skipping migration`);
+      migrationCompleted = true;
+      return { message: `Skipped migration, found ${existingCoins.length} existing coins` };
+    }
+  } catch (error) {
+    console.error("Auto migration failed:", error);
+    return { error: "Auto migration failed" };
+  }
 }
 
 // Export for use in routes

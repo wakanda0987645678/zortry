@@ -1,5 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
+import { storage } from "./storage";
+import { autoMigrateOnStartup } from "./migrate-old-data";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
@@ -78,4 +80,11 @@ app.use((req, res, next) => {
   }, () => {
     log(`serving on port ${port}`);
   });
+
+  // Run automatic migration on startup
+  try {
+    await autoMigrateOnStartup();
+  } catch (error) {
+    console.error("Failed to run auto migration:", error);
+  }
 })();
