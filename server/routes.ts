@@ -133,6 +133,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all rewards
+  app.get("/api/rewards", async (_req, res) => {
+    try {
+      const rewards = await storage.getAllRewards();
+      res.json(rewards);
+    } catch (error) {
+      console.error('Get rewards error:', error);
+      res.status(500).json({ error: 'Failed to fetch rewards' });
+    }
+  });
+
+  // Get rewards by coin
+  app.get("/api/rewards/coin/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      const rewards = await storage.getRewardsByCoin(address);
+      res.json(rewards);
+    } catch (error) {
+      console.error('Get coin rewards error:', error);
+      res.status(500).json({ error: 'Failed to fetch coin rewards' });
+    }
+  });
+
+  // Get rewards by recipient
+  app.get("/api/rewards/recipient/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      const rewards = await storage.getRewardsByRecipient(address);
+      res.json(rewards);
+    } catch (error) {
+      console.error('Get recipient rewards error:', error);
+      res.status(500).json({ error: 'Failed to fetch recipient rewards' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

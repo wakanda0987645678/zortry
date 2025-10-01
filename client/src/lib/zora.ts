@@ -96,7 +96,11 @@ export async function createZoraCoin(
       metadataUri = "";
     }
 
-    // Create coin arguments matching SDK v0.3.2 API
+    // Admin platform referral address for earning 20% of all future trading fees
+    const ADMIN_PLATFORM_REFERRAL = import.meta.env.VITE_ADMIN_REFERRAL_ADDRESS || 
+                                    "0xf25af781c4F1Df40Ac1D06e6B80c17815AD311F7"; // Default admin wallet
+
+    // Create coin arguments matching SDK v0.3.2 API with platform referral
     const createCoinArgs = {
       creator: creatorAddress,
       name: metadata.name,
@@ -105,6 +109,7 @@ export async function createZoraCoin(
       currency: CreateConstants.ContentCoinCurrencies.ETH,
       chainId,
       skipMetadataValidation: true, // Skip validation since we've already validated and uploaded
+      platformReferrer: ADMIN_PLATFORM_REFERRAL, // Earn 20% of all trading fees for this coin
     };
 
     // For client-side, we'll return the call data instead of executing
@@ -184,7 +189,11 @@ export async function createZoraCoinWithWallet(
       metadataUri = "";
     }
 
-    // Create coin arguments matching SDK v0.3.2 API
+    // Admin platform referral address for earning 20% of all future trading fees
+    const ADMIN_PLATFORM_REFERRAL = import.meta.env.VITE_ADMIN_REFERRAL_ADDRESS || 
+                                    "0xf25af781c4F1Df40Ac1D06e6B80c17815AD311F7"; // Default admin wallet
+
+    // Create coin arguments matching SDK v0.3.2 API with platform referral
     const createCoinArgs = {
       creator: creatorAddress,
       name: metadata.name,
@@ -193,6 +202,7 @@ export async function createZoraCoinWithWallet(
       currency: CreateConstants.ContentCoinCurrencies.ETH,
       chainId,
       skipMetadataValidation: true, // Skip validation since we've already validated and uploaded
+      platformReferrer: ADMIN_PLATFORM_REFERRAL, // Earn 20% of all trading fees for this coin
     };
 
     // Create coin using high-level function with SDK v0.3.2 signature
@@ -246,10 +256,10 @@ export async function tradeZoraCoin({
 
   try {
     const { tradeCoin, TradeParameters } = await import("@zoralabs/coins-sdk");
-    
+
     // Convert ETH amount to wei for the transaction
     const amountInWei = parseEther(ethAmount);
-    
+
     // Create trade parameters according to Zora SDK documentation
     const tradeParameters: TradeParameters = isBuying ? {
       // Buying coin with ETH
@@ -301,7 +311,7 @@ export async function tradeZoraCoin({
     };
   } catch (error) {
     console.error("Trade error:", error);
-    
+
     // Provide more specific error messages
     if (error instanceof Error) {
       if (error.message.includes("insufficient funds")) {
@@ -318,7 +328,7 @@ export async function tradeZoraCoin({
         throw new Error(`Trading failed: ${error.message}`);
       }
     }
-    
+
     throw new Error("Trading failed - unknown error occurred");
   }
 }

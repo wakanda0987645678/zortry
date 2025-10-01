@@ -12,6 +12,7 @@ import Channels from "@/pages/channels";
 import Creators from "@/pages/creators";
 import Leaderboard from "@/pages/leaderboard";
 import FAQ from "@/pages/faq";
+import Rewards from "./pages/rewards";
 import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
@@ -26,8 +27,8 @@ function Router() {
       <Route path="/creators" component={Creators} />
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/faq" component={FAQ} />
-      <Route path="/admin" component={Admin} />
-      <Route component={NotFound} />
+      <Route path="/rewards" element={<Rewards />} />
+      <Route path="*" element={<NotFound />} />
     </Switch>
   );
 }

@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Hash,
   Search,
+  Award,
 } from "lucide-react";
 import WalletConnectButton from "./wallet-connect-button";
 
@@ -36,6 +37,7 @@ export default function Layout({ children }: LayoutProps) {
     { href: "/create", icon: Plus, label: "Create" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
+    { href: "/rewards", icon: Award, label: "Rewards" },
     { href: "/leaderboard", icon: Trophy, label: "Leaderboard" },
     { href: "/faq", icon: HelpCircle, label: "FAQ" },
   ];
@@ -64,8 +66,8 @@ export default function Layout({ children }: LayoutProps) {
               return (
                 <Link key={item.href} href={item.href}>
                   <div className={`flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer ${
-                    isActive 
-                      ? "text-white bg-primary/20" 
+                    isActive
+                      ? "text-white bg-primary/20"
                       : "text-muted-foreground hover:text-white hover:bg-muted/10"
                   }`}>
                     <Icon className="w-6 h-6 flex-shrink-0" />
@@ -117,7 +119,7 @@ export default function Layout({ children }: LayoutProps) {
                 <span className="text-sm">→</span>
               </button>
             </div>
-            
+
             {/* Search Bar */}
             <div className="flex-1 max-w-md mx-8">
               <form onSubmit={handleSearch} className="relative">
@@ -131,7 +133,7 @@ export default function Layout({ children }: LayoutProps) {
                 />
               </form>
             </div>
-            
+
             <WalletConnectButton />
           </header>
 

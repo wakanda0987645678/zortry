@@ -56,3 +56,22 @@ export type ScrapedContent = typeof scrapedContent.$inferSelect;
 export type InsertCoin = z.infer<typeof insertCoinSchema>;
 export type UpdateCoin = z.infer<typeof updateCoinSchema>;
 export type Coin = typeof coins.$inferSelect;
+export const rewards = pgTable("rewards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: text("type").notNull(), // 'platform' or 'trade'
+  coinAddress: text("coin_address").notNull(),
+  coinSymbol: text("coin_symbol").notNull(),
+  transactionHash: text("transaction_hash").notNull(),
+  rewardAmount: text("reward_amount").notNull(), // In wei as string
+  rewardCurrency: text("reward_currency").notNull().default('ZORA'),
+  recipientAddress: text("recipient_address").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertRewardSchema = createInsertSchema(rewards).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertReward = z.infer<typeof insertRewardSchema>;
+export type Reward = typeof rewards.$inferSelect;

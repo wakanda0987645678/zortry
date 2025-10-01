@@ -1,4 +1,4 @@
-import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin } from "@shared/schema";
+import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -14,15 +14,24 @@ export interface IStorage {
   updateCoin(id: string, update: UpdateCoin): Promise<Coin | undefined>;
   getAllCoins(): Promise<Coin[]>;
   getCoinsByCreator(creator: string): Promise<Coin[]>;
+  
+  // Rewards
+  getReward(id: string): Promise<Reward | undefined>;
+  createReward(reward: InsertReward): Promise<Reward>;
+  getAllRewards(): Promise<Reward[]>;
+  getRewardsByCoin(coinAddress: string): Promise<Reward[]>;
+  getRewardsByRecipient(recipientAddress: string): Promise<Reward[]>;
 }
 
 export class MemStorage implements IStorage {
   private scrapedContent: Map<string, ScrapedContent>;
   private coins: Map<string, Coin>;
+  private rewards: Map<string, Reward>;
 
   constructor() {
     this.scrapedContent = new Map();
     this.coins = new Map();
+    this.rewards = new Map();
   }
 
   async getScrapedContent(id: string): Promise<ScrapedContent | undefined> {
@@ -99,6 +108,39 @@ export class MemStorage implements IStorage {
   async getCoinsByCreator(creator: string): Promise<Coin[]> {
     return Array.from(this.coins.values()).filter(
       (coin) => coin.creator.toLowerCase() === creator.toLowerCase()
+    ).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getReward(id: string): Promise<Reward | undefined> {
+    return this.rewards.get(id);
+  }
+
+  async createReward(insertReward: InsertReward): Promise<Reward> {
+    const id = randomUUID();
+    const reward: Reward = {
+      ...insertReward,
+      id,
+      createdAt: new Date()
+    };
+    this.rewards.set(id, reward);
+    return reward;
+  }
+
+  async getAllRewards(): Promise<Reward[]> {
+    return Array.from(this.rewards.values()).sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
+  }
+
+  async getRewardsByCoin(coinAddress: string): Promise<Reward[]> {
+    return Array.from(this.rewards.values()).filter(
+      (reward) => reward.coinAddress.toLowerCase() === coinAddress.toLowerCase()
+    ).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getRewardsByRecipient(recipientAddress: string): Promise<Reward[]> {
+    return Array.from(this.rewards.values()).filter(
+      (reward) => reward.recipientAddress.toLowerCase() === recipientAddress.toLowerCase()
     ).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 }
