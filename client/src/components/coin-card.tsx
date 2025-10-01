@@ -274,95 +274,94 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
                 Trade
               </Button>
             </DialogTrigger>
-              <DialogContent className="sm:max-w-xs p-3">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2 text-sm">
-                    <TrendingUp className="h-4 w-4" />
-                    Trade {coin.symbol}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-2">
-                  <div className="p-2 bg-gray-50 rounded-lg">
-                    <div className="flex items-center justify-between mb-1 text-xs">
-                      <span className="font-medium">Coin</span>
-                      <span>{coin.name}</span>
-                    </div>
-                    <div className="flex items-center justify-between mb-1 text-xs">
-                      <span className="font-medium">Symbol</span>
-                      <span>${coin.symbol}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium">Address</span>
-                      <span className="font-mono">{formatAddress(coin.address)}</span>
-                    </div>
+            <DialogContent className="sm:max-w-xs p-3">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-sm">
+                  <TrendingUp className="h-4 w-4" />
+                  Trade {coin.symbol}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-2">
+                <div className="p-2 bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between mb-1 text-xs">
+                    <span className="font-medium">Coin</span>
+                    <span>{coin.name}</span>
                   </div>
-                  <div>
-                    <Label htmlFor="ethAmount" className="text-xs font-medium">
-                      ETH to Trade
-                    </Label>
-                    <Input
-                      id="ethAmount"
-                      type="number"
-                      step="0.0001"
-                      min="0"
-                      value={ethAmount}
-                      onChange={(e) => setEthAmount(e.target.value)}
-                      placeholder="ETH amount"
-                      className="mt-1 text-xs h-7"
-                    />
+                  <div className="flex items-center justify-between mb-1 text-xs">
+                    <span className="font-medium">Symbol</span>
+                    <span>${coin.symbol}</span>
                   </div>
-                  <div className="p-2 bg-blue-50 rounded-lg text-xs">
-                    <div className="flex justify-between mb-1">
-                      <span>You pay:</span>
-                      <span>{ethAmount} ETH</span>
-                    </div>
-                    <div className="flex justify-between mb-1">
-                      <span>You receive:</span>
-                      <span>${coin.symbol} tokens</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Slippage:</span>
-                      <span>5%</span>
-                    </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-medium">Address</span>
+                    <span className="font-mono">{formatAddress(coin.address)}</span>
                   </div>
-                  {!isConnected ? (
-                    <div className="p-2 bg-yellow-50 rounded-lg text-xs">
-                      <p className="text-yellow-800">Please connect your wallet to trade.</p>
-                    </div>
-                  ) : (
-                    <Button
-                      onClick={() => handleTrade(coin.address as `0x${string}`)}
-                      disabled={loading || !ethAmount || parseFloat(ethAmount) <= 0}
-                      className="w-full text-xs h-7"
-                    >
-                      {loading ? "Trading..." : `Trade ${ethAmount} ETH`}
-                    </Button>
-                  )}
-                  {error && (
-                    <div className="p-2 bg-red-50 rounded-lg text-xs">
-                      <p className="text-red-800">❌ {error}</p>
-                    </div>
-                  )}
-                  {txHash && (
-                    <div className="p-2 bg-green-50 rounded-lg text-xs">
-                      <p className="text-green-800">✅ Success!</p>
-                      <a
-                        href={`https://basescan.org/tx/${txHash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-                        data-testid="link-tx-explorer"
-                      >
-                        View on BaseScan
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  )}
                 </div>
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
+                <div>
+                  <Label htmlFor="ethAmount" className="text-xs font-medium">
+                    ETH to Trade
+                  </Label>
+                  <Input
+                    id="ethAmount"
+                    type="number"
+                    step="0.0001"
+                    min="0"
+                    value={ethAmount}
+                    onChange={(e) => setEthAmount(e.target.value)}
+                    placeholder="ETH amount"
+                    className="mt-1 text-xs h-7"
+                  />
+                </div>
+                <div className="p-2 bg-blue-50 rounded-lg text-xs">
+                  <div className="flex justify-between mb-1">
+                    <span>You pay:</span>
+                    <span>{ethAmount} ETH</span>
+                  </div>
+                  <div className="flex justify-between mb-1">
+                    <span>You receive:</span>
+                    <span>${coin.symbol} tokens</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Slippage:</span>
+                    <span>5%</span>
+                  </div>
+                </div>
+                {!isConnected ? (
+                  <div className="p-2 bg-yellow-50 rounded-lg text-xs">
+                    <p className="text-yellow-800">Please connect your wallet to trade.</p>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={() => handleTrade(coin.address as `0x${string}`)}
+                    disabled={loading || !ethAmount || parseFloat(ethAmount) <= 0}
+                    className="w-full text-xs h-7"
+                  >
+                    {loading ? "Trading..." : `Trade ${ethAmount} ETH`}
+                  </Button>
+                )}
+                {error && (
+                  <div className="p-2 bg-red-50 rounded-lg text-xs">
+                    <p className="text-red-800">❌ {error}</p>
+                  </div>
+                )}
+                {txHash && (
+                  <div className="p-2 bg-green-50 rounded-lg text-xs">
+                    <p className="text-green-800">✅ Success!</p>
+                    <a
+                      href={`https://basescan.org/tx/${txHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                      data-testid="link-tx-explorer"
+                    >
+                      View on BaseScan
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </div>
   );
