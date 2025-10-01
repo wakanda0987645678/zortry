@@ -3,10 +3,8 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import Layout from "@/components/layout";
-import CoinCard from "@/components/coin-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import type { Coin } from "@shared/schema";
 import {
   Hash,
   TrendingUp,
@@ -14,7 +12,21 @@ import {
   Search,
   Filter,
   Plus,
+  Clock,
+  DollarSign,
 } from "lucide-react";
+
+interface Channel {
+  id: string;
+  name: string;
+  creator: string;
+  image: string;
+  marketCap: string;
+  price: string;
+  holders: number;
+  timeAgo: string;
+  priceChange: number;
+}
 
 export default function Channels() {
   const [location] = useLocation();
@@ -30,9 +42,97 @@ export default function Channels() {
     }
   }, [location]);
 
-  const { data: coins = [], isLoading } = useQuery<Coin[]>({
-    queryKey: ["/api/coins"],
-  });
+  // Mock channels data
+  const mockChannels: Channel[] = [
+    {
+      id: "1",
+      name: "Meetings",
+      creator: "fullmetaldroid",
+      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop",
+      marketCap: "$1k",
+      price: "$16.36",
+      holders: 3,
+      timeAgo: "9m",
+      priceChange: 12.5
+    },
+    {
+      id: "2",
+      name: "Titan Fries",
+      creator: "rangegouraji",
+      image: "https://images.unsplash.com/photo-1630409346775-b79db5c5e0bb?w=400&h=300&fit=crop",
+      marketCap: "$49.3",
+      price: "$0.30",
+      holders: 3,
+      timeAgo: "13m",
+      priceChange: 8.2
+    },
+    {
+      id: "3",
+      name: "glitch prayer angel",
+      creator: "lynthgc",
+      image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop",
+      marketCap: "$62.33",
+      price: "$1.24",
+      holders: 3,
+      timeAgo: "16m",
+      priceChange: 15.7
+    },
+    {
+      id: "4",
+      name: "Digital Dreams",
+      creator: "cryptoartist",
+      image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
+      marketCap: "$156.8",
+      price: "$3.42",
+      holders: 8,
+      timeAgo: "22m",
+      priceChange: -2.1
+    },
+    {
+      id: "5",
+      name: "Neon City",
+      creator: "urbanexplorer",
+      image: "https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?w=400&h=300&fit=crop",
+      marketCap: "$89.2",
+      price: "$2.15",
+      holders: 5,
+      timeAgo: "28m",
+      priceChange: 7.3
+    },
+    {
+      id: "6",
+      name: "Space Odyssey",
+      creator: "cosmicvibes",
+      image: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=300&fit=crop",
+      marketCap: "$234.7",
+      price: "$5.67",
+      holders: 12,
+      timeAgo: "35m",
+      priceChange: 9.8
+    },
+    {
+      id: "7",
+      name: "Ocean Waves",
+      creator: "aquamarine",
+      image: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop",
+      marketCap: "$78.4",
+      price: "$1.89",
+      holders: 6,
+      timeAgo: "42m",
+      priceChange: -0.5
+    },
+    {
+      id: "8",
+      name: "Forest Spirits",
+      creator: "naturelover",
+      image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop",
+      marketCap: "$67.1",
+      price: "$1.23",
+      holders: 4,
+      timeAgo: "1h",
+      priceChange: 3.2
+    }
+  ];
 
   const categories = [
     { id: "all", name: "All Channels", icon: Hash },
@@ -41,9 +141,9 @@ export default function Channels() {
     { id: "new", name: "New", icon: Plus },
   ];
 
-  const filteredCoins = coins.filter(coin => 
-    coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    coin.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredChannels = mockChannels.filter(channel => 
+    channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    channel.creator.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -102,20 +202,7 @@ export default function Channels() {
       {/* Channels Grid */}
       <section className="p-8">
         <div className="max-w-6xl mx-auto">
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="spotify-card rounded-xl overflow-hidden shimmer">
-                  <div className="h-48 bg-muted/20"></div>
-                  <div className="p-4 space-y-3">
-                    <div className="h-6 bg-muted/20 rounded w-3/4"></div>
-                    <div className="h-4 bg-muted/20 rounded w-1/2"></div>
-                    <div className="h-16 bg-muted/20 rounded"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : filteredCoins.length === 0 ? (
+          {filteredChannels.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Hash className="w-8 h-8 text-muted-foreground" />
@@ -138,13 +225,68 @@ export default function Channels() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-white">
                   {searchTerm ? `Search results for "${searchTerm}"` : "All Channels"}
-                  <span className="text-muted-foreground ml-2">({filteredCoins.length})</span>
+                  <span className="text-muted-foreground ml-2">({filteredChannels.length})</span>
                 </h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredCoins.map((coin) => (
-                  <CoinCard key={coin.id} coin={coin} />
+                {filteredChannels.map((channel) => (
+                  <div key={channel.id} className="channel-card group cursor-pointer">
+                    {/* Channel Image */}
+                    <div className="relative w-full h-48 overflow-hidden rounded-lg mb-3">
+                      <img 
+                        src={channel.image} 
+                        alt={channel.name}
+                        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                      />
+                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1">
+                        <div className="flex items-center gap-1 text-xs text-white/80">
+                          <Clock className="w-3 h-3" />
+                          {channel.timeAgo}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Channel Info */}
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between">
+                        <h3 className="font-bold text-white text-lg leading-tight">{channel.name}</h3>
+                      </div>
+                      
+                      <p className="text-sm text-muted-foreground">{channel.creator}</p>
+
+                      {/* Stats */}
+                      <div className="space-y-2 pt-2">
+                        {/* Market Cap */}
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
+                            <div className={`w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent ${
+                              channel.priceChange >= 0 ? 'border-b-green-500' : 'border-b-red-500'
+                            }`}></div>
+                            <span className={`font-bold ${
+                              channel.priceChange >= 0 ? 'text-green-500' : 'text-red-500'
+                            }`}>
+                              {channel.marketCap}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Price */}
+                        <div className="flex items-center gap-2 text-sm">
+                          <div className="w-4 h-4 rounded-full border-2 border-muted-foreground flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full"></div>
+                          </div>
+                          <span className="text-white font-semibold">{channel.price}</span>
+                        </div>
+
+                        {/* Holders */}
+                        <div className="flex items-center gap-2 text-sm">
+                          <Users className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-white font-semibold">{channel.holders}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </>
