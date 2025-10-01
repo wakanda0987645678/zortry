@@ -255,15 +255,14 @@ export default function Channels() {
                 </h2>
               </div>
               
-              {/* Horizontal Scrollable Grid */}
-              <div className="overflow-x-auto pb-4">
-                <div className="flex gap-4 min-w-max">
-                  {filteredChannels.map((channel) => (
+              {/* Responsive Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                {filteredChannels.map((channel) => (
                     <div 
-                      key={channel.id} 
-                      className="compact-channel-card group cursor-pointer flex-shrink-0"
-                      onClick={() => handleTradeChannel(channel)}
-                    >
+                    key={channel.id} 
+                    className="compact-channel-card group cursor-pointer"
+                    onClick={() => handleTradeChannel(channel)}
+                  >
                       {/* Channel Icon */}
                       <div className="w-16 h-16 rounded-xl overflow-hidden mb-3 mx-auto">
                         <img 
@@ -292,8 +291,7 @@ export default function Channels() {
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                ))}
               </div>
 
               {/* View All Button */}

@@ -106,7 +106,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md bg-card border-border">
+      <DialogContent className="sm:max-w-sm bg-card border-border p-4">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -114,9 +114,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Coin Info */}
-          <div className="p-4 rounded-xl bg-muted/50 border border-border">
+          <div className="p-3 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-muted-foreground">Trading</span>
               <span className="text-sm font-medium" data-testid="text-modal-coin-name">{coin.name}</span>
@@ -133,7 +133,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
           {/* Trade Input */}
           <div>
-            <Label htmlFor="ethAmount" className="text-sm font-medium mb-2 block">
+            <Label htmlFor="ethAmount" className="text-xs font-medium mb-1 block">
               You Pay
             </Label>
             <div className="relative">
@@ -144,7 +144,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 min="0"
                 value={ethAmount}
                 onChange={(e) => setEthAmount(e.target.value)}
-                className="pr-16 bg-muted border-input text-foreground text-lg font-medium"
+                className="pr-16 bg-muted border-input text-foreground text-base font-medium h-9"
                 disabled={isTrading || !!txHash}
                 data-testid="input-eth-amount"
               />
@@ -163,7 +163,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
           {/* Trade Output */}
           <div>
-            <Label htmlFor="tokenAmount" className="text-sm font-medium mb-2 block">
+            <Label htmlFor="tokenAmount" className="text-xs font-medium mb-1 block">
               You Receive (Estimated)
             </Label>
             <div className="relative">
@@ -172,7 +172,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 type="text"
                 value={estimatedTokens.toLocaleString()}
                 readOnly
-                className="pr-24 bg-muted border-input text-foreground text-lg font-medium"
+                className="pr-24 bg-muted border-input text-foreground text-base font-medium h-9"
                 data-testid="text-token-amount"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -182,7 +182,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </div>
 
           {/* Trade Details */}
-          <div className="p-4 rounded-xl bg-secondary/10 border border-secondary/30 space-y-2 text-sm">
+          <div className="p-3 rounded-lg bg-secondary/10 border border-secondary/30 space-y-1 text-xs">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Exchange Rate</span>
               <span className="font-medium">1 ETH = 1,000,000 ${coin.symbol}</span>
@@ -199,7 +199,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
           {/* Action Buttons */}
           {!txHash ? (
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-2 pt-2">
               <Button
                 variant="outline"
                 className="flex-1"
@@ -235,7 +235,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               )}
             </div>
           ) : (
-            <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30">
+            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5" />
                 <div className="flex-1">
