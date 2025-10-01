@@ -16,7 +16,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getCoin } from "@zoralabs/coins-sdk";
+import { getProfileCoins } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 
 export default function Profile() {
@@ -46,7 +46,7 @@ export default function Profile() {
   const displayedCoins = selectedTab === "created" ? createdCoins : ownedCoins;
 
   useEffect(() => {
-    if (!createdCoins.length) {
+    if (!address || !isConnected) {
       setTotalEarnings(0);
       return;
     }
@@ -55,30 +55,36 @@ export default function Profile() {
     setIsLoadingEarnings(true);
 
     async function fetchAllEarnings() {
-      let total = 0;
+      try {
+        const response = await getProfileCoins({
+          identifier: address,
+          count: 100,
+        });
 
-      for (const coin of createdCoins) {
-        if (!coin.address) continue;
+        const profile: any = response.data?.profile;
+        let total = 0;
 
-        try {
-          const response = await getCoin({
-            address: coin.address,
-            chain: base.id,
-          });
-
-          const coinData = response.data?.zora20Token;
-          if (coinData?.creatorEarnings && coinData.creatorEarnings.length > 0) {
-            const earnings = parseFloat(coinData.creatorEarnings[0].amountUsd || "0");
-            total += earnings;
+        if (profile?.createdCoins?.edges) {
+          for (const edge of profile.createdCoins.edges) {
+            const coin: any = edge.node;
+            
+            if (coin?.creatorEarnings && coin.creatorEarnings.length > 0) {
+              const earnings = parseFloat(coin.creatorEarnings[0].amountUsd || "0");
+              total += earnings;
+            }
           }
-        } catch (error) {
-          console.error(`Error fetching earnings for coin ${coin.symbol}:`, error);
         }
-      }
 
-      if (isMounted) {
-        setTotalEarnings(total);
-        setIsLoadingEarnings(false);
+        if (isMounted) {
+          setTotalEarnings(total);
+          setIsLoadingEarnings(false);
+        }
+      } catch (error) {
+        console.error("Error fetching creator earnings:", error);
+        if (isMounted) {
+          setTotalEarnings(0);
+          setIsLoadingEarnings(false);
+        }
       }
     }
 
@@ -87,7 +93,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, [createdCoins]);
+  }, [address, isConnected]);
 
   const formatAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
