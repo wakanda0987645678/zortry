@@ -1,9 +1,6 @@
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import type { Coin } from "@shared/schema";
-import URLInputForm from "@/components/url-input-form";
-import ContentPreviewCard from "@/components/content-preview-card";
 import CoinCard from "@/components/coin-card";
 import Layout from "@/components/layout";
 import {
@@ -14,52 +11,13 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const [showPreview, setShowPreview] = useState(false);
-  const [scrapedData, setScrapedData] = useState<any>(null);
-
   const { data: coins = [], isLoading } = useQuery<Coin[]>({
     queryKey: ["/api/coins"],
   });
 
-  const handleScrapedData = (data: any) => {
-    setScrapedData(data);
-    setShowPreview(true);
-  };
-
-  const handleCoinCreated = () => {
-    setShowPreview(false);
-    setScrapedData(null);
-  };
-
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative p-4 sm:p-8 bg-gradient-to-b from-primary/20 via-background/50 to-background">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-4 sm:mb-8">
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl">
-              Import content from any URL and mint it as a tradeable coin on the Base blockchain.
-            </p>
-          </div>
-
-          <URLInputForm onScraped={handleScrapedData} />
-        </div>
-      </section>
-
-            {/* Content Preview Section */}
-            {showPreview && scrapedData && (
-              <section className="p-4 sm:p-8">
-                <div className="max-w-6xl mx-auto">
-                  <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-white">Preview & Create Coin</h2>
-                  <ContentPreviewCard
-                    scrapedData={scrapedData}
-                    onCoinCreated={handleCoinCreated}
-                  />
-                </div>
-              </section>
-            )}
-
-            {/* Stats Section */}
+      {/* Stats Section */}
             <section className="p-4 sm:p-8">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-white">Platform Stats</h2>
