@@ -1,0 +1,35 @@
+PINATA_JWT available: true
+pinata.ts:5 Environment variables: {VITE_PINATA_JWT: true, VITE_PINATA_API_KEY: true, VITE_NEXT_PUBLIC_GATEWAY_URL: true}VITE_NEXT_PUBLIC_GATEWAY_URL: trueVITE_PINATA_API_KEY: trueVITE_PINATA_JWT: true[[Prototype]]: Object
+zora.ts:72 Using metadata URI: https://miro.medium.com/v2/da:true/resize:fit:1200/0*jQ7Z0Y2Rw8kblsEX
+zora.ts:92 Zora coin creation error: Error: Metadata is not a valid JSON or plain text response type
+    at validateMetadataURIContent (@zoralabs_coins-sdk.js?v=cbbaab87:2429:11)
+    at async createCoinCall (@zoralabs_coins-sdk.js?v=cbbaab87:2511:3)
+    at async createZoraCoin (zora.ts:86:21)
+    at async Object.mutationFn (content-preview-card.tsx:58:30)
+createZoraCoin @ zora.ts:92
+await in createZoraCoin
+mutationFn @ content-preview-card.tsx:58
+await in mutationFn
+fn @ chunk-7X75LGXT.js?v=cbbaab87:1189
+run @ chunk-7X75LGXT.js?v=cbbaab87:494
+start @ chunk-7X75LGXT.js?v=cbbaab87:536
+execute @ chunk-7X75LGXT.js?v=cbbaab87:1225
+await in execute
+mutate @ chunk-7X75LGXT.js?v=cbbaab87:2630
+(anonymous) @ chunk-7X75LGXT.js?v=cbbaab87:3295
+onClick @ content-preview-card.tsx:167
+callCallback2 @ chunk-Z2GUPSCO.js?v=cbbaab87:3674
+invokeGuardedCallbackDev @ chunk-Z2GUPSCO.js?v=cbbaab87:3699
+invokeGuardedCallback @ chunk-Z2GUPSCO.js?v=cbbaab87:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-Z2GUPSCO.js?v=cbbaab87:3736
+executeDispatch @ chunk-Z2GUPSCO.js?v=cbbaab87:7014
+processDispatchQueueItemsInOrder @ chunk-Z2GUPSCO.js?v=cbbaab87:7034
+processDispatchQueue @ chunk-Z2GUPSCO.js?v=cbbaab87:7043
+dispatchEventsForPlugins @ chunk-Z2GUPSCO.js?v=cbbaab87:7051
+(anonymous) @ chunk-Z2GUPSCO.js?v=cbbaab87:7174
+batchedUpdates$1 @ chunk-Z2GUPSCO.js?v=cbbaab87:18913
+batchedUpdates @ chunk-Z2GUPSCO.js?v=cbbaab87:3579
+dispatchEventForPluginEventSystem @ chunk-Z2GUPSCO.js?v=cbbaab87:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-Z2GUPSCO.js?v=cbbaab87:5478
+dispatchEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5472
+dispatchDiscreteEvent @ chunk-Z2GUPSCO.js?v=cbbaab87:5449Understand this error
