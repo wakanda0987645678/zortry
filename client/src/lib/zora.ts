@@ -3,8 +3,7 @@ import {
   createCoinCall,
   setApiKey,
   getCoinCreateFromLogs,
-  DeployCurrency,
-  createCoinsClient // Import createCoinsClient
+  DeployCurrency
 } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, http, type Address, type Hash } from "viem";
 import { base, baseSepolia } from "viem/chains";
@@ -84,8 +83,9 @@ export async function createZoraCoin(
       const ipfsHash = await uploadToPinata(metadataFile);
 
       if (ipfsHash) {
-        // Use public IPFS gateway instead of private Pinata gateway to avoid auth issues
-        metadataUri = `https://ipfs.io/ipfs/${ipfsHash}`;
+        // Use Pinata's dedicated gateway for faster access
+        const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || 'yellow-patient-cheetah-559.mypinata.cloud';
+        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
@@ -141,17 +141,17 @@ export async function createZoraCoinWithWallet(
     // Create proper JSON metadata for Zora SDK
     const jsonMetadata = {
       name: metadata.name,
-      description: metadata.description || `A coin representing ${metadata.title}`,
+      description: metadata.description || `A coin representing ${metadata.name}`,
       image: metadata.image || "",
-      external_url: metadata.url || "",
+      external_url: metadata.externalUrl || "",
       attributes: [
         {
           trait_type: "Platform",
-          value: metadata.platform || "web"
+          value: "web"
         },
         {
           trait_type: "Creator",
-          value: metadata.author || "Unknown"
+          value: creatorAddress
         }
       ]
     };
@@ -170,8 +170,9 @@ export async function createZoraCoinWithWallet(
       const ipfsHash = await uploadToPinata(metadataFile);
 
       if (ipfsHash) {
-        // Use public IPFS gateway instead of private Pinata gateway to avoid auth issues
-        metadataUri = `https://ipfs.io/ipfs/${ipfsHash}`;
+        // Use Pinata's dedicated gateway for faster access
+        const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || 'yellow-patient-cheetah-559.mypinata.cloud';
+        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
