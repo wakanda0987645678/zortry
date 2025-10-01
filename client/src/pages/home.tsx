@@ -3,8 +3,8 @@ import { Link } from "wouter";
 import type { Coin } from "@shared/schema";
 import CoinCard from "@/components/coin-card";
 import Layout from "@/components/layout";
-import { Coins as CoinsIcon } from "lucide-react";
-import { useState, useMemo } from "react";
+import { Coins as CoinsIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
 
 type CoinWithPlatform = Coin & { platform?: string };
 
@@ -14,6 +14,8 @@ export default function Home() {
   });
 
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const getCoinCount = (platformId: string) => {
     if (platformId === "all") return coins.length;
@@ -40,13 +42,34 @@ export default function Home() {
     return coins.filter(coin => coin.platform === selectedCategory);
   }, [coins, selectedCategory]);
 
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = direction === 'left' ? -400 : 400;
+      scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Layout>
       {/* Category Bar */}
       <section className="p-4 sm:p-6">
         <div className="max-w-6xl mx-auto">
-          <div className="relative overflow-hidden">
-            <div className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="relative group">
+            {/* Left Arrow */}
+            <button
+              onClick={() => scroll('left')}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm p-2 rounded-full border border-border/50 hover:bg-muted/30 transition-all opacity-0 group-hover:opacity-100"
+              data-testid="button-scroll-left"
+            >
+              <ChevronLeft className="w-4 h-4 text-white" />
+            </button>
+
+            {/* Category Chips */}
+            <div 
+              ref={scrollContainerRef}
+              className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
               {categories.map((category) => {
                 const count = getCoinCount(category.id);
                 return (
@@ -65,6 +88,15 @@ export default function Home() {
                 );
               })}
             </div>
+
+            {/* Right Arrow */}
+            <button
+              onClick={() => scroll('right')}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm p-2 rounded-full border border-border/50 hover:bg-muted/30 transition-all opacity-0 group-hover:opacity-100"
+              data-testid="button-scroll-right"
+            >
+              <ChevronRight className="w-4 h-4 text-white" />
+            </button>
           </div>
         </div>
       </section>
