@@ -102,13 +102,13 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     let isMounted = true;
     async function fetchCoinStats() {
       try {
-        const ZORA_API_KEY = import.meta.env.VITE_ZORA_API_KEY;
-        if (!ZORA_API_KEY) {
-          console.warn("ZORA_API_KEY not configured");
+        const BASE_API_KEY = import.meta.env.VITE_BASE_API_KEY;
+        if (!BASE_API_KEY) {
+          console.warn("BASE_API_KEY not configured");
           return;
         }
 
-        // Mock stats for now since we don't have the actual Zora SDK implementation
+        // Mock stats for now since we don't have the actual Base SDK implementation
         if (isMounted) {
           setPrice("0.001");
           setMarketCap("10000");
@@ -167,7 +167,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     setTxHash(null);
 
     try {
-      // Mock trade implementation - replace with actual Zora SDK when available
+      // Mock trade implementation - replace with actual Base SDK when available
       console.log("Trading", ethAmount, "ETH for", coinAddress);
       
       // Simulate a transaction hash
@@ -364,13 +364,13 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
                     <div className="p-2 bg-green-50 rounded-lg text-xs">
                       <p className="text-green-800">✅ Success!</p>
                       <a
-                        href={`https://explorer.zora.energy/tx/${txHash}`}
+                        href={`https://basescan.org/tx/${txHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
                         data-testid="link-tx-explorer"
                       >
-                        View on Zora Explorer
+                        View on BaseScan
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>

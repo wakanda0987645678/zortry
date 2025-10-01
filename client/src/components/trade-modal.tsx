@@ -141,7 +141,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Network</span>
-              <span className="font-medium">Zora</span>
+              <span className="font-medium">Base</span>
             </div>
           </div>
 
@@ -183,13 +183,13 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 <div className="flex-1">
                   <div className="font-medium text-green-400 mb-1">Transaction Successful!</div>
                   <a
-                    href={`https://explorer.zora.energy/tx/${txHash}`}
+                    href={`https://basescan.org/tx/${txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
                     data-testid="link-tx-explorer"
                   >
-                    View on Zora Explorer
+                    View on BaseScan
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>

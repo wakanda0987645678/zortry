@@ -21,12 +21,12 @@ export default function FAQ() {
     },
     {
       question: "How do I create a coin?",
-      answer: "Simply paste a blog URL into our platform, preview the extracted content, customize the metadata, and mint it as a coin on the Zora blockchain. The process is automated and user-friendly.",
+      answer: "Simply paste a blog URL into our platform, preview the extracted content, customize the metadata, and mint it as a coin on the Base blockchain. The process is automated and user-friendly.",
       category: "creation"
     },
     {
       question: "What blockchains does CoinIT support?",
-      answer: "Currently, CoinIT operates on the Zora network, which is built on Ethereum. We chose Zora for its focus on creator economics and NFT infrastructure.",
+      answer: "Currently, CoinIT operates on the Base network, which is an Ethereum Layer 2 built by Coinbase. We chose Base for its low fees, fast transactions, and growing DeFi ecosystem.",
       category: "technical"
     },
     {

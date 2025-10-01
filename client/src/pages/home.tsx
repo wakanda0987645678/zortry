@@ -39,7 +39,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Import content from any URL and mint it as a tradeable coin on the Zora blockchain.
+              Import content from any URL and mint it as a tradeable coin on the Base blockchain.
             </p>
           </div>
 
@@ -79,7 +79,7 @@ export default function Home() {
                       <span className="text-muted-foreground font-semibold">Network</span>
                       <TrendingUp className="w-6 h-6 text-primary" />
                     </div>
-                    <div className="text-3xl font-black text-white" data-testid="text-total-volume">Zora</div>
+                    <div className="text-3xl font-black text-white" data-testid="text-total-volume">Base</div>
                     <div className="text-sm text-primary mt-1">Blockchain</div>
                   </div>
 

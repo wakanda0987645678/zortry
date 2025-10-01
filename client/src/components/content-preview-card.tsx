@@ -43,7 +43,7 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
       const coinData = {
         name: scrapedData.title,
         symbol: coinSymbol,
-        address: `0x${Math.random().toString(16).substring(2, 42)}`, // Placeholder - will be replaced by actual Zora contract address
+        address: `0x${Math.random().toString(16).substring(2, 42)}`, // Placeholder - will be replaced by actual Base contract address
         creator: "0x0000000000000000000000000000000000000000", // Will be replaced with actual wallet address
         scrapedContentId: scrapedData.id,
         ipfsUri,
