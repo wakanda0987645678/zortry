@@ -380,7 +380,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             </Dialog>
           )}
         </div>
-      </CardContent>
+      </div>
     </div>
   );
 }
