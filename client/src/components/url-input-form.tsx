@@ -53,19 +53,19 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
     <div className="spotify-card rounded-2xl p-8 max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="blogUrl" className="block text-lg font-bold text-white mb-4">
-            Enter Blog or Article URL
+          <label htmlFor="contentUrl" className="block text-lg font-bold text-white mb-4">
+            Enter Content URL
           </label>
           <div className="flex gap-4">
             <Input
               type="url"
-              id="blogUrl"
-              placeholder="https://medium.com/@author/amazing-article"
+              id="contentUrl"
+              placeholder="https://youtube.com/@channel, https://medium.com/@author/article, or any supported URL..."
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               className="flex-1 bg-muted/50 border-border text-white placeholder:text-muted-foreground h-14 text-lg rounded-full px-6 focus:ring-2 focus:ring-primary"
               disabled={scrapeMutation.isPending}
-              data-testid="input-blog-url"
+              data-testid="input-content-url"
             />
             <Button
               type="submit"
@@ -88,8 +88,24 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
           </div>
         </div>
         
-        <div className="text-sm text-muted-foreground">
-          <span className="font-semibold">Supported platforms:</span> Medium, Substack, personal blogs, news articles, and most web content
+        <div className="text-sm text-muted-foreground space-y-2">
+          <div>
+            <span className="font-semibold text-white">Supported platforms:</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1">
+            <span>• YouTube channels</span>
+            <span>• Spotify songs</span>
+            <span>• Medium articles</span>
+            <span>• Substack posts</span>
+            <span>• Gitcoin grants</span>
+            <span>• Giveth projects</span>
+            <span>• TikTok profiles</span>
+            <span>• Instagram pages</span>
+            <span>• Twitter/X profiles</span>
+            <span>• GitHub projects</span>
+            <span>• Personal blogs</span>
+            <span>• News articles</span>
+          </div>
         </div>
       </form>
     </div>

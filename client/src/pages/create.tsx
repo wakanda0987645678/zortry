@@ -27,7 +27,7 @@ export default function Create() {
             Create Your <span className="spotify-green">Digital Coin</span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            Transform any blog post or article into a tradeable digital asset.
+            Transform any content into a tradeable digital asset - grants, songs, channels, articles, social media, and more.
           </p>
         </div>
 
@@ -52,7 +52,7 @@ export default function Create() {
               <div className="space-y-2">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-black font-bold">1</div>
                 <h4 className="font-bold text-white">Import Content</h4>
-                <p className="text-sm text-muted-foreground">Paste any blog URL and we'll extract the content automatically.</p>
+                <p className="text-sm text-muted-foreground">Paste any URL from supported platforms and we'll extract the content automatically.</p>
               </div>
               <div className="space-y-2">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-black font-bold">2</div>
@@ -62,7 +62,7 @@ export default function Create() {
               <div className="space-y-2">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-black font-bold">3</div>
                 <h4 className="font-bold text-white">Mint on Blockchain</h4>
-                <p className="text-sm text-muted-foreground">Deploy your coin to the Zora network and start trading.</p>
+                <p className="text-sm text-muted-foreground">Deploy your coin to the Base network and start trading.</p>
               </div>
             </div>
           </div>
