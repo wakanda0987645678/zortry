@@ -3,7 +3,7 @@ import {
   createCoinCall,
   setApiKey,
   getCoinCreateFromLogs,
-  DeployCurrency
+  CreateConstants
 } from "@zoralabs/coins-sdk";
 import { createPublicClient, createWalletClient, http, type Address, type Hash } from "viem";
 import { base, baseSepolia } from "viem/chains";
@@ -93,14 +93,15 @@ export async function createZoraCoin(
       metadataUri = "";
     }
 
-    // Create coin arguments matching SDK v0.2.1 API
+    // Create coin arguments matching SDK v0.3.2 API
     const createCoinArgs = {
+      creator: creatorAddress,
       name: metadata.name,
       symbol: metadata.symbol,
-      uri: metadataUri || "", // Use empty string if no valid URI
+      metadata: { type: "RAW_URI" as const, uri: metadataUri || "" },
+      currency: CreateConstants.ContentCoinCurrencies.ETH,
       chainId,
-      payoutRecipient: creatorAddress, // Creator receives payouts
-      currency: DeployCurrency.ETH,
+      skipMetadataValidation: true, // Skip validation since we've already validated and uploaded
     };
 
     // For client-side, we'll return the call data instead of executing
@@ -179,22 +180,23 @@ export async function createZoraCoinWithWallet(
       metadataUri = "";
     }
 
-    // Create coin arguments matching SDK v0.2.1 API
+    // Create coin arguments matching SDK v0.3.2 API
     const createCoinArgs = {
+      creator: creatorAddress,
       name: metadata.name,
       symbol: metadata.symbol,
-      uri: metadataUri || "", // Use empty string if no valid URI
+      metadata: { type: "RAW_URI" as const, uri: metadataUri || "" },
+      currency: CreateConstants.ContentCoinCurrencies.ETH,
       chainId,
-      payoutRecipient: creatorAddress,
-      currency: DeployCurrency.ETH,
+      skipMetadataValidation: true, // Skip validation since we've already validated and uploaded
     };
 
-    // Create coin using high-level function with SDK v0.2.1 signature
-    const result = await createCoin(
-      createCoinArgs,
+    // Create coin using high-level function with SDK v0.3.2 signature
+    const result = await createCoin({
+      call: createCoinArgs,
       walletClient,
-      publicClient
-    );
+      publicClient,
+    });
 
     // Ensure address is defined
     if (!result.address) {
