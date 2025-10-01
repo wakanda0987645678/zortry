@@ -2,8 +2,7 @@ export async function uploadToIPFS(metadata: any): Promise<string> {
   const PINATA_JWT = import.meta.env.VITE_PINATA_JWT || "";
   
   if (!PINATA_JWT) {
-    console.warn("PINATA_JWT not configured, using mock IPFS URI");
-    return `ipfs://mock-${Math.random().toString(36).substring(7)}`;
+    throw new Error("PINATA_JWT not configured. Please set VITE_PINATA_JWT environment variable.");
   }
 
   try {
@@ -16,19 +15,23 @@ export async function uploadToIPFS(metadata: any): Promise<string> {
       body: JSON.stringify({
         pinataContent: metadata,
         pinataMetadata: {
-          name: `${metadata.title}-metadata`,
+          name: `${metadata.title || 'coin'}-metadata`,
         },
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`Pinata upload failed: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(`Pinata upload failed: ${response.statusText} - ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
     return `ipfs://${data.IpfsHash}`;
   } catch (error) {
     console.error("IPFS upload error:", error);
+    if (error instanceof Error) {
+      throw error;
+    }
     throw new Error("Failed to upload metadata to IPFS");
   }
 }
