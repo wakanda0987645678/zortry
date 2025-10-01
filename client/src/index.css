@@ -187,6 +187,17 @@
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
   }
 
+  .compact-channel-card {
+    @apply backdrop-blur-sm border border-border/30 rounded-2xl p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20 hover:transform hover:scale-[1.05];
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(20, 20, 20, 0.6));
+    width: 180px;
+    min-width: 180px;
+  }
+
+  .compact-channel-card:hover {
+    background: linear-gradient(135deg, rgba(30, 215, 96, 0.1), rgba(20, 20, 20, 0.8));
+  }
+
   /* Mobile-specific utilities */
   .mobile-grid {
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;

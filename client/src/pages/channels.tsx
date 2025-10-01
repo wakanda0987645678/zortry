@@ -226,8 +226,8 @@ export default function Channels() {
       </section>
 
       {/* Channels Grid */}
-      <section className="p-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="p-4 md:p-8">
+        <div className="max-w-7xl mx-auto">
           {filteredChannels.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -250,82 +250,60 @@ export default function Channels() {
             <>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-white">
-                  {searchTerm ? `Search results for "${searchTerm}"` : "All Channels"}
+                  {searchTerm ? `Search results for "${searchTerm}"` : "Trending Channels"}
                   <span className="text-muted-foreground ml-2">({filteredChannels.length})</span>
                 </h2>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredChannels.map((channel) => (
-                  <div key={channel.id} className="channel-card group cursor-pointer">
-                    {/* Channel Image */}
-                    <div className="relative w-full h-48 overflow-hidden rounded-lg mb-3">
-                      <img 
-                        src={channel.image} 
-                        alt={channel.name}
-                        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
-                      />
-                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1">
-                        <div className="flex items-center gap-1 text-xs text-white/80">
-                          <Clock className="w-3 h-3" />
-                          {channel.timeAgo}
+              {/* Horizontal Scrollable Grid */}
+              <div className="overflow-x-auto pb-4">
+                <div className="flex gap-4 min-w-max">
+                  {filteredChannels.map((channel) => (
+                    <div 
+                      key={channel.id} 
+                      className="compact-channel-card group cursor-pointer flex-shrink-0"
+                      onClick={() => handleTradeChannel(channel)}
+                    >
+                      {/* Channel Icon */}
+                      <div className="w-16 h-16 rounded-xl overflow-hidden mb-3 mx-auto">
+                        <img 
+                          src={channel.image} 
+                          alt={channel.name}
+                          className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                        />
+                      </div>
+
+                      {/* Channel Info */}
+                      <div className="text-center space-y-1">
+                        <h3 className="font-bold text-white text-sm leading-tight">
+                          {channel.name}
+                          <br />
+                          <span className="text-xs text-muted-foreground font-normal">
+                            ({channel.symbol})
+                          </span>
+                        </h3>
+                        
+                        <div className="text-xs text-muted-foreground">
+                          market cap: <span className="text-primary font-semibold">{channel.marketCap}</span>
+                        </div>
+                        
+                        <div className="text-xs text-muted-foreground">
+                          replies: <span className="text-white font-semibold">{channel.holders * 30 + Math.floor(Math.random() * 50)}</span>
                         </div>
                       </div>
                     </div>
+                  ))}
+                </div>
+              </div>
 
-                    {/* Channel Info */}
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-bold text-white text-lg leading-tight">{channel.name}</h3>
-                      </div>
-                      
-                      <p className="text-sm text-muted-foreground">{channel.creator}</p>
-
-                      {/* Stats */}
-                      <div className="space-y-2 pt-2">
-                        {/* Market Cap */}
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1">
-                            <div className={`w-0 h-0 border-l-[4px] border-r-[4px] border-b-[6px] border-l-transparent border-r-transparent ${
-                              channel.priceChange >= 0 ? 'border-b-green-500' : 'border-b-red-500'
-                            }`}></div>
-                            <span className={`font-bold ${
-                              channel.priceChange >= 0 ? 'text-green-500' : 'text-red-500'
-                            }`}>
-                              {channel.marketCap}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Price */}
-                        <div className="flex items-center gap-2 text-sm">
-                          <div className="w-4 h-4 rounded-full border-2 border-muted-foreground flex items-center justify-center">
-                            <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full"></div>
-                          </div>
-                          <span className="text-white font-semibold">{channel.price}</span>
-                        </div>
-
-                        {/* Holders */}
-                        <div className="flex items-center gap-2 text-sm">
-                          <Users className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-white font-semibold">{channel.holders}</span>
-                        </div>
-                      </div>
-
-                      {/* Trade Button */}
-                      <div className="pt-3 border-t border-border/20">
-                        <Button
-                          onClick={() => handleTradeChannel(channel)}
-                          className="w-full bg-gradient-to-r from-primary to-secondary hover:shadow-glow transition-all duration-200"
-                          size="sm"
-                        >
-                          <TrendingUp className="w-4 h-4 mr-2" />
-                          Trade ${channel.symbol}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              {/* View All Button */}
+              <div className="text-center mt-8">
+                <Button 
+                  variant="outline" 
+                  className="border-border/50 hover:border-primary/50 transition-colors"
+                >
+                  View All Channels
+                </Button>
               </div>
             </>
           )}
