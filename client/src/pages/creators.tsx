@@ -4,8 +4,10 @@ import type { Creator, Coin } from "@shared/schema";
 import { Users, TrendingUp, Award, Star, ExternalLink, Coins as CoinsIcon } from "lucide-react";
 import Layout from "@/components/layout";
 import { formatEther } from "viem";
+import { useNavigate } from "react-router-dom"; // Assuming you're using react-router-dom for navigation
 
 export default function Creators() {
+  const navigate = useNavigate(); // Initialize navigate
   const [selectedTab, setSelectedTab] = useState<"top" | "rising" | "new">("top");
 
   const { data: creators = [], isLoading: creatorsLoading } = useQuery<Creator[]>({
@@ -189,43 +191,42 @@ export default function Creators() {
           ) : (
             /* Creators List */
             <div className="space-y-4">
-              {filteredCreators.map((creator, index) => (
-                <div key={creator.id} className="spotify-card rounded-xl p-6 hover-lift">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="text-2xl font-bold text-muted-foreground w-8">
-                        #{index + 1}
-                      </div>
-                      <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-black font-bold">
+              {filteredCreators.map((creator, index) => {
+                const coinsCreated = creator.totalCoins; // Assuming totalCoins is the relevant metric
+                const totalMarketCap = creator.totalVolume; // Assuming totalVolume is the relevant metric
+
+                return (
+                  <div 
+                    key={creator.id}
+                    className="spotify-card flex items-center gap-3 p-3 sm:p-4 cursor-pointer group"
+                    onClick={() => navigate(`/creator/${creator.address}`)} // Example navigation
+                  >
+                    <div className="relative flex-shrink-0">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full flex items-center justify-center text-lg sm:text-xl font-bold text-white">
                         {creator.avatar}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-bold text-white">
-                            {creator.name || formatAddress(creator.address)}
-                          </h3>
-                          {creator.verified && (
-                            <Star className="w-4 h-4 text-primary fill-current" />
-                          )}
+                      {index < 3 && (
+                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs font-bold text-black">
+                          {index + 1}
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>{creator.followers.toLocaleString()} followers</span>
-                          <span className="font-mono">{formatAddress(creator.address)}</span>
-                          <span>Joined {formatAge(creator.createdAt)}</span>
-                        </div>
-                      </div>
+                      )}
                     </div>
-
-                    <div className="text-right space-y-1">
-                      <div className="text-lg font-bold text-white">{creator.totalVolume} ETH</div>
-                      <div className="text-sm text-muted-foreground flex items-center gap-1">
-                        <CoinsIcon className="w-3 h-3" />
-                        {creator.totalCoins} coins created
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-white font-bold text-sm sm:text-base truncate flex items-center gap-1">
+                        {creator.name || formatAddress(creator.address)}
+                        {index === 0 && <Award className="w-4 h-4 text-yellow-500 flex-shrink-0" />}
+                      </h3>
+                      <p className="text-muted-foreground text-xs font-mono hidden sm:block">{formatAddress(creator.address)}</p>
+                      <p className="text-muted-foreground text-xs sm:hidden">{coinsCreated} coins</p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-white font-bold text-sm sm:text-base">{totalMarketCap} ETH</div>
+                      <div className="text-muted-foreground text-xs hidden sm:block">Total Volume</div>
+                      <div className="text-muted-foreground text-xs sm:hidden">{coinsCreated} coins</div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

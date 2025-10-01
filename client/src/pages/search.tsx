@@ -148,21 +148,9 @@ export default function Search() {
               {/* Featuring Section */}
               <div className="space-y-4">
                 <h2 className="text-foreground font-bold text-xl">Featuring Trending Coins</h2>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {featuredCoins.map((coin) => (
-                    <div 
-                      key={coin.id}
-                      className="spotify-card cursor-pointer overflow-hidden"
-                      onClick={() => navigate(`/`)}
-                    >
-                      <div className="aspect-square bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center p-6">
-                        <CoinsIcon className="w-16 h-16 text-primary" />
-                      </div>
-                      <div className="p-3">
-                        <h3 className="text-foreground font-bold text-sm truncate">{coin.name}</h3>
-                        <p className="text-muted-foreground text-xs">{coin.symbol}</p>
-                      </div>
-                    </div>
+                    <CoinCard key={coin.id} coin={coin} />
                   ))}
                 </div>
               </div>
@@ -211,7 +199,7 @@ export default function Search() {
                     Coins {filteredCoins.length > 0 && `(${filteredCoins.length})`}
                   </h2>
                   {filteredCoins.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       {filteredCoins.slice(0, 6).map((coin) => (
                         <CoinCard key={coin.id} coin={coin} />
                       ))}
@@ -231,23 +219,23 @@ export default function Search() {
                     Creators {filteredCreators.length > 0 && `(${filteredCreators.length})`}
                   </h2>
                   {filteredCreators.length > 0 ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {filteredCreators.slice(0, 6).map((creator) => (
                         <div 
                           key={creator.id}
-                          className="spotify-card flex items-center gap-4 p-4 cursor-pointer group"
+                          className="spotify-card flex items-center gap-3 p-3 cursor-pointer group"
                           onClick={() => navigate("/creators")}
                         >
-                          <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm flex-shrink-0">
                             {creator.name ? creator.name.substring(0, 2).toUpperCase() : creator.address.substring(2, 4).toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-foreground font-bold truncate">
+                            <h3 className="text-foreground font-bold text-sm truncate">
                               {creator.name || formatAddress(creator.address)}
                             </h3>
-                            <p className="text-muted-foreground text-sm">Creator</p>
+                            <p className="text-muted-foreground text-xs">Creator</p>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+                          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
                         </div>
                       ))}
                     </div>
