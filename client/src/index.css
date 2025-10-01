@@ -183,7 +183,8 @@
   }
 
   .channel-card {
-    @apply bg-gradient-to-br from-muted/5 to-muted/10 backdrop-blur-sm border border-border/50 rounded-xl p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:transform hover:scale-[1.02];
+    @apply bg-muted/10 backdrop-blur-sm border border-border/50 rounded-xl p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 hover:transform hover:scale-[1.02];
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
   }
 }
 
