@@ -6,7 +6,7 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
   // Scrape URL endpoint
   app.post("/api/scrape", async (req, res) => {
     try {
@@ -113,7 +113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     } catch (error) {
       console.error('Scraping error:', error);
-      
+
       if (axios.isAxiosError(error)) {
         if (error.code === 'ECONNABORTED') {
           return res.status(408).json({ error: 'Request timeout' });
