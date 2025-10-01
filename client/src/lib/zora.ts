@@ -80,12 +80,12 @@ export async function createZoraCoin(
       const metadataFile = new File([metadataBlob], `${metadata.symbol || 'coin'}-metadata.json`, { 
         type: 'application/json' 
       });
-      
+
       const ipfsHash = await uploadToPinata(metadataFile);
-      const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
-      
-      if (gatewayUrl && ipfsHash) {
-        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+
+      if (ipfsHash) {
+        // Use public IPFS gateway instead of private Pinata gateway to avoid auth issues
+        metadataUri = `https://ipfs.io/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
@@ -166,12 +166,12 @@ export async function createZoraCoinWithWallet(
       const metadataFile = new File([metadataBlob], `${metadata.symbol || 'coin'}-metadata.json`, { 
         type: 'application/json' 
       });
-      
+
       const ipfsHash = await uploadToPinata(metadataFile);
-      const gatewayUrl = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL;
-      
-      if (gatewayUrl && ipfsHash) {
-        metadataUri = `https://${gatewayUrl}/ipfs/${ipfsHash}`;
+
+      if (ipfsHash) {
+        // Use public IPFS gateway instead of private Pinata gateway to avoid auth issues
+        metadataUri = `https://ipfs.io/ipfs/${ipfsHash}`;
         console.log(`Created metadata URI: ${metadataUri}`);
       }
     } catch (uploadError) {
