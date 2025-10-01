@@ -3,7 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertScrapedContentSchema, insertCoinSchema } from "@shared/schema";
 import axios from "axios";
-import * as cheerio from "cheerio";
+import { detectPlatform } from "./platform-detector";
+import { scrapeByPlatform } from "./platform-scrapers";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -23,87 +24,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid URL format" });
       }
 
-      // Fetch the webpage
-      const response = await axios.get(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        },
-        timeout: 30000,
-      });
-
-      const html = response.data;
-      const $ = cheerio.load(html);
-
-      // Extract metadata
-      const title = $('title').text().trim() || 
-                    $('meta[property="og:title"]').attr('content') || 
-                    $('h1').first().text().trim() || 
-                    'Untitled';
-
-      const description = $('meta[name="description"]').attr('content') || 
-                         $('meta[property="og:description"]').attr('content') || 
-                         '';
-
-      const author = $('meta[name="author"]').attr('content') || 
-                     $('meta[property="article:author"]').attr('content') || 
-                     $('[rel="author"]').text().trim() || 
-                     '';
-
-      const publishDate = $('meta[property="article:published_time"]').attr('content') || 
-                         $('meta[name="publishdate"]').attr('content') || 
-                         $('time').attr('datetime') || 
-                         '';
-
-      const image = $('meta[property="og:image"]').attr('content') || 
-                    $('meta[name="twitter:image"]').attr('content') || 
-                    $('img').first().attr('src') || 
-                    '';
-
-      // Extract main content
-      let content = '';
-      const contentSelectors = [
-        'article',
-        '[role="main"]',
-        '.post-content',
-        '.entry-content',
-        '.content',
-        '.article-body',
-        '.story-body',
-        '.post-body',
-        'main',
-        '.main-content'
-      ];
-
-      for (const selector of contentSelectors) {
-        const element = $(selector);
-        if (element.length > 0) {
-          element.find('script, style, nav, footer, header, .sidebar, .comments, .social-share, .advertisement, .ad').remove();
-          content = element.text().trim();
-          if (content.length > 100) {
-            break;
-          }
-        }
-      }
-
-      if (!content || content.length < 100) {
-        $('script, style, nav, footer, header, .sidebar, .comments, .social-share, .advertisement, .ad').remove();
-        content = $('body').text().trim();
-      }
-
-      content = content.replace(/\s+/g, ' ').trim();
-
-      const tags = $('meta[name="keywords"]').attr('content')?.split(',').map(tag => tag.trim()) || [];
-
-      const scrapedData = {
-        url,
-        title,
-        description,
-        author,
-        publishDate,
-        image,
-        content: content.substring(0, 10000),
-        tags,
-      };
+      // Detect platform
+      const platformInfo = detectPlatform(url);
+      
+      // Scrape content using platform-specific logic
+      const scrapedData = await scrapeByPlatform(url, platformInfo.type);
 
       // Validate and store
       const validatedData = insertScrapedContentSchema.parse(scrapedData);

@@ -32,6 +32,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const content: ScrapedContent = { 
       ...insertContent,
+      platform: insertContent.platform ?? 'blog',
       image: insertContent.image ?? null,
       content: insertContent.content ?? null,
       description: insertContent.description ?? null,
