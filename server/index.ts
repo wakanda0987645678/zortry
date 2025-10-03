@@ -50,7 +50,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = registerRoutes(app);
+  const server = await registerRoutes(app);
 
   // Initialize Telegram bot
   initTelegramBot();

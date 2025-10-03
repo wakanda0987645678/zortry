@@ -7,6 +7,8 @@ import { detectPlatform } from "./platform-detector";
 import { scrapeByPlatform } from "./platform-scrapers";
 import { migrateOldData } from "./migrate-old-data";
 import { sendTelegramNotification } from "./telegram-bot";
+import { RegistryService } from "./registry-service";
+import { base } from "viem/chains";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -421,6 +423,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Delete notification error:', error);
       res.status(500).json({ error: 'Failed to delete notification' });
+    }
+  });
+
+  // Registry endpoints for onchain verification
+  const registryService = new RegistryService(base.id);
+
+  // Manually trigger batch registration of unregistered coins
+  app.post("/api/registry/sync", async (_req, res) => {
+    try {
+      const coins = await storage.getAllCoins();
+      const unregisteredCoins = coins.filter(
+        coin => coin.address && coin.status === 'active' && !coin.registryTxHash
+      );
+
+      if (unregisteredCoins.length === 0) {
+        return res.json({ 
+          message: 'No coins to register', 
+          registered: 0 
+        });
+      }
+
+      const txHash = await registryService.registerCoinsBatch(unregisteredCoins);
+
+      if (txHash) {
+        const now = new Date();
+        for (const coin of unregisteredCoins) {
+          const metadataHash = registryService.generateMetadataHash(coin);
+          await storage.updateCoin(coin.id, {
+            registryTxHash: txHash,
+            metadataHash,
+            registeredAt: now,
+          });
+        }
+
+        return res.json({ 
+          success: true, 
+          transactionHash: txHash,
+          registered: unregisteredCoins.length 
+        });
+      } else {
+        return res.status(500).json({ 
+          error: 'Failed to register coins batch' 
+        });
+      }
+    } catch (error) {
+      console.error('Registry sync error:', error);
+      res.status(500).json({ error: 'Failed to sync registry' });
+    }
+  });
+
+  // Get registry statistics
+  app.get("/api/registry/stats", async (_req, res) => {
+    try {
+      const totalRegistered = await registryService.getTotalCoinsRegistered();
+      const allCoins = await storage.getAllCoins();
+      const registeredInDb = allCoins.filter(c => c.registryTxHash).length;
+      const pendingRegistration = allCoins.filter(
+        c => c.address && c.status === 'active' && !c.registryTxHash
+      ).length;
+
+      res.json({
+        totalOnchain: totalRegistered,
+        totalInDb: allCoins.length,
+        registeredInDb,
+        pendingRegistration,
+      });
+    } catch (error) {
+      console.error('Registry stats error:', error);
+      res.status(500).json({ error: 'Failed to fetch registry stats' });
+    }
+  });
+
+  // Verify if a coin is registered onchain
+  app.get("/api/registry/verify/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      const isRegistered = await registryService.isPlatformCoin(address);
+      
+      const coin = await storage.getCoinByAddress(address);
+      
+      res.json({
+        address,
+        isRegistered,
+        registryTxHash: coin?.registryTxHash || null,
+        registeredAt: coin?.registeredAt || null,
+      });
+    } catch (error) {
+      console.error('Registry verify error:', error);
+      res.status(500).json({ error: 'Failed to verify coin' });
+    }
+  });
+
+  // Get creator coin count from registry
+  app.get("/api/registry/creator/:address/count", async (req, res) => {
+    try {
+      const { address } = req.params;
+      const count = await registryService.getCreatorCoinCount(address);
+      
+      res.json({
+        creator: address,
+        onchainCoinCount: count,
+      });
+    } catch (error) {
+      console.error('Registry creator count error:', error);
+      res.status(500).json({ error: 'Failed to fetch creator coin count' });
     }
   });
 
