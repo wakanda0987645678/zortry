@@ -255,7 +255,7 @@ export async function tradeZoraCoin({
   }
 
   try {
-    const { tradeCoin, TradeParameters } = await import("@zoralabs/coins-sdk");
+    const { tradeCoin } = await import("@zoralabs/coins-sdk");
 
     // Convert ETH amount to wei for the transaction
     const amountInWei = parseEther(ethAmount);
@@ -265,11 +265,11 @@ export async function tradeZoraCoin({
                                  "0xf25af781c4F1Df40Ac1D06e6B80c17815AD311F7";
 
     // Create trade parameters according to Zora SDK documentation
-    const tradeParameters: TradeParameters = isBuying ? {
+    const tradeParameters = isBuying ? {
       // Buying coin with ETH
-      sell: { type: "eth" },
+      sell: { type: "eth" as const },
       buy: { 
-        type: "erc20", 
+        type: "erc20" as const, 
         address: coinAddress 
       },
       amountIn: amountInWei,
@@ -279,10 +279,10 @@ export async function tradeZoraCoin({
     } : {
       // Selling coin for ETH
       sell: { 
-        type: "erc20", 
+        type: "erc20" as const, 
         address: coinAddress 
       },
-      buy: { type: "eth" },
+      buy: { type: "eth" as const },
       amountIn: amountInWei,
       slippage: 0.15, // 15% slippage tolerance for selling
       sender: userAddress,
