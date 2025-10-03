@@ -846,12 +846,34 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
                     // Format token balance - convert from wei-like units and format compactly
                     const tokenBalance = parseFloat(holder.balance);
-                    const formattedBalance = tokenBalance > 1e9
-                      ? `${(tokenBalance / 1e18).toFixed(2)}`
-                      : tokenBalance.toLocaleString(undefined, { maximumFractionDigits: 2 });
+                    let formattedBalance: string;
+                    
+                    if (tokenBalance > 1e18) {
+                      // Very large numbers (wei units) - convert to standard units
+                      formattedBalance = (tokenBalance / 1e18).toLocaleString(undefined, { 
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2 
+                      });
+                    } else if (tokenBalance > 1e6) {
+                      // Millions
+                      formattedBalance = (tokenBalance / 1e6).toFixed(2) + 'M';
+                    } else if (tokenBalance > 1e3) {
+                      // Thousands
+                      formattedBalance = (tokenBalance / 1e3).toFixed(2) + 'K';
+                    } else {
+                      formattedBalance = tokenBalance.toLocaleString(undefined, { maximumFractionDigits: 2 });
+                    }
 
-                    // Format percentage to max 2 decimal places
-                    const formattedPercentage = parseFloat(holder.percentage.toString()).toFixed(2);
+                    // Format percentage - clamp to reasonable range and format to 2 decimals
+                    let formattedPercentage: string;
+                    if (holder.percentage > 100) {
+                      // If percentage is way too high, recalculate or show as 100%
+                      formattedPercentage = '100.00';
+                    } else if (holder.percentage < 0.01) {
+                      formattedPercentage = '<0.01';
+                    } else {
+                      formattedPercentage = holder.percentage.toFixed(2);
+                    }
 
 
                     return (
