@@ -76,6 +76,29 @@ export const insertRewardSchema = createInsertSchema(rewards).omit({
 export type InsertReward = z.infer<typeof insertRewardSchema>;
 export type Reward = typeof rewards.$inferSelect;
 
+// Notifications
+export const notifications = pgTable("notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: text("user_id").notNull(), // Wallet address
+  type: text("type").notNull(), // 'coin_created', 'trade', 'buy', 'sell', 'reward'
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  coinAddress: text("coin_address"),
+  coinSymbol: text("coin_symbol"),
+  amount: text("amount"),
+  transactionHash: text("transaction_hash"),
+  read: boolean("read").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type Notification = typeof notifications.$inferSelect;
+
 export const creators = pgTable("creators", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   address: text("address").notNull().unique(),

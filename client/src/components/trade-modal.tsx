@@ -401,6 +401,34 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           }
         }
 
+        // Create notification for the trade
+        const notificationType = isBuying ? 'buy' : 'sell';
+        const notificationTitle = isBuying ? 'Coin Purchase Successful' : 'Coin Sale Successful';
+        // Ensure amounts are parsed correctly for notification message
+        const amountFormatted = formatEther(BigInt(result.amountReceived || result.amountSent || '0')); // Use appropriate field based on buy/sell
+        const totalCostFormatted = formatEther(BigInt(result.transaction.value || '0')); // Use transaction value for total cost
+
+        const notificationMessage = isBuying
+          ? `You bought ${amountFormatted} ${coin.symbol} for ${totalCostFormatted} ETH`
+          : `You sold ${amountFormatted} ${coin.symbol} for ${totalCostFormatted} ETH`;
+
+        await apiRequest('/api/notifications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: address,
+            type: notificationType,
+            title: notificationTitle,
+            message: notificationMessage,
+            coinAddress: coin.address,
+            coinSymbol: coin.symbol,
+            amount: amountFormatted, // Use formatted amount
+            transactionHash: result.hash,
+            read: false
+          })
+        });
+
+
         toast({
           title: "Trade successful!",
           description: `You ${isBuying ? 'bought' : 'sold'} ${coin.symbol} tokens${comment ? ` - ${comment}` : ''}`,
@@ -847,7 +875,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                     // Format token balance - convert from wei-like units and format compactly
                     const tokenBalance = parseFloat(holder.balance);
                     let formattedBalance: string;
-                    
+
                     if (tokenBalance > 1e18) {
                       // Very large numbers (wei units) - convert to standard units
                       formattedBalance = (tokenBalance / 1e18).toLocaleString(undefined, { 

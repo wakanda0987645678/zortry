@@ -20,9 +20,12 @@ import {
   User,
   Moon,
   Sun,
+  Bell,
 } from "lucide-react";
 import WalletConnectButton from "./wallet-connect-button";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import type { Notification } from "@shared/schema";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -32,10 +35,19 @@ export default function Layout({ children }: LayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [location, navigate] = useLocation();
+  const [location] = useLocation();
   const isMobile = useIsMobile();
   const { isConnected } = useAccount();
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const { address } = useAccount();
+
+  const { data: notifications = [] } = useQuery<Notification[]>({
+    queryKey: [`/api/notifications/${address}/unread`],
+    enabled: !!address,
+    refetchInterval: 10000, // Poll every 10 seconds
+  });
+
+  const unreadCount = notifications.length;
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
@@ -217,6 +229,16 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 );
               })}
+              <Link href="/notifications">
+                <button className={`nav-button relative ${location === "/notifications" ? "active" : ""}`}>
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </Link>
             </div>
           </footer>
         </div>
@@ -293,6 +315,43 @@ export default function Layout({ children }: LayoutProps) {
 
           {/* Desktop Page Content */}
           <main className="flex-1 overflow-y-auto">
+            {/* Desktop Navigation */}
+            <nav className="p-6 flex flex-col space-y-4">
+              {desktopNavItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location === item.href;
+
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <button className={`nav-button flex items-center gap-3 p-2 rounded-lg transition-colors ${
+                      isActive
+                        ? "text-white bg-primary/20"
+                        : "text-muted-foreground hover:text-white hover:bg-muted/10"
+                    }`}>
+                      <Icon className="w-6 h-6 flex-shrink-0" />
+                      <span className="font-bold">{item.label}</span>
+                    </button>
+                  </Link>
+                );
+              })}
+              <Link href="/creators">
+                <button className={`nav-button ${location === "/creators" ? "active" : ""}`}>
+                  <Users className="w-5 h-5" />
+                  <span>Creators</span>
+                </button>
+              </Link>
+              <Link href="/notifications">
+                <button className={`nav-button relative ${location === "/notifications" ? "active" : ""}`}>
+                  <Bell className="w-5 h-5" />
+                  <span>Notifications</span>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </Link>
+            </nav>
             {children}
           </main>
         </div>

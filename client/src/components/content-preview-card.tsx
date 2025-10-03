@@ -71,10 +71,10 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
         };
 
         const { createZoraCoinWithWallet } = await import('@/lib/zora');
-        
+
         if (walletClient) {
           zoraCoinResult = await createZoraCoinWithWallet(coinMetadata, walletAddress, walletClient);
-          
+
           // Update coin with address and active status
           await apiRequest("PATCH", `/api/coins/${createdCoin.id}`, {
             address: zoraCoinResult.address,
@@ -83,7 +83,7 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
         }
       } catch (zoraError) {
         console.warn("Zora blockchain creation failed, but coin saved to database:", zoraError);
-        
+
         // Update status to failed since Zora creation didn't work
         try {
           await apiRequest("PATCH", `/api/coins/${createdCoin.id}`, {
@@ -136,7 +136,7 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
             />
           )}
         </div>
-        
+
         <div className="md:col-span-2 space-y-3">
           <div>
             <h3 className="text-lg font-bold text-foreground mb-1" data-testid="text-preview-title">
@@ -148,7 +148,7 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
               </p>
             )}
           </div>
-          
+
           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
             {scrapedData.author && (
               <div className="flex items-center gap-1">
@@ -175,7 +175,7 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
               </a>
             </div>
           </div>
-          
+
           <div className="pt-3 border-t border-border">
             <Label htmlFor="coinSymbol" className="block text-xs font-medium mb-1.5">
               Coin Symbol

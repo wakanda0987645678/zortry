@@ -1,4 +1,4 @@
-import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward, type Creator, type InsertCreator, type UpdateCreator, type Comment, type InsertComment } from "@shared/schema";
+import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward, type Creator, type InsertCreator, type UpdateCreator, type Comment, type InsertComment, type Notification, type InsertNotification } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -34,6 +34,14 @@ export interface IStorage {
   createComment(comment: InsertComment): Promise<Comment>;
   getCommentsByCoin(coinAddress: string): Promise<Comment[]>;
   getAllComments(): Promise<Comment[]>;
+  
+  // Notifications
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  getNotificationsByUser(userId: string): Promise<Notification[]>;
+  getUnreadNotificationsByUser(userId: string): Promise<Notification[]>;
+  markNotificationAsRead(id: string): Promise<Notification | undefined>;
+  markAllNotificationsAsRead(userId: string): Promise<void>;
+  deleteNotification(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -42,6 +50,7 @@ export class MemStorage implements IStorage {
   private rewards: Map<string, Reward>;
   private creators: Map<string, Creator>;
   private comments: Map<string, Comment>;
+  private notifications: Map<string, Notification>;
 
   constructor() {
     this.scrapedContent = new Map();
@@ -49,6 +58,7 @@ export class MemStorage implements IStorage {
     this.rewards = new Map();
     this.creators = new Map();
     this.comments = new Map();
+    this.notifications = new Map();
   }
 
   async getScrapedContent(id: string): Promise<ScrapedContent | undefined> {
@@ -303,6 +313,57 @@ export class MemStorage implements IStorage {
     return Array.from(this.comments.values()).sort(
       (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
     );
+  }
+
+  async createNotification(insertNotification: InsertNotification): Promise<Notification> {
+    const id = randomUUID();
+    const notification: Notification = {
+      ...insertNotification,
+      coinAddress: insertNotification.coinAddress ?? null,
+      coinSymbol: insertNotification.coinSymbol ?? null,
+      amount: insertNotification.amount ?? null,
+      transactionHash: insertNotification.transactionHash ?? null,
+      read: insertNotification.read ?? false,
+      id,
+      createdAt: new Date()
+    };
+    this.notifications.set(id, notification);
+    return notification;
+  }
+
+  async getNotificationsByUser(userId: string): Promise<Notification[]> {
+    return Array.from(this.notifications.values())
+      .filter(notif => notif.userId.toLowerCase() === userId.toLowerCase())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getUnreadNotificationsByUser(userId: string): Promise<Notification[]> {
+    return Array.from(this.notifications.values())
+      .filter(notif => 
+        notif.userId.toLowerCase() === userId.toLowerCase() && !notif.read
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async markNotificationAsRead(id: string): Promise<Notification | undefined> {
+    const notification = this.notifications.get(id);
+    if (!notification) return undefined;
+    
+    const updated: Notification = { ...notification, read: true };
+    this.notifications.set(id, updated);
+    return updated;
+  }
+
+  async markAllNotificationsAsRead(userId: string): Promise<void> {
+    Array.from(this.notifications.values())
+      .filter(notif => notif.userId.toLowerCase() === userId.toLowerCase())
+      .forEach(notif => {
+        this.notifications.set(notif.id, { ...notif, read: true });
+      });
+  }
+
+  async deleteNotification(id: string): Promise<boolean> {
+    return this.notifications.delete(id);
   }
 }
 

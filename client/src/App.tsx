@@ -17,6 +17,7 @@ import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 import Search from "@/pages/search";
 import Profile from "@/pages/profile";
+import Notifications from "@/pages/notifications"; // Assuming Notifications component exists
 
 import "@rainbow-me/rainbowkit/styles.css";
 
@@ -25,6 +26,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/search" component={Search} />
+      <Route path="/notifications" component={Notifications} />
       <Route path="/channels" component={Channels} />
       <Route path="/create" component={Create} />
       <Route path="/creators" component={Creators} />

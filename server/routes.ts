@@ -1,11 +1,12 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertScrapedContentSchema, insertCoinSchema, updateCoinSchema, insertCommentSchema } from "@shared/schema";
+import { insertScrapedContentSchema, insertCoinSchema, updateCoinSchema, insertCommentSchema, insertNotificationSchema } from "@shared/schema";
 import axios from "axios";
 import { detectPlatform } from "./platform-detector";
 import { scrapeByPlatform } from "./platform-scrapers";
 import { migrateOldData } from "./migrate-old-data";
+import { sendTelegramNotification } from "./telegram-bot";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
@@ -333,6 +334,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Create comment error:', error);
       res.status(400).json({ error: 'Invalid comment data' });
+    }
+  });
+
+  // Get notifications for user
+  app.get("/api/notifications/:userId", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const notifications = await storage.getNotificationsByUser(userId);
+      res.json(notifications);
+    } catch (error) {
+      console.error('Get notifications error:', error);
+      res.status(500).json({ error: 'Failed to fetch notifications' });
+    }
+  });
+
+  // Get unread notifications for user
+  app.get("/api/notifications/:userId/unread", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const notifications = await storage.getUnreadNotificationsByUser(userId);
+      res.json(notifications);
+    } catch (error) {
+      console.error('Get unread notifications error:', error);
+      res.status(500).json({ error: 'Failed to fetch unread notifications' });
+    }
+  });
+
+  // Create notification
+  app.post("/api/notifications", async (req, res) => {
+    try {
+      const validatedData = insertNotificationSchema.parse(req.body);
+      const notification = await storage.createNotification(validatedData);
+      
+      // Send Telegram notification if available
+      await sendTelegramNotification(
+        notification.userId,
+        notification.title,
+        notification.message,
+        notification.type
+      );
+      
+      res.json(notification);
+    } catch (error) {
+      console.error('Create notification error:', error);
+      res.status(400).json({ error: 'Invalid notification data' });
+    }
+  });
+
+  // Mark notification as read
+  app.patch("/api/notifications/:id/read", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const notification = await storage.markNotificationAsRead(id);
+      if (!notification) {
+        return res.status(404).json({ error: 'Notification not found' });
+      }
+      res.json(notification);
+    } catch (error) {
+      console.error('Mark notification read error:', error);
+      res.status(500).json({ error: 'Failed to mark notification as read' });
+    }
+  });
+
+  // Mark all notifications as read
+  app.patch("/api/notifications/:userId/read-all", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      await storage.markAllNotificationsAsRead(userId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Mark all notifications read error:', error);
+      res.status(500).json({ error: 'Failed to mark all notifications as read' });
+    }
+  });
+
+  // Delete notification
+  app.delete("/api/notifications/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteNotification(id);
+      if (!deleted) {
+        return res.status(404).json({ error: 'Notification not found' });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Delete notification error:', error);
+      res.status(500).json({ error: 'Failed to delete notification' });
     }
   });
 
