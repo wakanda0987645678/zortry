@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import type { Coin } from "@shared/schema";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
@@ -9,9 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { TrendingUp, ArrowUpDown, Loader2, CheckCircle2, ExternalLink } from "lucide-react";
+import { Loader2, CheckCircle2, ExternalLink, TrendingUp, TrendingDown } from "lucide-react";
 
 interface TradeModalProps {
   coin: Coin;
@@ -21,9 +21,11 @@ interface TradeModalProps {
 
 export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps) {
   const { toast } = useToast();
-  const [ethAmount, setEthAmount] = useState("0.001");
+  const [ethAmount, setEthAmount] = useState("0.000111");
+  const [comment, setComment] = useState("");
   const [isTrading, setIsTrading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [isBuying, setIsBuying] = useState(true);
   
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -67,7 +69,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
         walletClient,
         publicClient,
         userAddress: address,
-        isBuying: true,
+        isBuying,
       });
       
       console.log("Trade completed successfully from modal:", result);
@@ -77,7 +79,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
         
         toast({
           title: "Trade successful!",
-          description: `You received ${estimatedTokens.toLocaleString()} ${coin.symbol} tokens`,
+          description: `You ${isBuying ? 'received' : 'sold'} ${estimatedTokens.toLocaleString()} ${coin.symbol} tokens`,
         });
       } else {
         throw new Error("Transaction completed but no hash returned");
@@ -100,155 +102,176 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
   const handleClose = () => {
     setTxHash(null);
-    setEthAmount("0.001");
+    setEthAmount("0.000111");
+    setComment("");
     onOpenChange(false);
+  };
+
+  const setQuickAmount = (amount: string) => {
+    setEthAmount(amount);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-sm bg-card border-border p-4">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-primary" />
-            Trade {coin.symbol}
-          </DialogTitle>
+      <DialogContent className="sm:max-w-md bg-card border-border p-0 overflow-hidden">
+        <DialogHeader className="px-6 pt-6 pb-4">
+          <DialogTitle className="text-2xl font-bold">{coin.name}</DialogTitle>
+          <p className="text-sm text-muted-foreground">@{formatAddress(coin.creator)}</p>
         </DialogHeader>
 
-        <div className="space-y-3">
-          {/* Coin Info */}
-          <div className="p-3 rounded-lg bg-muted/50 border border-border">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Trading</span>
-              <span className="text-sm font-medium" data-testid="text-modal-coin-name">{coin.name}</span>
+        <div className="px-6 pb-6 space-y-4">
+          {/* Buy/Sell Toggle */}
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setIsBuying(true)}
+              className={`flex-1 ${isBuying ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
+              disabled={isTrading || !!txHash}
+            >
+              Buy
+            </Button>
+            <Button
+              onClick={() => setIsBuying(false)}
+              className={`flex-1 ${!isBuying ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
+              disabled={isTrading || !!txHash}
+            >
+              Sell
+            </Button>
+          </div>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-3 gap-4 py-4 border-y border-border">
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Market Cap</p>
+              <p className="text-sm font-semibold text-green-500">▲ $757.53</p>
             </div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Symbol</span>
-              <span className="text-sm font-medium font-mono" data-testid="text-modal-coin-symbol">${coin.symbol}</span>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">24H Volume</p>
+              <p className="text-sm font-semibold">💰 $2.30</p>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Address</span>
-              <span className="text-sm font-medium font-mono" data-testid="text-modal-coin-address">{formatAddress(coin.address)}</span>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Creator Earnings</p>
+              <p className="text-sm font-semibold">💎 $0.02</p>
             </div>
           </div>
 
-          {/* Trade Input */}
+          {/* Balance Display */}
+          <div className="flex justify-end">
+            <p className="text-sm text-muted-foreground">Balance: <span className="text-white font-medium">0 ETH</span></p>
+          </div>
+
+          {/* Amount Input */}
           <div>
-            <Label htmlFor="ethAmount" className="text-xs font-medium mb-1 block">
-              You Pay
-            </Label>
             <div className="relative">
               <Input
-                id="ethAmount"
                 type="number"
-                step="0.0001"
+                step="0.000001"
                 min="0"
                 value={ethAmount}
                 onChange={(e) => setEthAmount(e.target.value)}
-                className="pr-16 bg-muted border-input text-foreground text-base font-medium h-9"
+                className="text-3xl font-bold h-16 pr-24 bg-muted/50 border-border text-white"
                 disabled={isTrading || !!txHash}
                 data-testid="input-eth-amount"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <span className="text-sm font-medium text-muted-foreground">ETH</span>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">Ξ</div>
+                <span className="text-sm font-semibold text-white">ETH</span>
+                <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
             </div>
           </div>
 
-          {/* Swap Icon */}
-          <div className="flex justify-center">
-            <div className="p-2 rounded-full bg-primary/20">
-              <ArrowUpDown className="w-5 h-5 text-primary" />
-            </div>
+          {/* Quick Amount Buttons */}
+          <div className="grid grid-cols-4 gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setQuickAmount("0.001")}
+              disabled={isTrading || !!txHash}
+              className="bg-muted/30 hover:bg-muted/50 border-border text-white"
+            >
+              0.001 ETH
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setQuickAmount("0.01")}
+              disabled={isTrading || !!txHash}
+              className="bg-muted/30 hover:bg-muted/50 border-border text-white"
+            >
+              0.01 ETH
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setQuickAmount("0.1")}
+              disabled={isTrading || !!txHash}
+              className="bg-muted/30 hover:bg-muted/50 border-border text-white"
+            >
+              0.1 ETH
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setQuickAmount("1.0")}
+              disabled={isTrading || !!txHash}
+              className="bg-muted/30 hover:bg-muted/50 border-border text-white"
+            >
+              Max
+            </Button>
           </div>
 
-          {/* Trade Output */}
+          {/* Comment Input */}
           <div>
-            <Label htmlFor="tokenAmount" className="text-xs font-medium mb-1 block">
-              You Receive (Estimated)
-            </Label>
-            <div className="relative">
-              <Input
-                id="tokenAmount"
-                type="text"
-                value={estimatedTokens.toLocaleString()}
-                readOnly
-                className="pr-24 bg-muted border-input text-foreground text-base font-medium h-9"
-                data-testid="text-token-amount"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <span className="text-sm font-medium text-muted-foreground">${coin.symbol}</span>
-              </div>
-            </div>
+            <Input
+              type="text"
+              placeholder="Add a comment..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="bg-muted/50 border-border text-white placeholder:text-muted-foreground"
+              disabled={isTrading || !!txHash}
+            />
           </div>
 
-          {/* Trade Details */}
-          <div className="p-3 rounded-lg bg-secondary/10 border border-secondary/30 space-y-1 text-xs">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Exchange Rate</span>
-              <span className="font-medium">1 ETH = 1,000,000 ${coin.symbol}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Slippage Tolerance</span>
-              <span className="font-medium">5%</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Network</span>
-              <span className="font-medium">Base</span>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
+          {/* Action Button */}
           {!txHash ? (
-            <div className="flex gap-2 pt-2">
+            !isConnected ? (
+              <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <p className="text-sm text-yellow-600 text-center">Please connect your wallet to trade</p>
+              </div>
+            ) : (
               <Button
-                variant="outline"
-                className="flex-1"
-                onClick={handleClose}
-                disabled={isTrading}
-                data-testid="button-cancel-trade"
+                className={`w-full h-14 text-lg font-bold ${isBuying ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'} text-white`}
+                onClick={handleTrade}
+                disabled={isTrading || !ethAmount || parseFloat(ethAmount) <= 0}
+                data-testid="button-confirm-trade"
               >
-                Cancel
+                {isTrading ? (
+                  <>
+                    <Loader2 className="w-6 h-6 mr-2 animate-spin" />
+                    Trading...
+                  </>
+                ) : (
+                  isBuying ? 'Buy' : 'Sell'
+                )}
               </Button>
-              {!isConnected ? (
-                <div className="flex-1 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                  <p className="text-sm text-yellow-600 text-center">Please connect your wallet to trade</p>
-                </div>
-              ) : (
-                <Button
-                  className="flex-1 bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
-                  onClick={handleTrade}
-                  disabled={isTrading || !ethAmount || parseFloat(ethAmount) <= 0}
-                  data-testid="button-confirm-trade"
-                >
-                  {isTrading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Trading...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="w-5 h-5 mr-2" />
-                      Confirm Trade
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
+            )
           ) : (
-            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+            <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5" />
+                <CheckCircle2 className="w-6 h-6 text-green-400 mt-0.5" />
                 <div className="flex-1">
-                  <div className="font-medium text-green-400 mb-1">Transaction Successful!</div>
+                  <div className="font-medium text-green-400 mb-2">Transaction Successful!</div>
                   <a
                     href={`https://basescan.org/tx/${txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                    className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
                     data-testid="link-tx-explorer"
                   >
                     View on BaseScan
-                    <ExternalLink className="w-3 h-3" />
+                    <ExternalLink className="w-4 h-4" />
                   </a>
                 </div>
               </div>
