@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import type { Coin, Comment } from "@shared/schema";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
@@ -21,6 +20,7 @@ import { formatEther } from "viem";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Badge } from "@/components/ui/badge";
 
 interface TradeModalProps {
   coin: Coin;
@@ -45,13 +45,14 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     address: string;
     balance: string;
     percentage: number;
+    profile?: string | null;
   }>>([]);
   const [totalSupply, setTotalSupply] = useState<string | null>(null);
   const [uniqueHoldersCount, setUniqueHoldersCount] = useState<number>(0);
   const [chartData, setChartData] = useState<Array<{ time: string; price: number }>>([]);
   const [timeframe, setTimeframe] = useState<'1H' | '1D' | 'W' | 'M' | 'All'>('1D');
   const [priceChange, setPriceChange] = useState<number>(0);
-  
+
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
@@ -61,7 +62,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     "cloudflare-ipfs.com",
     "gateway.pinata.cloud",
   ];
-  
+
   const [copiedAddress, setCopiedAddress] = useState(false);
 
   // Fetch comments for this coin
@@ -95,9 +96,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
         userAddress: address,
         comment: standaloneComment.trim(),
       });
-      
+
       setStandaloneComment("");
-      
+
       toast({
         title: "Comment added",
         description: "Your comment has been posted",
@@ -116,7 +117,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   useEffect(() => {
     async function fetchBalance() {
       if (!address || !publicClient) return;
-      
+
       try {
         const bal = await publicClient.getBalance({ address });
         setBalance(formatEther(bal));
@@ -134,12 +135,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   useEffect(() => {
     async function fetchChartData() {
       if (!coin.address) return;
-      
+
       try {
         // Get the time range for the chart
         const now = Date.now();
         let startTime: number;
-        
+
         switch (timeframe) {
           case '1H':
             startTime = now - (60 * 60 * 1000);
@@ -237,7 +238,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   useEffect(() => {
     async function fetchCoinStats() {
       if (!coin.address) return;
-      
+
       try {
         const response = await getCoin({
           address: coin.address as `0x${string}`,
@@ -273,7 +274,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           if (coinData.totalSupply) {
             setTotalSupply(coinData.totalSupply);
           }
-          
+
           if (coinData.uniqueHolders !== undefined) {
             setUniqueHoldersCount(coinData.uniqueHolders);
           }
@@ -293,7 +294,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           const processedHolders = holderBalances.map((edge: any) => {
             const balance = parseFloat(edge.node.balance || "0");
             const percentage = (balance / supply) * 100;
-            
+
             return {
               address: edge.node.ownerAddress,
               balance: edge.node.balance,
@@ -365,10 +366,10 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     }
 
     setIsTrading(true);
-    
+
     try {
       const { tradeZoraCoin } = await import("@/lib/zora");
-      
+
       const result = await tradeZoraCoin({
         coinAddress: coin.address as `0x${string}`,
         ethAmount,
@@ -377,10 +378,10 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
         userAddress: address,
         isBuying,
       });
-      
+
       if (result?.hash) {
         setTxHash(result.hash);
-        
+
         // Always save trade record (with or without comment)
         if (coin.address) {
           try {
@@ -399,7 +400,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             });
           }
         }
-        
+
         toast({
           title: "Trade successful!",
           description: `You ${isBuying ? 'bought' : 'sold'} ${coin.symbol} tokens${comment ? ` - ${comment}` : ''}`,
@@ -411,12 +412,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
       } else {
         throw new Error("Transaction completed but no hash returned");
       }
-      
+
     } catch (error) {
       console.error("Trade failed:", error);
-      
+
       const errorMessage = error instanceof Error ? error.message : "Trade failed";
-      
+
       toast({
         title: "Trade failed",
         description: errorMessage,
@@ -470,31 +471,31 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.3} />
-                  <XAxis 
-                    dataKey="time" 
+                  <XAxis
+                    dataKey="time"
                     stroke="#888"
                     fontSize={10}
                     tickLine={false}
                   />
-                  <YAxis 
+                  <YAxis
                     stroke="#888"
                     fontSize={10}
                     tickLine={false}
                     tickFormatter={(value) => `$${value.toFixed(4)}`}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1a1a1a', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1a1a1a',
                       border: '1px solid #333',
                       borderRadius: '8px',
                       fontSize: '12px'
                     }}
                     formatter={(value: any) => [`$${value.toFixed(6)}`, 'Price']}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="price" 
-                    stroke="#22c55e" 
+                  <Line
+                    type="monotone"
+                    dataKey="price"
+                    stroke="#22c55e"
                     strokeWidth={2}
                     dot={false}
                   />
@@ -510,8 +511,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   variant={timeframe === tf ? 'default' : 'ghost'}
                   size="sm"
                   className={`flex-1 h-8 text-xs ${
-                    timeframe === tf 
-                      ? 'bg-primary text-white' 
+                    timeframe === tf
+                      ? 'bg-primary text-white'
                       : 'text-muted-foreground hover:text-white'
                   }`}
                   onClick={() => setTimeframe(tf)}
@@ -598,8 +599,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               <Button
                 onClick={() => setIsBuying(true)}
                 className={`flex-1 h-10 text-sm font-bold transition-all ${
-                  isBuying 
-                    ? 'bg-green-500 hover:bg-green-600 text-white' 
+                  isBuying
+                    ? 'bg-green-500 hover:bg-green-600 text-white'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
                 }`}
                 disabled={isTrading || !!txHash}
@@ -610,8 +611,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               <Button
                 onClick={() => setIsBuying(false)}
                 className={`flex-1 h-10 text-sm font-bold transition-all ${
-                  !isBuying 
-                    ? 'bg-red-500 hover:bg-red-600 text-white' 
+                  !isBuying
+                    ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
                 }`}
                 disabled={isTrading || !!txHash}
@@ -682,8 +683,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               ) : (
                 <Button
                   className={`w-full h-12 text-base font-bold transition-all ${
-                    isBuying 
-                      ? 'bg-green-500 hover:bg-green-600' 
+                    isBuying
+                      ? 'bg-green-500 hover:bg-green-600'
                       : 'bg-red-500 hover:bg-red-600'
                   } text-white`}
                   onClick={handleTrade}
@@ -773,8 +774,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               ) : comments && comments.length > 0 ? (
                 <div className="space-y-3">
                   {comments.map((c) => (
-                    <div 
-                      key={c.id} 
+                    <div
+                      key={c.id}
                       className="p-3 rounded-lg bg-muted/20 border border-border/30"
                       data-testid={`comment-${c.id}`}
                     >
@@ -842,9 +843,19 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 <div className="space-y-2">
                   {holders.map((holder, index) => {
                     const isCreator = holder.address.toLowerCase() === coin.creator.toLowerCase();
-                    
+
+                    // Format token balance - convert from wei-like units and format compactly
+                    const tokenBalance = parseFloat(holder.balance);
+                    const formattedBalance = tokenBalance > 1e9
+                      ? `${(tokenBalance / 1e18).toFixed(2)}`
+                      : tokenBalance.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+                    // Format percentage to max 2 decimal places
+                    const formattedPercentage = parseFloat(holder.percentage.toString()).toFixed(2);
+
+
                     return (
-                      <div 
+                      <div
                         key={holder.address}
                         className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
                       >
@@ -853,10 +864,10 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                             <span className="text-xs font-bold text-muted-foreground">#{index + 1}</span>
                           </div>
                           <div className={`w-10 h-10 rounded-full ${
-                            index === 0 
-                              ? 'bg-gradient-to-br from-yellow-500 to-orange-500' 
-                              : isCreator 
-                                ? 'bg-gradient-to-br from-primary to-secondary' 
+                            index === 0
+                              ? 'bg-gradient-to-br from-yellow-500 to-orange-500'
+                              : isCreator
+                                ? 'bg-gradient-to-br from-primary to-secondary'
                                 : 'bg-gradient-to-br from-blue-500 to-cyan-500'
                           } flex items-center justify-center text-sm font-bold text-white flex-shrink-0`}>
                             {holder.address.slice(2, 4).toUpperCase()}
@@ -873,13 +884,13 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                               )}
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              {parseFloat(holder.balance).toLocaleString(undefined, { maximumFractionDigits: 2 })} tokens
+                              {formattedBalance} tokens
                             </p>
                           </div>
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-bold text-white">
-                            {holder.percentage.toFixed(2)}%
+                            {formattedPercentage}%
                           </p>
                         </div>
                       </div>
@@ -908,8 +919,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               ) : comments && comments.filter(c => c.transactionHash).length > 0 ? (
                 <div className="space-y-2">
                   {comments.filter(c => c.transactionHash).map((c) => (
-                    <div 
-                      key={c.id} 
+                    <div
+                      key={c.id}
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
                       data-testid={`activity-${c.id}`}
                     >
