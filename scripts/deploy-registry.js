@@ -28,8 +28,8 @@ async function main() {
   const balance = await publicClient.getBalance({ address: account.address });
   console.log("💰 Account balance:", (Number(balance) / 1e18).toFixed(6), "ETH\n");
 
-  if (Number(balance) < 1e15) {
-    throw new Error("Insufficient balance. Need at least 0.001 ETH for deployment");
+  if (Number(balance) < 3e14) {
+    throw new Error("Insufficient balance. Need at least 0.0003 ETH for deployment");
   }
 
   console.log("📦 Compiling contract...");
