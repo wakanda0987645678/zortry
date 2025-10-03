@@ -50,63 +50,42 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
   };
 
   return (
-    <div className="spotify-card rounded-2xl p-8 max-w-4xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="contentUrl" className="block text-lg font-bold text-white mb-4">
-            Enter Content URL
-          </label>
-          <div className="flex gap-4">
-            <Input
-              type="url"
-              id="contentUrl"
-              placeholder="https://youtube.com/@channel, https://medium.com/@author/article, or any supported URL..."
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className="flex-1 bg-muted/50 border-border text-white placeholder:text-muted-foreground h-14 text-lg rounded-full px-6 focus:ring-2 focus:ring-primary"
-              disabled={scrapeMutation.isPending}
-              data-testid="input-content-url"
-            />
-            <Button
-              type="submit"
-              disabled={scrapeMutation.isPending}
-              className="spotify-button h-14 px-8"
-              data-testid="button-scrape"
-            >
-              {scrapeMutation.isPending ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Scraping...
-                </>
-              ) : (
-                <>
-                  <Search className="w-5 h-5 mr-2" />
-                  Import
-                </>
-              )}
-            </Button>
-          </div>
+    <div className="spotify-card rounded-2xl p-6 max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex gap-3">
+          <Input
+            type="url"
+            id="contentUrl"
+            placeholder="Paste any URL - YouTube, Medium, Spotify, GitHub, and more..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            className="flex-1 bg-muted/50 border-border text-white placeholder:text-muted-foreground h-12 text-base rounded-full px-5 focus:ring-2 focus:ring-primary"
+            disabled={scrapeMutation.isPending}
+            data-testid="input-content-url"
+          />
+          <Button
+            type="submit"
+            disabled={scrapeMutation.isPending}
+            className="spotify-button h-12 px-6"
+            data-testid="button-scrape"
+          >
+            {scrapeMutation.isPending ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Importing...
+              </>
+            ) : (
+              <>
+                <Search className="w-5 h-5 mr-2" />
+                Import
+              </>
+            )}
+          </Button>
         </div>
         
-        <div className="text-sm text-muted-foreground space-y-2">
-          <div>
-            <span className="font-semibold text-white">Supported platforms:</span>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1">
-            <span>• YouTube channels</span>
-            <span>• Spotify songs</span>
-            <span>• Medium articles</span>
-            <span>• Substack posts</span>
-            <span>• Gitcoin grants</span>
-            <span>• Giveth projects</span>
-            <span>• TikTok profiles</span>
-            <span>• Instagram pages</span>
-            <span>• Twitter/X profiles</span>
-            <span>• GitHub projects</span>
-            <span>• Personal blogs</span>
-            <span>• News articles</span>
-          </div>
-        </div>
+        <p className="text-xs text-muted-foreground text-center">
+          Supports YouTube, Spotify, Medium, Substack, GitHub, social media, and more
+        </p>
       </form>
     </div>
   );
