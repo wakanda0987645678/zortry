@@ -49,10 +49,8 @@ function App() {
           })}
         >
           <TooltipProvider>
-            <div className="dark">
-              <Toaster />
-              <Router />
-            </div>
+            <Toaster />
+            <Router />
           </TooltipProvider>
         </RainbowKitProvider>
       </QueryClientProvider>

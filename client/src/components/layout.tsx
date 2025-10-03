@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -18,8 +18,11 @@ import {
   Award,
   Menu,
   User,
+  Moon,
+  Sun,
 } from "lucide-react";
 import WalletConnectButton from "./wallet-connect-button";
+import { Button } from "@/components/ui/button";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -32,6 +35,22 @@ export default function Layout({ children }: LayoutProps) {
   const [location, navigate] = useLocation();
   const isMobile = useIsMobile();
   const { isConnected } = useAccount();
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +79,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const SidebarContent = ({ mobile = false }: { mobile?: boolean }) => {
     const items = mobile ? mobileNavItems : desktopNavItems;
-    
+
     return (
       <div className={`bg-black/90 ${mobile ? 'p-4' : 'p-6'} flex flex-col h-full`}>
         <div className="flex items-center gap-2 mb-8">
@@ -147,7 +166,7 @@ export default function Layout({ children }: LayoutProps) {
                   <SidebarContent mobile />
                 </SheetContent>
               </Sheet>
-              
+
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                   <Play className="w-3 h-3 text-black fill-current" />
@@ -155,7 +174,7 @@ export default function Layout({ children }: LayoutProps) {
                 <span className="text-lg font-bold text-white">CoinIT</span>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Link href="/create">
                 <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-3 py-1.5 rounded-lg transition-colors text-sm">
@@ -226,7 +245,7 @@ export default function Layout({ children }: LayoutProps) {
                   />
                 </form>
               </div>
-              
+
               {/* Create Button */}
               <Link href="/create">
                 <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-4 py-2 rounded-lg transition-colors">
@@ -248,6 +267,19 @@ export default function Layout({ children }: LayoutProps) {
                   </button>
                 </Link>
               )}
+              <Button
+                onClick={toggleTheme}
+                variant="ghost"
+                size="icon"
+                className="w-9 h-9"
+                data-testid="button-toggle-theme"
+              >
+                {theme === "dark" ? (
+                  <Sun className="w-4 h-4" />
+                ) : (
+                  <Moon className="w-4 h-4" />
+                )}
+              </Button>
               <WalletConnectButton />
             </div>
           </header>

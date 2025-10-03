@@ -34,6 +34,7 @@ export default function Home() {
     { id: "instagram", label: "Instagram" },
     { id: "twitter", label: "Twitter" },
     { id: "github", label: "GitHub" },
+    { id: "farcaster", label: "Farcaster" },
     { id: "blog", label: "Blog" },
   ];
 
@@ -139,7 +140,7 @@ export default function Home() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
               {filteredCoins.map((coin) => (
                 <CoinCard key={coin.id} coin={coin} />
               ))}
