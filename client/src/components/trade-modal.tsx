@@ -864,13 +864,17 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                       formattedBalance = tokenBalance.toLocaleString(undefined, { maximumFractionDigits: 2 });
                     }
 
-                    // Format percentage - clamp to reasonable range and format to 2 decimals
+                    // Format percentage - handle edge cases properly
                     let formattedPercentage: string;
-                    if (holder.percentage > 100) {
-                      // If percentage is way too high, recalculate or show as 100%
-                      formattedPercentage = '100.00';
-                    } else if (holder.percentage < 0.01) {
+                    if (holder.percentage < 0.01 && holder.percentage > 0) {
                       formattedPercentage = '<0.01';
+                    } else if (holder.percentage >= 100 || isNaN(holder.percentage)) {
+                      // If data is inconsistent, calculate from total holders instead
+                      const totalHoldersBalance = holders.reduce((sum, h) => sum + parseFloat(h.balance), 0);
+                      const actualPercentage = totalHoldersBalance > 0 
+                        ? (tokenBalance / totalHoldersBalance) * 100 
+                        : 0;
+                      formattedPercentage = actualPercentage.toFixed(2);
                     } else {
                       formattedPercentage = holder.percentage.toFixed(2);
                     }
