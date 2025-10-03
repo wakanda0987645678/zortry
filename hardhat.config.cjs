@@ -7,12 +7,12 @@ module.exports = {
       optimizer: {
         enabled: true,
         runs: 200
-      }
+      },
+      evmVersion: "paris"
     }
   },
   networks: {
     base: {
-      type: "http",
       url: "https://mainnet.base.org",
       chainId: 8453,
       accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : []
