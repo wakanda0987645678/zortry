@@ -73,11 +73,13 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
         const { createZoraCoinWithWallet } = await import('@/lib/zora');
 
         if (walletClient) {
-          zoraCoinResult = await createZoraCoinWithWallet(coinMetadata, walletAddress, walletClient);
+          const chainId = walletClient.chain?.id || 8453;
+          zoraCoinResult = await createZoraCoinWithWallet(coinMetadata, walletAddress, walletClient, chainId);
 
-          // Update coin with address and active status
+          // Update coin with address, chainId, and active status
           await apiRequest("PATCH", `/api/coins/${createdCoin.id}`, {
             address: zoraCoinResult.address,
+            chainId: chainId.toString(),
             status: 'active' as const,
           });
         }
