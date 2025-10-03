@@ -298,6 +298,47 @@ async function scrapeGitHub(url: string): Promise<ScrapedData> {
   };
 }
 
+async function scrapeFarcaster(url: string): Promise<ScrapedData> {
+  const response = await axios.get(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    },
+    timeout: 30000,
+  });
+
+  const $ = cheerio.load(response.data);
+  
+  const title = $('meta[property="og:title"]').attr('content') || 
+                $('meta[name="twitter:title"]').attr('content') || 
+                $('h1').first().text().trim() || 
+                'Farcaster Channel';
+  
+  const description = $('meta[property="og:description"]').attr('content') || 
+                     $('meta[name="twitter:description"]').attr('content') || 
+                     $('meta[name="description"]').attr('content') || '';
+  
+  const author = $('meta[property="profile:username"]').attr('content') || 
+                $('meta[name="author"]').attr('content') || '';
+  
+  const image = $('meta[property="og:image"]').attr('content') || 
+                $('meta[name="twitter:image"]').attr('content') || '';
+
+  $('script, style').remove();
+  const content = $('main').text().trim() || 
+                 $('.profile').text().trim() ||
+                 $('body').text().trim();
+
+  return {
+    url,
+    platform: 'farcaster',
+    title,
+    description,
+    author,
+    image,
+    content: content.substring(0, 10000),
+  };
+}
+
 async function scrapeGenericBlog(url: string): Promise<ScrapedData> {
   const response = await axios.get(url, {
     headers: {
@@ -402,6 +443,8 @@ export async function scrapeByPlatform(url: string, platform: PlatformType): Pro
         return await scrapeSocialMedia(url, 'twitter');
       case 'github':
         return await scrapeGitHub(url);
+      case 'farcaster':
+        return await scrapeFarcaster(url);
       case 'blog':
       default:
         return await scrapeGenericBlog(url);

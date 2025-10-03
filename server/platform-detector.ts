@@ -9,6 +9,7 @@ export type PlatformType =
   | 'instagram'
   | 'twitter'
   | 'github'
+  | 'farcaster'
   | 'blog';
 
 export interface PlatformInfo {
@@ -83,6 +84,11 @@ export function detectPlatform(url: string): PlatformInfo {
       return { type: 'github', name: 'GitHub' };
     }
 
+    // Farcaster
+    if (hostname.includes('warpcast.com') || hostname.includes('farcaster.xyz')) {
+      return { type: 'farcaster', name: 'Farcaster' };
+    }
+
     // Default to generic blog
     return { type: 'blog', name: 'Blog/Article' };
 
@@ -102,5 +108,6 @@ export const SUPPORTED_PLATFORMS = [
   { type: 'instagram', name: 'Instagram', example: 'https://instagram.com/username' },
   { type: 'twitter', name: 'Twitter/X', example: 'https://twitter.com/username' },
   { type: 'github', name: 'GitHub', example: 'https://github.com/username/project' },
+  { type: 'farcaster', name: 'Farcaster', example: 'https://warpcast.com/username' },
   { type: 'blog', name: 'Personal Blogs & News', example: 'https://example.com/article' },
 ] as const;
