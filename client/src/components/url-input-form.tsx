@@ -50,33 +50,33 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
   };
 
   return (
-    <div className="spotify-card rounded-2xl p-6 max-w-3xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex gap-3">
+    <div className="spotify-card rounded-xl p-4 max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <div className="flex gap-2">
           <Input
             type="url"
             id="contentUrl"
-            placeholder="Paste any URL - YouTube, Medium, Spotify, GitHub, and more..."
+            placeholder="Paste any URL - YouTube, Medium, Spotify, GitHub..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="flex-1 bg-muted/50 border-border text-white placeholder:text-muted-foreground h-12 text-base rounded-full px-5 focus:ring-2 focus:ring-primary"
+            className="flex-1 bg-muted/50 border-border text-white placeholder:text-muted-foreground h-10 text-sm rounded-full px-4 focus:ring-2 focus:ring-primary"
             disabled={scrapeMutation.isPending}
             data-testid="input-content-url"
           />
           <Button
             type="submit"
             disabled={scrapeMutation.isPending}
-            className="spotify-button h-12 px-6"
+            className="spotify-button h-10 px-4 text-sm"
             data-testid="button-scrape"
           >
             {scrapeMutation.isPending ? (
               <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-1 animate-spin" />
                 Importing...
               </>
             ) : (
               <>
-                <Search className="w-5 h-5 mr-2" />
+                <Search className="w-4 h-4 mr-1" />
                 Import
               </>
             )}
@@ -84,7 +84,7 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
         </div>
         
         <p className="text-xs text-muted-foreground text-center">
-          Supports YouTube, Spotify, Medium, Substack, GitHub, social media, and more
+          Supports YouTube, Spotify, Medium, Substack, GitHub, and more
         </p>
       </form>
     </div>

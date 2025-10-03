@@ -122,14 +122,14 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
   };
 
   return (
-    <div className="glass-card rounded-2xl p-6 hover-lift">
-      <div className="grid md:grid-cols-3 gap-6">
+    <div className="glass-card rounded-xl p-4 hover-lift">
+      <div className="grid md:grid-cols-3 gap-4">
         <div className="md:col-span-1">
           {scrapedData.image && (
             <img
               src={scrapedData.image}
               alt={scrapedData.title}
-              className="w-full h-48 object-cover rounded-lg"
+              className="w-full h-32 object-cover rounded-lg"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
@@ -137,19 +137,19 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
           )}
         </div>
         
-        <div className="md:col-span-2 space-y-4">
+        <div className="md:col-span-2 space-y-3">
           <div>
-            <h3 className="text-xl font-bold text-foreground mb-2" data-testid="text-preview-title">
+            <h3 className="text-lg font-bold text-foreground mb-1" data-testid="text-preview-title">
               {scrapedData.title}
             </h3>
             {scrapedData.description && (
-              <p className="text-sm text-muted-foreground" data-testid="text-preview-description">
+              <p className="text-xs text-muted-foreground line-clamp-2" data-testid="text-preview-description">
                 {scrapedData.description}
               </p>
             )}
           </div>
           
-          <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+          <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
             {scrapedData.author && (
               <div className="flex items-center gap-1">
                 <User className="w-4 h-4" />
@@ -176,17 +176,17 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
             </div>
           </div>
           
-          <div className="pt-4 border-t border-border">
-            <Label htmlFor="coinSymbol" className="block text-sm font-medium mb-2">
-              Coin Symbol (Auto-generated)
+          <div className="pt-3 border-t border-border">
+            <Label htmlFor="coinSymbol" className="block text-xs font-medium mb-1.5">
+              Coin Symbol
             </Label>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Input
                 id="coinSymbol"
                 type="text"
                 value={coinSymbol}
                 onChange={(e) => setCoinSymbol(e.target.value.toUpperCase().substring(0, 5))}
-                className="flex-1 bg-muted border-input text-foreground font-mono"
+                className="flex-1 bg-muted border-input text-foreground font-mono h-9 text-sm"
                 maxLength={5}
                 disabled={createCoinMutation.isPending}
                 data-testid="input-coin-symbol"
@@ -194,19 +194,19 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
               <Button
                 onClick={() => createCoinMutation.mutate()}
                 disabled={createCoinMutation.isPending || !coinSymbol || !walletAddress || !walletClient}
-                className="bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow"
+                className="bg-gradient-to-r from-primary to-secondary text-white hover:shadow-glow h-9 px-4 text-sm"
                 data-testid="button-create-coin"
                 title={!walletAddress ? "Connect wallet to create coins" : !walletClient ? "Wallet client not ready" : ""}
               >
                 {createCoinMutation.isPending ? (
                   <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
                     Creating...
                   </>
                 ) : (
                   <>
-                    <Plus className="w-5 h-5 mr-2" />
-                    Create Coin
+                    <Plus className="w-4 h-4 mr-1" />
+                    Create
                   </>
                 )}
               </Button>

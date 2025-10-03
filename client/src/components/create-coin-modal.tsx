@@ -40,22 +40,22 @@ export default function CreateCoinModal({ open, onOpenChange }: CreateCoinModalP
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-black text-white">
+      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto p-4">
+        <DialogHeader className="space-y-1">
+          <DialogTitle className="text-xl font-bold text-white">
             Create Your Coin
           </DialogTitle>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Transform any content into a tradeable digital asset
           </p>
         </DialogHeader>
 
-        <div className="mt-4">
+        <div className="mt-3">
           <URLInputForm onScraped={handleScrapedData} />
         </div>
 
         {showPreview && scrapedData && (
-          <div className="mt-6">
+          <div className="mt-4">
             <ContentPreviewCard
               scrapedData={scrapedData}
               onCoinCreated={handleCoinCreated}
