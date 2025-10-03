@@ -5,6 +5,7 @@ import Layout from "@/components/layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TradeModal from "@/components/trade-modal";
+import CreateCoinModal from "@/components/create-coin-modal";
 import {
   Hash,
   TrendingUp,
@@ -36,6 +37,7 @@ export default function Channels() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [tradeModalOpen, setTradeModalOpen] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   // Extract search parameter from URL
   useEffect(() => {
@@ -180,7 +182,7 @@ export default function Channels() {
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             {/* Channel Import Tab */}
             <Button 
-              onClick={() => navigate("/create")}
+              onClick={() => setCreateModalOpen(true)}
               className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-6 py-2 rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" />
@@ -309,6 +311,12 @@ export default function Channels() {
           onOpenChange={setTradeModalOpen}
         />
       )}
+
+      {/* Create Coin Modal */}
+      <CreateCoinModal
+        open={createModalOpen}
+        onOpenChange={setCreateModalOpen}
+      />
     </Layout>
   );
 }
