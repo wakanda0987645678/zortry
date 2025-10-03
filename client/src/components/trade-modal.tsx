@@ -196,6 +196,11 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             });
           } catch (error) {
             console.error('Failed to save comment:', error);
+            toast({
+              title: "Comment not saved",
+              description: "Your trade was successful but the comment could not be saved",
+              variant: "destructive",
+            });
           }
         }
         
@@ -397,7 +402,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                       : 'bg-red-500 hover:bg-red-600'
                   } text-white`}
                   onClick={handleTrade}
-                  disabled={isTrading || !ethAmount || parseFloat(ethAmount) <= 0}
+                  disabled={isTrading || createCommentMutation.isPending || !ethAmount || parseFloat(ethAmount) <= 0}
                   data-testid="button-confirm-trade"
                 >
                   {isTrading ? (
