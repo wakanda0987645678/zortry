@@ -340,6 +340,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 <TabsTrigger value="comments" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
                   Comments
                 </TabsTrigger>
+                <TabsTrigger value="holders" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                  Holders
+                </TabsTrigger>
                 <TabsTrigger value="activity" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
                   Activity
                 </TabsTrigger>
@@ -598,6 +601,75 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   </p>
                 </div>
               )}
+            </ScrollArea>
+          </TabsContent>
+
+          {/* Holders Tab */}
+          <TabsContent value="holders" className="flex-1 px-6 pb-6 mt-0 pt-4">
+            <ScrollArea className="h-[420px]">
+              <div className="space-y-2">
+                {/* Market holder */}
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                      <Coins className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Market</p>
+                      <p className="text-xs text-muted-foreground">Liquidity Pool</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-white">97.61%</p>
+                  </div>
+                </div>
+
+                {/* Creator holder */}
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                      {coin.creator.slice(2, 4).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">
+                        {coin.creator.slice(0, 6)}...{coin.creator.slice(-4)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Creator</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-white">1%</p>
+                  </div>
+                </div>
+
+                {/* Additional holders - mock data for now */}
+                {comments && comments.length > 0 && comments
+                  .filter(c => c.transactionHash)
+                  .slice(0, 5)
+                  .map((c, index) => (
+                    <div 
+                      key={c.id}
+                      className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                          {c.userAddress.slice(2, 4).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-white">
+                            {c.userAddress.slice(0, 6)}...{c.userAddress.slice(-4)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">Holder</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-white">
+                          {(Math.random() * 0.5).toFixed(3)}%
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </ScrollArea>
           </TabsContent>
 
