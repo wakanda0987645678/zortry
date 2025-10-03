@@ -84,7 +84,7 @@ export default function URLInputForm({ onScraped }: URLInputFormProps) {
         </div>
         
         <p className="text-xs text-muted-foreground text-center">
-          Supports YouTube, Spotify, Medium, Substack, Farcaster, GitHub, and more
+          Supports YouTube, Spotify, Medium, Substack, Farcaster, Twitch, GitHub, and more
         </p>
       </form>
     </div>

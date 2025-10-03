@@ -10,6 +10,7 @@ export type PlatformType =
   | 'twitter'
   | 'github'
   | 'farcaster'
+  | 'twitch'
   | 'blog';
 
 export interface PlatformInfo {
@@ -89,6 +90,11 @@ export function detectPlatform(url: string): PlatformInfo {
       return { type: 'farcaster', name: 'Farcaster' };
     }
 
+    // Twitch
+    if (hostname.includes('twitch.tv')) {
+      return { type: 'twitch', name: 'Twitch' };
+    }
+
     // Default to generic blog
     return { type: 'blog', name: 'Blog/Article' };
 
@@ -109,5 +115,6 @@ export const SUPPORTED_PLATFORMS = [
   { type: 'twitter', name: 'Twitter/X', example: 'https://twitter.com/username' },
   { type: 'github', name: 'GitHub', example: 'https://github.com/username/project' },
   { type: 'farcaster', name: 'Farcaster', example: 'https://warpcast.com/username' },
+  { type: 'twitch', name: 'Twitch', example: 'https://twitch.tv/username' },
   { type: 'blog', name: 'Personal Blogs & News', example: 'https://example.com/article' },
 ] as const;
