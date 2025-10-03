@@ -44,7 +44,11 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
 
-  const GATEWAY_URL = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || "yellow-patient-cheetah-559.mypinata.cloud";
+  const GATEWAY_URLS = [
+    "ipfs.io",
+    "cloudflare-ipfs.com",
+    "gateway.pinata.cloud",
+  ];
   
   const [copiedAddress, setCopiedAddress] = useState(false);
 
@@ -164,7 +168,13 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     if (!imageUrl) return null;
     if (imageUrl.startsWith("ipfs://")) {
       const hash = imageUrl.replace("ipfs://", "");
-      return `https://${GATEWAY_URL}/ipfs/${hash}`;
+      return `https://${GATEWAY_URLS[0]}/ipfs/${hash}`;
+    }
+    if (imageUrl.includes("yellow-patient-cheetah-559.mypinata.cloud")) {
+      const hash = imageUrl.split("/ipfs/")[1];
+      if (hash) {
+        return `https://${GATEWAY_URLS[0]}/ipfs/${hash}`;
+      }
     }
     return imageUrl;
   };

@@ -27,9 +27,11 @@ import { base } from "viem/chains";
 import TradeModal from "@/components/trade-modal";
 import "@/lib/zora";
 
-const GATEWAY_URL =
-  import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL ||
-  "yellow-patient-cheetah-559.mypinata.cloud";
+const GATEWAY_URLS = [
+  "ipfs.io",
+  "cloudflare-ipfs.com",
+  "gateway.pinata.cloud",
+];
 
 interface CoinStatsIconsProps {
   price?: string | null;
@@ -115,6 +117,8 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
     amountUsd?: string;
   }> | null>(null);
   const [coinImage, setCoinImage] = useState<string | null>(null);
+  const [imageLoadError, setImageLoadError] = useState(false);
+  const [gatewayIndex, setGatewayIndex] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -169,13 +173,48 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
 
   
 
-  const getImageSrc = (imageUrl?: string) => {
+  const getImageSrc = (imageUrl?: string, gatewayIdx: number = 0) => {
     if (!imageUrl) return null;
     if (imageUrl.startsWith("ipfs://")) {
       const hash = imageUrl.replace("ipfs://", "");
-      return `https://${GATEWAY_URL}/ipfs/${hash}`;
+      return `https://${GATEWAY_URLS[gatewayIdx]}/ipfs/${hash}`;
+    }
+    if (imageUrl.includes("yellow-patient-cheetah-559.mypinata.cloud")) {
+      const hash = imageUrl.split("/ipfs/")[1];
+      if (hash) {
+        return `https://${GATEWAY_URLS[gatewayIdx]}/ipfs/${hash}`;
+      }
     }
     return imageUrl;
+  };
+
+  const getCurrentImageSrc = () => {
+    if (!imageLoadError && coinImage) {
+      return coinImage;
+    }
+    return getImageSrc(coin.metadata?.image, gatewayIndex);
+  };
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (gatewayIndex < GATEWAY_URLS.length - 1) {
+      console.warn(`IPFS gateway ${GATEWAY_URLS[gatewayIndex]} failed, trying ${GATEWAY_URLS[gatewayIndex + 1]}...`);
+      setGatewayIndex(gatewayIndex + 1);
+    } else if (!imageLoadError) {
+      setImageLoadError(true);
+      if (coinImage) {
+        console.warn("Zora API image failed to load, falling back to IPFS:", {
+          failedSrc: e.currentTarget.src,
+          coin: coin.name,
+        });
+        setGatewayIndex(0);
+      } else {
+        console.error("All image sources failed to load:", {
+          src: e.currentTarget.src,
+          alt: e.currentTarget.alt,
+          coin: coin.name,
+        });
+      }
+    }
   };
 
   return (
@@ -187,18 +226,13 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         onClick={() => !isOwnCoin && setTradeDialogOpen(true)}
         className={`relative w-full h-40 bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
       >
-        {coinImage || coin.metadata?.image ? (
+        {getCurrentImageSrc() ? (
           <img
-            src={coinImage || getImageSrc(coin.metadata?.image) || ""}
+            key={getCurrentImageSrc()}
+            src={getCurrentImageSrc() || ""}
             alt={coin.metadata?.title || coin.name}
             className="w-full h-full object-contain"
-            onError={(e) => {
-              console.error("CoinCard image failed to load:", {
-                src: e.currentTarget.src,
-                alt: e.currentTarget.alt,
-                coin,
-              });
-            }}
+            onError={handleImageError}
             data-testid={`img-coin-${coin.address}`}
           />
         ) : (
