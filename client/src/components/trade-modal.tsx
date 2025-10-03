@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Coin } from "@shared/schema";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import {
@@ -11,7 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CheckCircle2, ExternalLink, TrendingUp, Coins, User } from "lucide-react";
+import { Loader2, CheckCircle2, ExternalLink, Coins } from "lucide-react";
+import { getCoin } from "@zoralabs/coins-sdk";
+import { base } from "viem/chains";
+import { formatEther } from "viem";
 
 interface TradeModalProps {
   coin: Coin;
@@ -25,10 +28,89 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const [isTrading, setIsTrading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [isBuying, setIsBuying] = useState(true);
+  const [comment, setComment] = useState("");
+  const [balance, setBalance] = useState<string>("0");
+  const [marketCap, setMarketCap] = useState<string | null>(null);
+  const [volume24h, setVolume24h] = useState<string | null>(null);
+  const [creatorEarnings, setCreatorEarnings] = useState<string | null>(null);
+  const [coinImage, setCoinImage] = useState<string | null>(null);
   
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
+
+  const GATEWAY_URL = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || "yellow-patient-cheetah-559.mypinata.cloud";
+
+  // Fetch user balance
+  useEffect(() => {
+    async function fetchBalance() {
+      if (!address || !publicClient) return;
+      
+      try {
+        const bal = await publicClient.getBalance({ address });
+        setBalance(formatEther(bal));
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      }
+    }
+
+    if (isConnected && open) {
+      fetchBalance();
+    }
+  }, [address, isConnected, publicClient, open]);
+
+  // Fetch coin stats
+  useEffect(() => {
+    async function fetchCoinStats() {
+      try {
+        const response = await getCoin({
+          address: coin.address,
+          chain: base.id,
+        });
+
+        const coinData = response.data?.zora20Token;
+
+        if (coinData) {
+          // Set market cap
+          if (coinData.marketCap) {
+            setMarketCap(parseFloat(coinData.marketCap).toFixed(2));
+          }
+
+          // Set 24h volume
+          if (coinData.volume24h) {
+            setVolume24h(parseFloat(coinData.volume24h).toFixed(2));
+          }
+
+          // Set creator earnings
+          if (coinData.creatorEarnings && coinData.creatorEarnings.length > 0) {
+            const earnings = coinData.creatorEarnings[0];
+            setCreatorEarnings(earnings.amountUsd || earnings.amount?.amountDecimal?.toString() || "0");
+          }
+
+          // Set coin image
+          if (coinData.mediaContent?.previewImage) {
+            const previewImage = coinData.mediaContent.previewImage as any;
+            setCoinImage(previewImage.medium || previewImage.small || null);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching coin stats:", error);
+      }
+    }
+
+    if (open) {
+      fetchCoinStats();
+    }
+  }, [coin.address, open]);
+
+  const getImageSrc = (imageUrl?: string) => {
+    if (!imageUrl) return null;
+    if (imageUrl.startsWith("ipfs://")) {
+      const hash = imageUrl.replace("ipfs://", "");
+      return `https://${GATEWAY_URL}/ipfs/${hash}`;
+    }
+    return imageUrl;
+  };
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -44,10 +126,22 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
       return;
     }
 
-    if (!ethAmount || parseFloat(ethAmount) <= 0) {
+    const ethAmountNum = parseFloat(ethAmount);
+    if (!ethAmount || ethAmountNum <= 0) {
       toast({
         title: "Invalid amount",
         description: "Please enter a valid ETH amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check balance
+    const balanceNum = parseFloat(balance);
+    if (isBuying && ethAmountNum > balanceNum) {
+      toast({
+        title: "Insufficient balance",
+        description: `You only have ${parseFloat(balance).toFixed(6)} ETH`,
         variant: "destructive",
       });
       return;
@@ -72,8 +166,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
         
         toast({
           title: "Trade successful!",
-          description: `You ${isBuying ? 'bought' : 'sold'} ${coin.symbol} tokens`,
+          description: `You ${isBuying ? 'bought' : 'sold'} ${coin.symbol} tokens${comment ? ` - ${comment}` : ''}`,
         });
+
+        // Refresh balance
+        const newBal = await publicClient.getBalance({ address });
+        setBalance(formatEther(newBal));
       } else {
         throw new Error("Transaction completed but no hash returned");
       }
@@ -96,25 +194,21 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const handleClose = () => {
     setTxHash(null);
     setEthAmount("0.000111");
+    setComment("");
     onOpenChange(false);
   };
 
   const setQuickAmount = (amount: string) => {
-    setEthAmount(amount);
-  };
-
-  const GATEWAY_URL = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || "yellow-patient-cheetah-559.mypinata.cloud";
-  
-  const getImageSrc = (imageUrl?: string) => {
-    if (!imageUrl) return null;
-    if (imageUrl.startsWith("ipfs://")) {
-      const hash = imageUrl.replace("ipfs://", "");
-      return `https://${GATEWAY_URL}/ipfs/${hash}`;
+    if (amount === 'Max') {
+      // Set to 90% of balance to leave some for gas
+      const maxAmount = (parseFloat(balance) * 0.9).toFixed(6);
+      setEthAmount(maxAmount);
+    } else {
+      setEthAmount(amount);
     }
-    return imageUrl;
   };
 
-  const coinImage = coin.metadata?.image ? getImageSrc(coin.metadata.image) : null;
+  const displayImage = coinImage || getImageSrc(coin.metadata?.image);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -122,11 +216,15 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
         <div className="flex">
           {/* Left side - Coin Image */}
           <div className="w-1/2 bg-gradient-to-br from-muted/20 to-muted/10 flex items-center justify-center p-6">
-            {coinImage ? (
+            {displayImage ? (
               <img
-                src={coinImage}
+                src={displayImage}
                 alt={coin.name}
                 className="w-full h-full object-contain max-h-96"
+                onError={(e) => {
+                  console.error("Trade modal image failed to load:", e.currentTarget.src);
+                  e.currentTarget.style.display = 'none';
+                }}
               />
             ) : (
               <div className="w-full h-64 flex items-center justify-center">
@@ -152,15 +250,21 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div>
                 <p className="text-xs text-muted-foreground">Market Cap</p>
-                <p className="text-sm font-bold text-green-500">▲ $757.53</p>
+                <p className="text-sm font-bold text-green-500">
+                  {marketCap ? `$${marketCap}` : 'Loading...'}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">24H Volume</p>
-                <p className="text-sm font-semibold text-white">$2.30</p>
+                <p className="text-sm font-semibold text-white">
+                  {volume24h ? `$${volume24h}` : 'Loading...'}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Creator Earnings</p>
-                <p className="text-sm font-semibold text-white">$0.02</p>
+                <p className="text-sm font-semibold text-white">
+                  {creatorEarnings ? `$${parseFloat(creatorEarnings).toFixed(2)}` : 'Loading...'}
+                </p>
               </div>
             </div>
 
@@ -182,7 +286,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 onClick={() => setIsBuying(false)}
                 className={`flex-1 h-10 text-sm font-bold transition-all ${
                   !isBuying 
-                    ? 'bg-muted hover:bg-muted/80 text-white border border-border/30' 
+                    ? 'bg-red-500 hover:bg-red-600 text-white' 
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
                 }`}
                 disabled={isTrading || !!txHash}
@@ -216,29 +320,29 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
             {/* Quick Amount Buttons */}
             <div className="grid grid-cols-4 gap-2 mb-4">
-              {['0.001 ETH', '0.01 ETH', '0.1 ETH', 'Max'].map((label, idx) => {
-                const amount = ['0.001', '0.01', '0.1', '1'][idx];
-                return (
-                  <Button
-                    key={label}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setQuickAmount(amount)}
-                    disabled={isTrading || !!txHash}
-                    className="h-9 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-white"
-                  >
-                    {label}
-                  </Button>
-                );
-              })}
+              {['0.001', '0.01', '0.1', 'Max'].map((label) => (
+                <Button
+                  key={label}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setQuickAmount(label)}
+                  disabled={isTrading || !!txHash}
+                  className="h-9 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-white"
+                >
+                  {label === 'Max' ? label : `${label} ETH`}
+                </Button>
+              ))}
             </div>
 
             {/* Comment Input */}
             <div className="mb-4">
               <Input
-                placeholder="Add a comment..."
+                placeholder="Add a comment (optional)"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
                 className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground"
                 disabled={isTrading || !!txHash}
+                maxLength={200}
               />
             </div>
 
@@ -255,7 +359,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   className={`w-full h-12 text-base font-bold transition-all ${
                     isBuying 
                       ? 'bg-green-500 hover:bg-green-600' 
-                      : 'bg-muted hover:bg-muted/80'
+                      : 'bg-red-500 hover:bg-red-600'
                   } text-white`}
                   onClick={handleTrade}
                   disabled={isTrading || !ethAmount || parseFloat(ethAmount) <= 0}
@@ -267,7 +371,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                       Trading...
                     </>
                   ) : (
-                    `${isBuying ? 'Buy' : 'Sell'}`
+                    `${isBuying ? 'Buy' : 'Sell'} ${coin.symbol}`
                   )}
                 </Button>
               )
@@ -296,7 +400,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
             {/* Balance */}
             <div className="mt-auto pt-4 text-xs text-muted-foreground text-right">
-              Balance: 0 ETH
+              Balance: {parseFloat(balance).toFixed(6)} ETH
             </div>
           </div>
         </div>
