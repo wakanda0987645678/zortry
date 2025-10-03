@@ -26,6 +26,10 @@ export const coins = pgTable("coins", {
   status: text("status").notNull().default('pending'),
   scrapedContentId: varchar("scraped_content_id").references(() => scrapedContent.id),
   ipfsUri: text("ipfs_uri"),
+  chainId: text("chain_id"),
+  registryTxHash: text("registry_tx_hash"),
+  metadataHash: text("metadata_hash"),
+  registeredAt: timestamp("registered_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -48,6 +52,10 @@ export const insertCoinSchema = createInsertSchema(coins).omit({
 export const updateCoinSchema = z.object({
   address: z.string().optional(),
   status: coinStatusSchema.optional(),
+  chainId: z.string().optional(),
+  registryTxHash: z.string().optional(),
+  metadataHash: z.string().optional(),
+  registeredAt: z.date().optional(),
 });
 
 export type InsertScrapedContent = z.infer<typeof insertScrapedContentSchema>;
