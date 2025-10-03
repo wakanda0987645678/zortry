@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertScrapedContentSchema, insertCoinSchema, updateCoinSchema } from "@shared/schema";
+import { insertScrapedContentSchema, insertCoinSchema, updateCoinSchema, insertCommentSchema } from "@shared/schema";
 import axios from "axios";
 import { detectPlatform } from "./platform-detector";
 import { scrapeByPlatform } from "./platform-scrapers";
@@ -298,6 +298,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Update creator error:', error);
       res.status(400).json({ error: 'Invalid update data' });
+    }
+  });
+
+  // Get all comments
+  app.get("/api/comments", async (_req, res) => {
+    try {
+      const comments = await storage.getAllComments();
+      res.json(comments);
+    } catch (error) {
+      console.error('Get comments error:', error);
+      res.status(500).json({ error: 'Failed to fetch comments' });
+    }
+  });
+
+  // Get comments by coin address
+  app.get("/api/comments/coin/:address", async (req, res) => {
+    try {
+      const { address } = req.params;
+      const comments = await storage.getCommentsByCoin(address);
+      res.json(comments);
+    } catch (error) {
+      console.error('Get coin comments error:', error);
+      res.status(500).json({ error: 'Failed to fetch coin comments' });
+    }
+  });
+
+  // Create a comment
+  app.post("/api/comments", async (req, res) => {
+    try {
+      const validatedData = insertCommentSchema.parse(req.body);
+      const comment = await storage.createComment(validatedData);
+      res.json(comment);
+    } catch (error) {
+      console.error('Create comment error:', error);
+      res.status(400).json({ error: 'Invalid comment data' });
     }
   });
 

@@ -109,3 +109,20 @@ export const updateCreatorSchema = z.object({
 export type InsertCreator = z.infer<typeof insertCreatorSchema>;
 export type UpdateCreator = z.infer<typeof updateCreatorSchema>;
 export type Creator = typeof creators.$inferSelect;
+
+export const comments = pgTable("comments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  coinAddress: text("coin_address").notNull(),
+  userAddress: text("user_address").notNull(),
+  comment: text("comment").notNull(),
+  transactionHash: text("transaction_hash"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCommentSchema = createInsertSchema(comments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertComment = z.infer<typeof insertCommentSchema>;
+export type Comment = typeof comments.$inferSelect;

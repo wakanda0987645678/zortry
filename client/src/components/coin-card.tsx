@@ -216,7 +216,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       {/* Trade Modal */}
       {!isOwnCoin && (
         <TradeModal
-          coin={coin}
+          coin={coin as any}
           open={tradeDialogOpen}
           onOpenChange={setTradeDialogOpen}
         />

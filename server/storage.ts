@@ -1,4 +1,4 @@
-import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward, type Creator, type InsertCreator, type UpdateCreator } from "@shared/schema";
+import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward, type Creator, type InsertCreator, type UpdateCreator, type Comment, type InsertComment } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -29,6 +29,11 @@ export interface IStorage {
   updateCreator(id: string, update: UpdateCreator): Promise<Creator | undefined>;
   getAllCreators(): Promise<Creator[]>;
   getTopCreators(): Promise<Creator[]>;
+  
+  // Comments
+  createComment(comment: InsertComment): Promise<Comment>;
+  getCommentsByCoin(coinAddress: string): Promise<Comment[]>;
+  getAllComments(): Promise<Comment[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -36,12 +41,14 @@ export class MemStorage implements IStorage {
   private coins: Map<string, Coin>;
   private rewards: Map<string, Reward>;
   private creators: Map<string, Creator>;
+  private comments: Map<string, Comment>;
 
   constructor() {
     this.scrapedContent = new Map();
     this.coins = new Map();
     this.rewards = new Map();
     this.creators = new Map();
+    this.comments = new Map();
   }
 
   async getScrapedContent(id: string): Promise<ScrapedContent | undefined> {
@@ -75,9 +82,29 @@ export class MemStorage implements IStorage {
   }
 
   async getCoinByAddress(address: string): Promise<Coin | undefined> {
-    return Array.from(this.coins.values()).find(
+    const coin = Array.from(this.coins.values()).find(
       (coin) => coin.address?.toLowerCase() === address.toLowerCase()
     );
+    
+    if (!coin) return undefined;
+    
+    if (coin.scrapedContentId) {
+      const content = this.scrapedContent.get(coin.scrapedContentId);
+      if (content) {
+        return {
+          ...coin,
+          metadata: {
+            title: content.title,
+            description: content.description,
+            image: content.image,
+            originalUrl: content.url,
+            author: content.author
+          }
+        } as any;
+      }
+    }
+    
+    return coin;
   }
 
   async createCoin(insertCoin: InsertCoin): Promise<Coin> {
@@ -120,18 +147,43 @@ export class MemStorage implements IStorage {
         if (content) {
           return {
             ...coin,
-            platform: content.platform
+            metadata: {
+              title: content.title,
+              description: content.description,
+              image: content.image,
+              originalUrl: content.url,
+              author: content.author
+            }
           };
         }
       }
       return coin;
-    });
+    }) as any;
   }
 
   async getCoinsByCreator(creator: string): Promise<Coin[]> {
-    return Array.from(this.coins.values()).filter(
+    const coins = Array.from(this.coins.values()).filter(
       (coin) => coin.creator.toLowerCase() === creator.toLowerCase()
     ).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    return coins.map(coin => {
+      if (coin.scrapedContentId) {
+        const content = this.scrapedContent.get(coin.scrapedContentId);
+        if (content) {
+          return {
+            ...coin,
+            metadata: {
+              title: content.title,
+              description: content.description,
+              image: content.image,
+              originalUrl: content.url,
+              author: content.author
+            }
+          };
+        }
+      }
+      return coin;
+    }) as any;
   }
 
   async getReward(id: string): Promise<Reward | undefined> {
@@ -142,6 +194,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const reward: Reward = {
       ...insertReward,
+      rewardCurrency: insertReward.rewardCurrency ?? 'ZORA',
       id,
       createdAt: new Date()
     };
@@ -225,6 +278,30 @@ export class MemStorage implements IStorage {
   async getTopCreators(): Promise<Creator[]> {
     return Array.from(this.creators.values()).sort(
       (a, b) => parseInt(b.totalCoins) - parseInt(a.totalCoins)
+    );
+  }
+
+  async createComment(insertComment: InsertComment): Promise<Comment> {
+    const id = randomUUID();
+    const comment: Comment = {
+      ...insertComment,
+      transactionHash: insertComment.transactionHash ?? null,
+      id,
+      createdAt: new Date()
+    };
+    this.comments.set(id, comment);
+    return comment;
+  }
+
+  async getCommentsByCoin(coinAddress: string): Promise<Comment[]> {
+    return Array.from(this.comments.values()).filter(
+      (comment) => comment.coinAddress.toLowerCase() === coinAddress.toLowerCase()
+    ).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getAllComments(): Promise<Comment[]> {
+    return Array.from(this.comments.values()).sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
     );
   }
 }

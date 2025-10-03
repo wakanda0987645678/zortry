@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from "react";
-import type { Coin } from "@shared/schema";
+import type { Coin, Comment } from "@shared/schema";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -11,10 +12,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CheckCircle2, ExternalLink, Coins } from "lucide-react";
+import { Loader2, CheckCircle2, ExternalLink, Coins, MessageCircle, User } from "lucide-react";
 import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import { formatEther } from "viem";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface TradeModalProps {
   coin: Coin;
@@ -41,6 +44,22 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
   const GATEWAY_URL = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || "yellow-patient-cheetah-559.mypinata.cloud";
 
+  // Fetch comments for this coin
+  const { data: comments = [], isLoading: commentsLoading } = useQuery<Comment[]>({
+    queryKey: ['/api/comments/coin', coin.address],
+    enabled: open && !!coin.address,
+  });
+
+  // Mutation for creating a comment
+  const createCommentMutation = useMutation({
+    mutationFn: async (commentData: { coinAddress: string; userAddress: string; comment: string; transactionHash?: string }) => {
+      return await apiRequest('POST', '/api/comments', commentData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/comments/coin', coin.address] });
+    },
+  });
+
   // Fetch user balance
   useEffect(() => {
     async function fetchBalance() {
@@ -62,9 +81,11 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   // Fetch coin stats
   useEffect(() => {
     async function fetchCoinStats() {
+      if (!coin.address) return;
+      
       try {
         const response = await getCoin({
-          address: coin.address,
+          address: coin.address as `0x${string}`,
           chain: base.id,
         });
 
@@ -164,6 +185,20 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
       if (result?.hash) {
         setTxHash(result.hash);
         
+        // Save comment if provided
+        if (comment.trim() && coin.address) {
+          try {
+            await createCommentMutation.mutateAsync({
+              coinAddress: coin.address,
+              userAddress: address,
+              comment: comment.trim(),
+              transactionHash: result.hash,
+            });
+          } catch (error) {
+            console.error('Failed to save comment:', error);
+          }
+        }
+        
         toast({
           title: "Trade successful!",
           description: `You ${isBuying ? 'bought' : 'sold'} ${coin.symbol} tokens${comment ? ` - ${comment}` : ''}`,
@@ -208,7 +243,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     }
   };
 
-  const displayImage = coinImage || getImageSrc(coin.metadata?.image);
+  const displayImage = coinImage || getImageSrc((coin as any).metadata?.image);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -402,6 +437,74 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             <div className="mt-auto pt-4 text-xs text-muted-foreground text-right">
               Balance: {parseFloat(balance).toFixed(6)} ETH
             </div>
+          </div>
+
+          {/* Comments Section - Right side below trading interface */}
+          <div className="w-1/2 border-t border-border/50 p-4 max-h-64 overflow-hidden">
+            <div className="flex items-center gap-2 mb-3">
+              <MessageCircle className="w-4 h-4 text-primary" />
+              <h4 className="text-sm font-semibold text-white">
+                Recent Trades
+              </h4>
+              <span className="text-xs text-muted-foreground">
+                ({comments?.length || 0})
+              </span>
+            </div>
+            
+            <ScrollArea className="h-48">
+              {commentsLoading ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : comments && comments.length > 0 ? (
+                <div className="space-y-3">
+                  {comments.map((c) => (
+                    <div 
+                      key={c.id} 
+                      className="p-2 rounded-lg bg-muted/20 border border-border/30"
+                      data-testid={`comment-${c.id}`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[8px] font-bold text-white flex-shrink-0">
+                          {c.userAddress.slice(2, 4).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-medium text-white truncate">
+                              {c.userAddress.slice(0, 6)}...{c.userAddress.slice(-4)}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">
+                              {new Date(c.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground break-words">
+                            {c.comment}
+                          </p>
+                          {c.transactionHash && (
+                            <a
+                              href={`https://basescan.org/tx/${c.transactionHash}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-primary/70 hover:text-primary flex items-center gap-1 mt-1"
+                              data-testid={`link-comment-tx-${c.id}`}
+                            >
+                              View tx <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-32 text-center">
+                  <MessageCircle className="w-8 h-8 text-muted-foreground/30 mb-2" />
+                  <p className="text-xs text-muted-foreground">
+                    No trades yet. Be the first!
+                  </p>
+                </div>
+              )}
+            </ScrollArea>
           </div>
         </div>
       </DialogContent>
