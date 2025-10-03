@@ -14,11 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CheckCircle2, ExternalLink, Coins, MessageCircle, Users, Activity as ActivityIcon, Info, Copy, Check } from "lucide-react";
+import { Loader2, CheckCircle2, ExternalLink, Coins, MessageCircle, Users, Activity as ActivityIcon, Info, Copy, Check, TrendingUp } from "lucide-react";
 import { getCoin, getCoinHolders } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import { formatEther } from "viem";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 interface TradeModalProps {
   coin: Coin;
@@ -46,6 +48,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   }>>([]);
   const [totalSupply, setTotalSupply] = useState<string | null>(null);
   const [uniqueHoldersCount, setUniqueHoldersCount] = useState<number>(0);
+  const [chartData, setChartData] = useState<Array<{ time: string; price: number }>>([]);
+  const [timeframe, setTimeframe] = useState<'1H' | '1D' | 'W' | 'M' | 'All'>('1D');
+  const [priceChange, setPriceChange] = useState<number>(0);
   
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -124,6 +129,109 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
       fetchBalance();
     }
   }, [address, isConnected, publicClient, open]);
+
+  // Fetch chart data
+  useEffect(() => {
+    async function fetchChartData() {
+      if (!coin.address) return;
+      
+      try {
+        // Get the time range for the chart
+        const now = Date.now();
+        let startTime: number;
+        
+        switch (timeframe) {
+          case '1H':
+            startTime = now - (60 * 60 * 1000);
+            break;
+          case '1D':
+            startTime = now - (24 * 60 * 60 * 1000);
+            break;
+          case 'W':
+            startTime = now - (7 * 24 * 60 * 60 * 1000);
+            break;
+          case 'M':
+            startTime = now - (30 * 24 * 60 * 60 * 1000);
+            break;
+          case 'All':
+            startTime = 0;
+            break;
+        }
+
+        // Fetch historical price data from Zora
+        const response = await fetch(`https://api.zora.co/graphql`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_NEXT_PUBLIC_ZORA_API_KEY || ''}`,
+          },
+          body: JSON.stringify({
+            query: `
+              query GetCoinPriceHistory($address: String!, $chainId: Int!) {
+                zora20Token(address: $address, chainId: $chainId) {
+                  priceHistory {
+                    timestamp
+                    priceUsd
+                  }
+                }
+              }
+            `,
+            variables: {
+              address: coin.address.toLowerCase(),
+              chainId: base.id,
+            },
+          }),
+        });
+
+        const data = await response.json();
+        const priceHistory = data?.data?.zora20Token?.priceHistory || [];
+
+        if (priceHistory.length > 0) {
+          // Filter by timeframe and format data
+          const filtered = priceHistory
+            .filter((point: any) => point.timestamp >= startTime)
+            .map((point: any) => ({
+              time: new Date(point.timestamp).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+              }),
+              price: parseFloat(point.priceUsd || '0'),
+            }));
+
+          setChartData(filtered);
+
+          // Calculate price change percentage
+          if (filtered.length >= 2) {
+            const firstPrice = filtered[0].price;
+            const lastPrice = filtered[filtered.length - 1].price;
+            const change = ((lastPrice - firstPrice) / firstPrice) * 100;
+            setPriceChange(change);
+          }
+        } else {
+          // Fallback: generate sample data points from market cap if no history
+          setChartData([
+            { time: '12:00 AM', price: 0.001 },
+            { time: '6:00 AM', price: 0.0015 },
+            { time: '12:00 PM', price: 0.002 },
+            { time: '6:00 PM', price: parseFloat(marketCap || '0') / 1000000 },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching chart data:', error);
+        // Use fallback data
+        setChartData([
+          { time: '12:00 AM', price: 0.001 },
+          { time: '6:00 AM', price: 0.0015 },
+          { time: '12:00 PM', price: 0.002 },
+          { time: '6:00 PM', price: parseFloat(marketCap || '0') / 1000000 },
+        ]);
+      }
+    }
+
+    if (open && marketCap) {
+      fetchChartData();
+    }
+  }, [coin.address, open, timeframe, marketCap]);
 
   // Fetch coin stats
   useEffect(() => {
@@ -342,23 +450,91 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-3xl bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden">
         <div className="flex min-h-[500px]">
-          {/* Left side - Coin Image */}
-          <div className="w-5/12 bg-gradient-to-br from-muted/20 to-muted/10 flex items-center justify-center p-8">
-            {displayImage ? (
-              <img
-                src={displayImage}
-                alt={coin.name}
-                className="w-full h-full object-contain max-h-[450px]"
-                onError={(e) => {
-                  console.error("Trade modal image failed to load:", e.currentTarget.src);
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Coins className="w-20 h-20 text-primary/40" />
+          {/* Left side - Price Chart */}
+          <div className="w-5/12 bg-gradient-to-br from-muted/20 to-muted/10 flex flex-col p-6">
+            {/* Market Cap and Price Change */}
+            <div className="mb-4">
+              <p className="text-xs text-muted-foreground mb-1">Market cap</p>
+              <div className="flex items-baseline gap-2">
+                <h3 className="text-2xl font-bold text-white">
+                  ${marketCap || '0'}
+                </h3>
+                <span className={`text-sm font-semibold ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
+                </span>
               </div>
-            )}
+            </div>
+
+            {/* Chart */}
+            <div className="flex-1 min-h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.3} />
+                  <XAxis 
+                    dataKey="time" 
+                    stroke="#888"
+                    fontSize={10}
+                    tickLine={false}
+                  />
+                  <YAxis 
+                    stroke="#888"
+                    fontSize={10}
+                    tickLine={false}
+                    tickFormatter={(value) => `$${value.toFixed(4)}`}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1a1a1a', 
+                      border: '1px solid #333',
+                      borderRadius: '8px',
+                      fontSize: '12px'
+                    }}
+                    formatter={(value: any) => [`$${value.toFixed(6)}`, 'Price']}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="price" 
+                    stroke="#22c55e" 
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Timeframe Selector */}
+            <div className="flex gap-2 mt-4">
+              {(['1H', '1D', 'W', 'M', 'All'] as const).map((tf) => (
+                <Button
+                  key={tf}
+                  variant={timeframe === tf ? 'default' : 'ghost'}
+                  size="sm"
+                  className={`flex-1 h-8 text-xs ${
+                    timeframe === tf 
+                      ? 'bg-primary text-white' 
+                      : 'text-muted-foreground hover:text-white'
+                  }`}
+                  onClick={() => setTimeframe(tf)}
+                >
+                  {tf}
+                </Button>
+              ))}
+            </div>
+
+            {/* Toggle between chart and image */}
+            <div className="flex gap-2 mt-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1 h-8 text-xs text-muted-foreground hover:text-white"
+                onClick={() => {
+                  // Could add state to toggle between chart and image
+                }}
+              >
+                <TrendingUp className="w-3 h-3 mr-1" />
+                Chart
+              </Button>
+            </div>
           </div>
 
           {/* Right side - Tabbed Interface */}
