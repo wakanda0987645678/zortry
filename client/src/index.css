@@ -41,19 +41,30 @@
   --chart-1: 141 76% 48%;
   --chart-2: 160 60% 45%;
   --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
-  --sidebar: 0 0% 98%;
-  --sidebar-foreground: 0 0% 6%;
-  --sidebar-primary: 141 76% 48%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent: 0 0% 94%;
-  --sidebar-accent-foreground: 0 0% 6%;
-  --sidebar-border: 0 0% 88%;
-  --sidebar-ring: 141 76% 48%;
-  --font-sans: "Poppins Rounded", "Circular Std", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
-  --font-serif: Georgia, serif;
-  --font-mono: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+}
+
+.light {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
   --radius: 0.5rem;
 }
 
@@ -107,18 +118,15 @@
     scrollbar-width: none;
   }
 
+  /* Closing the gap of coin cards */
   @media (min-width: 640px) {
     .scrollbar-hide {
-      display: grid;
-      grid-auto-flow: column;
       grid-auto-columns: calc((100% - 5 * 0.75rem) / 6);
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
     }
+  }
 
-    .scrollbar-hide > * {
-      scroll-snap-align: start;
-    }
+  .scrollbar-hide > * {
+    scroll-snap-align: start;
   }
 
   .gradient-text {
@@ -217,6 +225,13 @@
 
   .compact-channel-card:hover {
     background: linear-gradient(135deg, rgba(30, 215, 96, 0.1), rgba(20, 20, 20, 0.8));
+  }
+
+  /* Add Farcaster to Categories chips */
+  .category-chip .farcaster {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: 1px solid hsl(var(--primary));
   }
 
   /* Mobile-specific utilities */

@@ -42,6 +42,13 @@ export default function Layout({ children }: LayoutProps) {
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.classList.toggle("dark", savedTheme === "dark");
+    } else {
+      // Default to system theme if no theme is saved
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = prefersDark ? "dark" : "light";
+      setTheme(initialTheme);
+      localStorage.setItem("theme", initialTheme);
+      document.documentElement.classList.toggle("dark", initialTheme === "dark");
     }
   }, []);
 
@@ -98,7 +105,7 @@ export default function Layout({ children }: LayoutProps) {
 
             return (
               <Link key={item.href} href={item.href}>
-                <div 
+                <div
                   className={`flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer ${
                     isActive
                       ? "text-white bg-primary/20"
@@ -123,7 +130,7 @@ export default function Layout({ children }: LayoutProps) {
             Turn any blog post into a tradeable digital asset.
           </p>
           <Link href="/create">
-            <button 
+            <button
               className="spotify-button w-full"
               onClick={() => mobile && setMobileMenuOpen(false)}
             >
@@ -258,7 +265,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center gap-3">
               {isConnected && (
                 <Link href="/profile">
-                  <button 
+                  <button
                     className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/20 transition-colors text-muted-foreground hover:text-white"
                     data-testid="button-profile"
                   >
