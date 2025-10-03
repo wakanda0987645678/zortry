@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CheckCircle2, ExternalLink, Coins } from "lucide-react";
+import { Loader2, CheckCircle2, ExternalLink, Coins, MessageCircle, Users, Activity as ActivityIcon, Info, Copy, Check } from "lucide-react";
 import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import { formatEther } from "viem";
@@ -31,6 +33,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const [txHash, setTxHash] = useState<string | null>(null);
   const [isBuying, setIsBuying] = useState(true);
   const [comment, setComment] = useState("");
+  const [standaloneComment, setStandaloneComment] = useState("");
   const [balance, setBalance] = useState<string>("0");
   const [marketCap, setMarketCap] = useState<string | null>(null);
   const [volume24h, setVolume24h] = useState<string | null>(null);
@@ -42,6 +45,14 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const publicClient = usePublicClient();
 
   const GATEWAY_URL = import.meta.env.VITE_NEXT_PUBLIC_GATEWAY_URL || "yellow-patient-cheetah-559.mypinata.cloud";
+  
+  const [copiedAddress, setCopiedAddress] = useState(false);
+
+  // Fetch comments for this coin
+  const { data: comments = [], isLoading: commentsLoading } = useQuery<Comment[]>({
+    queryKey: ['/api/comments/coin', coin.address],
+    enabled: open && !!coin.address,
+  });
 
   // Mutation for creating a comment
   const createCommentMutation = useMutation({
@@ -52,6 +63,38 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
       queryClient.invalidateQueries({ queryKey: ['/api/comments/coin', coin.address] });
     },
   });
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedAddress(true);
+    setTimeout(() => setCopiedAddress(false), 2000);
+  };
+
+  const handleStandaloneComment = async () => {
+    if (!isConnected || !address || !coin.address || !standaloneComment.trim()) return;
+
+    try {
+      await createCommentMutation.mutateAsync({
+        coinAddress: coin.address,
+        userAddress: address,
+        comment: standaloneComment.trim(),
+      });
+      
+      setStandaloneComment("");
+      
+      toast({
+        title: "Comment added",
+        description: "Your comment has been posted",
+      });
+    } catch (error) {
+      console.error('Failed to post comment:', error);
+      toast({
+        title: "Failed to post comment",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Fetch user balance
   useEffect(() => {
@@ -178,20 +221,20 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
       if (result?.hash) {
         setTxHash(result.hash);
         
-        // Save comment if provided
-        if (comment.trim() && coin.address) {
+        // Always save trade record (with or without comment)
+        if (coin.address) {
           try {
             await createCommentMutation.mutateAsync({
               coinAddress: coin.address,
               userAddress: address,
-              comment: comment.trim(),
+              comment: comment.trim() || `Traded ${coin.symbol}`,
               transactionHash: result.hash,
             });
           } catch (error) {
-            console.error('Failed to save comment:', error);
+            console.error('Failed to save trade record:', error);
             toast({
-              title: "Comment not saved",
-              description: "Your trade was successful but the comment could not be saved",
+              title: "Trade record not saved",
+              description: "Your trade was successful but the activity record could not be saved",
               variant: "destructive",
             });
           }
@@ -266,9 +309,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             )}
           </div>
 
-          {/* Right side - Trading Interface */}
-          <div className="w-7/12 p-6 flex flex-col">
-            <DialogHeader className="mb-4">
+          {/* Right side - Tabbed Interface */}
+          <div className="w-7/12 flex flex-col">
+            <DialogHeader className="px-6 pt-6 pb-3">
               <DialogTitle className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-bold text-white">{coin.name}</h3>
@@ -278,6 +321,24 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </div>
               </DialogTitle>
             </DialogHeader>
+
+            <Tabs defaultValue="trade" className="flex-1 flex flex-col">
+              <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent px-6">
+                <TabsTrigger value="trade" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                  Trade
+                </TabsTrigger>
+                <TabsTrigger value="comments" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                  Comments
+                </TabsTrigger>
+                <TabsTrigger value="activity" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                  Activity
+                </TabsTrigger>
+                <TabsTrigger value="details" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
+                  Details
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="trade" className="flex-1 px-6 pb-6 flex flex-col mt-0 pt-4">{/* Trade Tab Content */}
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-3 mb-4">
@@ -435,6 +496,241 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             <div className="mt-auto pt-4 text-xs text-muted-foreground text-right">
               Balance: {parseFloat(balance).toFixed(6)} ETH
             </div>
+          </TabsContent>
+
+          {/* Comments Tab */}
+          <TabsContent value="comments" className="flex-1 px-6 pb-6 mt-0 pt-4">
+            <div className="mb-4">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Add a comment..."
+                  className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground flex-1"
+                  disabled={!isConnected || createCommentMutation.isPending}
+                  value={standaloneComment}
+                  onChange={(e) => setStandaloneComment(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleStandaloneComment();
+                    }
+                  }}
+                />
+                <Button
+                  onClick={handleStandaloneComment}
+                  disabled={!isConnected || createCommentMutation.isPending || !standaloneComment.trim()}
+                  className="h-10"
+                >
+                  {createCommentMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    'Post'
+                  )}
+                </Button>
+              </div>
+              {!isConnected && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  Connect your wallet to comment
+                </p>
+              )}
+            </div>
+
+            <ScrollArea className="h-[350px]">
+              {commentsLoading ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : comments && comments.length > 0 ? (
+                <div className="space-y-3">
+                  {comments.map((c) => (
+                    <div 
+                      key={c.id} 
+                      className="p-3 rounded-lg bg-muted/20 border border-border/30"
+                      data-testid={`comment-${c.id}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                          {c.userAddress.slice(2, 4).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-medium text-white truncate">
+                              {c.userAddress.slice(0, 6)}...{c.userAddress.slice(-4)}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(c.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground break-words">
+                            {c.comment}
+                          </p>
+                          {c.transactionHash && (
+                            <a
+                              href={`https://basescan.org/tx/${c.transactionHash}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-primary/70 hover:text-primary flex items-center gap-1 mt-2"
+                              data-testid={`link-comment-tx-${c.id}`}
+                            >
+                              View transaction <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-center">
+                  <MessageCircle className="w-12 h-12 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm font-medium text-white mb-1">No comments yet</p>
+                  <p className="text-xs text-muted-foreground">
+                    Be the first to add a comment
+                  </p>
+                </div>
+              )}
+            </ScrollArea>
+          </TabsContent>
+
+          {/* Activity Tab */}
+          <TabsContent value="activity" className="flex-1 px-6 pb-6 mt-0 pt-4">
+            <ScrollArea className="h-[420px]">
+              {commentsLoading ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                </div>
+              ) : comments && comments.filter(c => c.transactionHash).length > 0 ? (
+                <div className="space-y-2">
+                  {comments.filter(c => c.transactionHash).map((c) => (
+                    <div 
+                      key={c.id} 
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
+                      data-testid={`activity-${c.id}`}
+                    >
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                        {c.userAddress.slice(2, 4).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-sm font-medium text-white truncate">
+                            {c.userAddress.slice(0, 8)}...
+                          </span>
+                          <span className="text-xs font-bold text-green-500">
+                            Traded
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(c.createdAt).toLocaleTimeString()} • {new Date(c.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        {c.comment && (
+                          <p className="text-xs text-muted-foreground mt-1 italic">
+                            "{c.comment}"
+                          </p>
+                        )}
+                      </div>
+                      <a
+                        href={`https://basescan.org/tx/${c.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary/70 hover:text-primary flex-shrink-0"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-center">
+                  <ActivityIcon className="w-12 h-12 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm font-medium text-white mb-1">No trades yet</p>
+                  <p className="text-xs text-muted-foreground">
+                    Trading activity will appear here
+                  </p>
+                </div>
+              )}
+            </ScrollArea>
+          </TabsContent>
+
+          {/* Details Tab */}
+          <TabsContent value="details" className="flex-1 px-6 pb-6 mt-0 pt-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-3 border-b border-border/30">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Info className="w-4 h-4" />
+                  <span className="text-sm">Created</span>
+                </div>
+                <span className="text-sm font-medium text-white">
+                  {new Date(coin.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+
+              {coin.address && (
+                <div className="flex items-center justify-between py-3 border-b border-border/30">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Coins className="w-4 h-4" />
+                    <span className="text-sm">Contract address</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-mono text-white">
+                      {coin.address.slice(0, 6)}...{coin.address.slice(-4)}
+                    </span>
+                    <button
+                      onClick={() => copyToClipboard(coin.address!)}
+                      className="text-muted-foreground hover:text-white transition-colors"
+                    >
+                      {copiedAddress ? (
+                        <Check className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between py-3 border-b border-border/30">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <ActivityIcon className="w-4 h-4" />
+                  <span className="text-sm">Chain</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-white">B</span>
+                  </div>
+                  <span className="text-sm font-medium text-white">Base</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between py-3 border-b border-border/30">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Users className="w-4 h-4" />
+                  <span className="text-sm">Creator</span>
+                </div>
+                <span className="text-sm font-mono text-white">
+                  {coin.creator.slice(0, 6)}...{coin.creator.slice(-4)}
+                </span>
+              </div>
+
+              {(coin as any).metadata?.originalUrl && (
+                <div className="flex items-center justify-between py-3">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <ExternalLink className="w-4 h-4" />
+                    <span className="text-sm">Original post</span>
+                  </div>
+                  <a
+                    href={(coin as any).metadata.originalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    View
+                  </a>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
           </div>
         </div>
       </DialogContent>
