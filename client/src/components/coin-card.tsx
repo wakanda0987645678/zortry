@@ -270,7 +270,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
 
   return (
     <div
-      className={`spotify-card rounded-lg overflow-hidden ${isOwnCoin ? "ring-2 ring-primary/50" : ""} h-full flex flex-col`}
+      className={`spotify-card rounded-2xl overflow-hidden ${isOwnCoin ? "ring-1 ring-primary/20" : ""} h-full flex flex-col`}
     >
       {/* Coin Image/Art - Top Section - Clickable */}
       <Dialog open={tradeDialogOpen} onOpenChange={setTradeDialogOpen}>
