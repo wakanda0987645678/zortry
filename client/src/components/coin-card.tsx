@@ -142,10 +142,8 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             setVolume24h(parseFloat(coinData.volume24h).toFixed(2));
           }
 
-          // Set unique holders
-          if (coinData.uniqueHolders) {
-            setUniqueHolders(coinData.uniqueHolders);
-          }
+          // Set unique holders - use 0 if undefined to ensure it's always a number
+          setUniqueHolders(coinData.uniqueHolders || 0);
 
           // Set creator earnings if available
           if (coinData.creatorEarnings) {

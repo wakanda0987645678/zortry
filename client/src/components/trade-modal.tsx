@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2, ExternalLink, Coins, MessageCircle, Users, Activity as ActivityIcon, Info, Copy, Check } from "lucide-react";
-import { getCoin } from "@zoralabs/coins-sdk";
+import { getCoin, getCoinHolders } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import { formatEther } from "viem";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -39,6 +39,13 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const [volume24h, setVolume24h] = useState<string | null>(null);
   const [creatorEarnings, setCreatorEarnings] = useState<string | null>(null);
   const [coinImage, setCoinImage] = useState<string | null>(null);
+  const [holders, setHolders] = useState<Array<{
+    address: string;
+    balance: string;
+    percentage: number;
+  }>>([]);
+  const [totalSupply, setTotalSupply] = useState<string | null>(null);
+  const [uniqueHoldersCount, setUniqueHoldersCount] = useState<number>(0);
   
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -153,6 +160,41 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             const previewImage = coinData.mediaContent.previewImage as any;
             setCoinImage(previewImage.medium || previewImage.small || null);
           }
+
+          // Set total supply and unique holders
+          if (coinData.totalSupply) {
+            setTotalSupply(coinData.totalSupply);
+          }
+          
+          if (coinData.uniqueHolders !== undefined) {
+            setUniqueHoldersCount(coinData.uniqueHolders);
+          }
+        }
+
+        // Fetch holder details
+        const holdersResponse = await getCoinHolders({
+          chainId: base.id,
+          address: coin.address as `0x${string}`,
+          count: 50, // Get top 50 holders
+        });
+
+        const holderBalances = holdersResponse.data?.zora20Token?.tokenBalances?.edges || [];
+        const supply = parseFloat(coinData?.totalSupply || "0");
+
+        if (holderBalances.length > 0 && supply > 0) {
+          const processedHolders = holderBalances.map((edge: any) => {
+            const balance = parseFloat(edge.node.balance || "0");
+            const percentage = (balance / supply) * 100;
+            
+            return {
+              address: edge.node.ownerAddress,
+              balance: edge.node.balance,
+              percentage: percentage,
+              profile: edge.node.ownerProfile?.handle || null,
+            };
+          });
+
+          setHolders(processedHolders);
         }
       } catch (error) {
         console.error("Error fetching coin stats:", error);
@@ -606,70 +648,77 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
           {/* Holders Tab */}
           <TabsContent value="holders" className="flex-1 px-6 pb-6 mt-0 pt-4">
-            <ScrollArea className="h-[420px]">
-              <div className="space-y-2">
-                {/* Market holder */}
-                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                      <Coins className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-white">Market</p>
-                      <p className="text-xs text-muted-foreground">Liquidity Pool</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-white">97.61%</p>
-                  </div>
-                </div>
-
-                {/* Creator holder */}
-                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
-                      {coin.creator.slice(2, 4).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-white">
-                        {coin.creator.slice(0, 6)}...{coin.creator.slice(-4)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">Creator</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-white">1%</p>
-                  </div>
-                </div>
-
-                {/* Additional holders - mock data for now */}
-                {comments && comments.length > 0 && comments
-                  .filter(c => c.transactionHash)
-                  .slice(0, 5)
-                  .map((c, index) => (
-                    <div 
-                      key={c.id}
-                      className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
-                          {c.userAddress.slice(2, 4).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white">
-                            {c.userAddress.slice(0, 6)}...{c.userAddress.slice(-4)}
-                          </p>
-                          <p className="text-xs text-muted-foreground">Holder</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-bold text-white">
-                          {(Math.random() * 0.5).toFixed(3)}%
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Holders</p>
+                <p className="text-xl font-bold text-white">{uniqueHoldersCount}</p>
               </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Total Supply</p>
+                <p className="text-xl font-bold text-white">
+                  {totalSupply ? parseFloat(totalSupply).toLocaleString(undefined, { maximumFractionDigits: 0 }) : '-'}
+                </p>
+              </div>
+            </div>
+
+            <ScrollArea className="h-[360px]">
+              {holders.length > 0 ? (
+                <div className="space-y-2">
+                  {holders.map((holder, index) => {
+                    const isCreator = holder.address.toLowerCase() === coin.creator.toLowerCase();
+                    
+                    return (
+                      <div 
+                        key={holder.address}
+                        className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 min-w-[30px]">
+                            <span className="text-xs font-bold text-muted-foreground">#{index + 1}</span>
+                          </div>
+                          <div className={`w-10 h-10 rounded-full ${
+                            index === 0 
+                              ? 'bg-gradient-to-br from-yellow-500 to-orange-500' 
+                              : isCreator 
+                                ? 'bg-gradient-to-br from-primary to-secondary' 
+                                : 'bg-gradient-to-br from-blue-500 to-cyan-500'
+                          } flex items-center justify-center text-sm font-bold text-white flex-shrink-0`}>
+                            {holder.address.slice(2, 4).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-semibold text-white">
+                                {holder.address.slice(0, 6)}...{holder.address.slice(-4)}
+                              </p>
+                              {isCreator && (
+                                <span className="text-xs px-1.5 py-0.5 rounded bg-primary/20 text-primary font-medium">
+                                  Creator
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {parseFloat(holder.balance).toLocaleString(undefined, { maximumFractionDigits: 2 })} tokens
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-white">
+                            {holder.percentage.toFixed(2)}%
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-center">
+                  <Users className="w-12 h-12 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm font-medium text-white mb-1">Loading holders...</p>
+                  <p className="text-xs text-muted-foreground">
+                    Fetching holder information from blockchain
+                  </p>
+                </div>
+              )}
             </ScrollArea>
           </TabsContent>
 
