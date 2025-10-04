@@ -176,8 +176,8 @@
   }
 
   .spotify-button {
-    background: hsl(141 76% 48%);
-    color: hsl(0 0% 0%);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     font-weight: 700;
     text-transform: none;
     border-radius: 500px;
@@ -189,7 +189,7 @@
   }
 
   .spotify-button:hover {
-    background: hsl(141 76% 52%);
+    background: hsl(var(--primary) / 0.9);
     transform: scale(1.04);
   }
 

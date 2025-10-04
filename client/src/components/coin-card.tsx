@@ -257,7 +257,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       {/* Content Section */}
       <div className="p-2 space-y-1.5 flex-1 flex flex-col">
         <div className="flex-1">
-          <h3 className="font-bold text-xs truncate text-white">{coin.name}</h3>
+          <h3 className="font-bold text-xs truncate text-foreground">{coin.name}</h3>
           <p className="text-[10px] text-muted-foreground truncate">
             {coin.symbol}
           </p>
@@ -270,12 +270,12 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             <div className="flex items-center gap-0.5">
               <Coins className="h-2.5 w-2.5 text-blue-500" />
               <span className="text-muted-foreground">MC:</span>
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-foreground">
                 {marketCap ? `$${marketCap}` : "-"}
               </span>
             </div>
             <div className="flex items-center gap-1" title={coin.creator}>
-              <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[7px] font-bold text-white">
+              <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[7px] font-bold text-primary-foreground">
                 {coin.creator.slice(2, 4).toUpperCase()}
               </div>
             </div>
@@ -286,7 +286,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             <div className="flex items-center gap-0.5">
               <TrendingUp className="h-2.5 w-2.5 text-green-500" />
               <span className="text-muted-foreground">Earn:</span>
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-foreground">
                 {creatorEarnings && creatorEarnings.length > 0
                   ? `$${parseFloat(creatorEarnings[0].amountUsd || "0").toFixed(2)}`
                   : "-"}
@@ -294,7 +294,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
             </div>
             <div className="flex items-center gap-0.5">
               <User className="h-2.5 w-2.5 text-orange-500" />
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-foreground">
                 {uniqueHolders || 0}
               </span>
             </div>

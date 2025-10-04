@@ -82,8 +82,8 @@ export default function Home() {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                       selectedCategory === category.id
-                        ? "bg-primary text-black"
-                        : "bg-muted/20 text-muted-foreground hover:bg-muted/30 hover:text-white"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted/20 text-muted-foreground hover:bg-muted/30 hover:text-foreground"
                     }`}
                     data-testid={`button-category-${category.id}`}
                   >
@@ -129,7 +129,7 @@ export default function Home() {
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                 <CoinsIcon className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">
                 No coins yet
               </h3>
               <p className="text-muted-foreground mb-4 sm:mb-6 px-4">
