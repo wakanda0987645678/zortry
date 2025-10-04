@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -35,12 +35,11 @@ export default function Layout({ children }: LayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const isMobile = useIsMobile();
   const { isConnected } = useAccount();
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const { address } = useAccount();
-  const navigate = useNavigate();
 
   const { data: notifications = [], isLoading: isLoadingNotifications } = useQuery<Notification[]>({
     queryKey: [`/api/notifications/${address}/unread`],
@@ -75,7 +74,7 @@ export default function Layout({ children }: LayoutProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/channels?search=${encodeURIComponent(searchQuery.trim())}`);
+      setLocation(`/channels?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
