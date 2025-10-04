@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Dialog,
@@ -14,7 +13,10 @@ interface CreateCoinModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export default function CreateCoinModal({ open, onOpenChange }: CreateCoinModalProps) {
+export default function CreateCoinModal({
+  open,
+  onOpenChange,
+}: CreateCoinModalProps) {
   const [showPreview, setShowPreview] = useState(false);
   const [scrapedData, setScrapedData] = useState<any>(null);
 
@@ -40,13 +42,13 @@ export default function CreateCoinModal({ open, onOpenChange }: CreateCoinModalP
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto p-4 rounded-3xl">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-4 rounded-full">
         <DialogHeader className="space-y-1">
           <DialogTitle className="text-xl font-bold text-white">
-            Create Your Coin
+            Create a coin
           </DialogTitle>
           <p className="text-sm text-muted-foreground">
-            Transform any content into a tradeable digital asset
+            Transform your channel into a tradeable digital asset
           </p>
         </DialogHeader>
 

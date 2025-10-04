@@ -41,15 +41,15 @@ export default function Channels() {
 
   // Extract search parameter from URL
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.split('?')[1] || '');
-    const searchParam = urlParams.get('search');
+    const urlParams = new URLSearchParams(location.split("?")[1] || "");
+    const searchParam = urlParams.get("search");
     if (searchParam) {
       setSearchTerm(searchParam);
     }
   }, [location]);
 
   const categories = [
-    { id: "all", name: "All Channels", icon: Hash },
+    { id: "all", name: "All", icon: Hash },
     { id: "trending", name: "Trending", icon: TrendingUp },
     { id: "popular", name: "Popular", icon: Users },
     { id: "new", name: "New", icon: Plus },
@@ -70,7 +70,7 @@ export default function Channels() {
           {/* Channel Import Tab and Category Tabs */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             {/* Channel Import Tab */}
-            <Button 
+            <Button
               onClick={() => setCreateModalOpen(true)}
               className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-6 py-2 rounded-full transition-colors"
             >
@@ -114,17 +114,16 @@ export default function Channels() {
                 {searchTerm ? "No channels found" : "No channels yet"}
               </h3>
               <p className="text-muted-foreground mb-6">
-                {searchTerm 
+                {searchTerm
                   ? `No channels match "${searchTerm}". Try a different search term.`
-                  : "Be the first to create a channel from your favorite content!"
-                }
+                  : "Be the first coin your Channel and earn forever!"}
               </p>
               {!searchTerm && (
-                <Button 
+                <Button
                   onClick={() => setCreateModalOpen(true)}
                   className="spotify-button"
                 >
-                  Create First Channel
+                  Import your Channel
                 </Button>
               )}
             </div>
@@ -132,54 +131,65 @@ export default function Channels() {
             <>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-white">
-                  {searchTerm ? `Search results for "${searchTerm}"` : "Trending Channels"}
-                  <span className="text-muted-foreground ml-2">({filteredChannels.length})</span>
+                  {searchTerm
+                    ? `Search results for "${searchTerm}"`
+                    : "Trending Channels"}
+                  <span className="text-muted-foreground ml-2">
+                    ({filteredChannels.length})
+                  </span>
                 </h2>
               </div>
 
               {/* Responsive Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {filteredChannels.map((channel) => (
-                    <div 
-                    key={channel.id} 
+                  <div
+                    key={channel.id}
                     className="compact-channel-card group cursor-pointer"
                     onClick={() => handleTradeChannel(channel)}
                   >
-                      {/* Channel Icon */}
-                      <div className="w-16 h-16 rounded-xl overflow-hidden mb-3 mx-auto">
-                        <img 
-                          src={channel.image} 
-                          alt={channel.name}
-                          className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
-                        />
+                    {/* Channel Icon */}
+                    <div className="w-16 h-16 rounded-xl overflow-hidden mb-3 mx-auto">
+                      <img
+                        src={channel.image}
+                        alt={channel.name}
+                        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                      />
+                    </div>
+
+                    {/* Channel Info */}
+                    <div className="text-center space-y-1">
+                      <h3 className="font-bold text-white text-sm leading-tight">
+                        {channel.name}
+                        <br />
+                        <span className="text-xs text-muted-foreground font-normal">
+                          ({channel.symbol})
+                        </span>
+                      </h3>
+
+                      <div className="text-xs text-muted-foreground">
+                        market cap:{" "}
+                        <span className="text-primary font-semibold">
+                          {channel.marketCap}
+                        </span>
                       </div>
 
-                      {/* Channel Info */}
-                      <div className="text-center space-y-1">
-                        <h3 className="font-bold text-white text-sm leading-tight">
-                          {channel.name}
-                          <br />
-                          <span className="text-xs text-muted-foreground font-normal">
-                            ({channel.symbol})
-                          </span>
-                        </h3>
-
-                        <div className="text-xs text-muted-foreground">
-                          market cap: <span className="text-primary font-semibold">{channel.marketCap}</span>
-                        </div>
-
-                        <div className="text-xs text-muted-foreground">
-                          replies: <span className="text-white font-semibold">{channel.holders * 30 + Math.floor(Math.random() * 50)}</span>
-                        </div>
+                      <div className="text-xs text-muted-foreground">
+                        replies:{" "}
+                        <span className="text-white font-semibold">
+                          {channel.holders * 30 +
+                            Math.floor(Math.random() * 50)}
+                        </span>
                       </div>
                     </div>
+                  </div>
                 ))}
               </div>
 
               {/* View All Button */}
               <div className="text-center mt-8">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="border-border/50 hover:border-primary/50 transition-colors"
                 >
                   View All Channels

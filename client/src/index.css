@@ -126,7 +126,7 @@
     }
   }
 
-  .scrollbar-hide > * {
+  .scrollbar-hide>* {
     scroll-snap-align: start;
   }
 
@@ -153,7 +153,7 @@
   .spotify-card:hover {
     background: linear-gradient(135deg, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.95));
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(30, 215, 96, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgb(225, 253, 13, 0.1);
   }
 
   .hover-lift {
@@ -258,9 +258,12 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: .5;
   }
@@ -274,13 +277,14 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 .shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
