@@ -3,7 +3,26 @@ import { Link } from "wouter";
 import type { Coin } from "@shared/schema";
 import CoinCard from "@/components/coin-card";
 import Layout from "@/components/layout";
-import { Coins as CoinsIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { 
+  Coins as CoinsIcon, 
+  ChevronLeft, 
+  ChevronRight,
+  Globe,
+  PenTool
+} from "lucide-react";
+import { 
+  SiYoutube,
+  SiFarcaster,
+  SiGitcoin,
+  SiSpotify,
+  SiTiktok,
+  SiInstagram,
+  SiMedium,
+  SiSubstack,
+  SiGiveth,
+  SiTwitter,
+  SiGithub
+} from "react-icons/si";
 import { useState, useMemo, useRef } from "react";
 
 type CoinWithPlatform = Coin & { platform?: string };
@@ -23,19 +42,19 @@ export default function Home() {
   };
 
   const categories = [
-    { id: "all", label: "All", icon: "🌐" },
-    { id: "youtube", label: "YouTube", icon: "▶️" },
-    { id: "farcaster", label: "Farcaster", icon: "🎯" },
-    { id: "gitcoin", label: "Gitcoin", icon: "🪙" },
-    { id: "spotify", label: "Spotify", icon: "🎵" },
-    { id: "tiktok", label: "TikTok", icon: "🎬" },
-    { id: "instagram", label: "Instagram", icon: "📸" },
-    { id: "medium", label: "Medium", icon: "📝" },
-    { id: "substack", label: "Substack", icon: "📰" },
-    { id: "giveth", label: "Giveth", icon: "💝" },
-    { id: "tiktok", label: "TikTok", icon: "🎬" },
-    { id: "twitter", label: "Twitter", icon: "🐦" },
-    { id: "blog", label: "Blog", icon: "✍️" },
+    { id: "all", label: "All", Icon: Globe },
+    { id: "youtube", label: "YouTube", Icon: SiYoutube },
+    { id: "farcaster", label: "Farcaster", Icon: SiFarcaster },
+    { id: "gitcoin", label: "Gitcoin", Icon: SiGitcoin },
+    { id: "spotify", label: "Spotify", Icon: SiSpotify },
+    { id: "tiktok", label: "TikTok", Icon: SiTiktok },
+    { id: "instagram", label: "Instagram", Icon: SiInstagram },
+    { id: "medium", label: "Medium", Icon: SiMedium },
+    { id: "substack", label: "Substack", Icon: SiSubstack },
+    { id: "giveth", label: "Giveth", Icon: SiGiveth },
+    { id: "twitter", label: "Twitter", Icon: SiTwitter },
+    { id: "github", label: "GitHub", Icon: SiGithub },
+    { id: "blog", label: "Blog", Icon: PenTool },
   ];
 
   const filteredCoins = useMemo(() => {
@@ -75,6 +94,7 @@ export default function Home() {
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {categories.map((category) => {
+                const IconComponent = category.Icon;
                 return (
                   <button
                     key={category.id}
@@ -86,7 +106,7 @@ export default function Home() {
                     }`}
                     data-testid={`button-category-${category.id}`}
                   >
-                    <span className="text-base">{category.icon}</span>
+                    <IconComponent className="w-4 h-4" />
                     {category.label}
                   </button>
                 );
