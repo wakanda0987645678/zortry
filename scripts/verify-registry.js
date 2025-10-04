@@ -32,6 +32,7 @@ async function verifyContract() {
   formData.append('optimizationUsed', '1');
   formData.append('runs', '200');
   formData.append('constructorArguements', '');
+  formData.append('libraries', '');
   formData.append('evmversion', 'default');
   formData.append('licenseType', '3'); // MIT License
 
