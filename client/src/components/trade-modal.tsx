@@ -485,25 +485,25 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-3xl bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden sm:rounded-3xl">
-        <div className="flex min-h-[500px]">
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden sm:rounded-3xl">
+        <div className="flex max-h-[85vh]">
           {/* Left side - Carousel with Image and Chart */}
-          <div className="w-5/12 bg-gradient-to-br from-muted/20 to-muted/10 flex flex-col p-6">
+          <div className="w-5/12 bg-gradient-to-br from-muted/20 to-muted/10 flex flex-col p-4">
             {/* Market Cap and Price Change */}
-            <div className="mb-4">
-              <p className="text-xs text-muted-foreground mb-1">Market cap</p>
+            <div className="mb-3">
+              <p className="text-xs text-muted-foreground mb-0.5">Market cap</p>
               <div className="flex items-baseline gap-2">
-                <h3 className="text-2xl font-bold text-white">
+                <h3 className="text-xl font-bold text-white">
                   ${marketCap || '0'}
                 </h3>
-                <span className={`text-sm font-semibold ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <span className={`text-xs font-semibold ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
                 </span>
               </div>
             </div>
 
             {/* Carousel - Image & Chart Slides */}
-            <div className="flex-1 min-h-[300px] relative px-8">
+            <div className="flex-1 min-h-[200px] relative px-4">
               <Carousel className="w-full h-full">
                 <CarouselContent className="h-full">
                   {/* Slide 1: Coin Image */}
@@ -526,7 +526,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
                   {/* Slide 2: Price Chart */}
                   <CarouselItem className="h-full">
-                    <div className="h-full w-full" style={{ minHeight: '300px' }}>
+                    <div className="h-full w-full" style={{ minHeight: '200px' }}>
                       {chartData.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                           <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
@@ -578,13 +578,13 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </div>
 
             {/* Timeframe Selector */}
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-1.5 mt-3">
               {(['1H', '1D', 'W', 'M', 'All'] as const).map((tf) => (
                 <Button
                   key={tf}
                   variant={timeframe === tf ? 'default' : 'ghost'}
                   size="sm"
-                  className={`flex-1 h-8 text-xs ${
+                  className={`flex-1 h-7 text-xs ${
                     timeframe === tf
                       ? 'bg-primary text-white'
                       : 'text-muted-foreground hover:text-white'
@@ -598,20 +598,20 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </div>
 
           {/* Right side - Tabbed Interface */}
-          <div className="w-7/12 flex flex-col">
-            <DialogHeader className="px-6 pt-6 pb-3">
+          <div className="w-7/12 flex flex-col overflow-hidden">
+            <DialogHeader className="px-4 pt-4 pb-2">
               <DialogTitle className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-bold text-white">{coin.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <h3 className="text-lg font-bold text-white">{coin.name}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     @{formatAddress(coin.creator)}
                   </p>
                 </div>
               </DialogTitle>
             </DialogHeader>
 
-            <Tabs defaultValue="trade" className="flex-1 flex flex-col">
-              <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent px-6">
+            <Tabs defaultValue="trade" className="flex-1 flex flex-col overflow-hidden">
+              <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent px-4">
                 <TabsTrigger value="trade" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
                   Trade
                 </TabsTrigger>
@@ -629,10 +629,10 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="trade" className="flex-1 px-6 pb-6 flex flex-col mt-0 pt-4 min-h-[420px]">{/* Trade Tab Content */}
+              <TabsContent value="trade" className="flex-1 px-4 pb-4 flex flex-col mt-0 pt-3 overflow-y-auto">{/* Trade Tab Content */}
 
             {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-3 gap-2 mb-3">
               <div>
                 <p className="text-xs text-muted-foreground">Market Cap</p>
                 <p className="text-sm font-bold text-green-500">
@@ -654,10 +654,10 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </div>
 
             {/* Buy/Sell Toggle */}
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-3">
               <Button
                 onClick={() => setIsBuying(true)}
-                className={`flex-1 h-10 text-sm font-bold transition-all rounded-full ${
+                className={`flex-1 h-9 text-sm font-bold transition-all rounded-full ${
                   isBuying
                     ? 'bg-green-500 hover:bg-green-600 text-white'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
@@ -669,7 +669,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </Button>
               <Button
                 onClick={() => setIsBuying(false)}
-                className={`flex-1 h-10 text-sm font-bold transition-all rounded-full ${
+                className={`flex-1 h-9 text-sm font-bold transition-all rounded-full ${
                   !isBuying
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
@@ -682,7 +682,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </div>
 
             {/* Amount Input */}
-            <div className="mb-3">
+            <div className="mb-2.5">
               <div className="relative">
                 <Input
                   type="number"
@@ -690,12 +690,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   min="0"
                   value={ethAmount}
                   onChange={(e) => setEthAmount(e.target.value)}
-                  className="h-14 text-2xl font-bold pr-20 bg-muted/30 border-border/50 text-white rounded-2xl"
+                  className="h-12 text-xl font-bold pr-20 bg-muted/30 border-border/50 text-white rounded-2xl"
                   disabled={isTrading || !!txHash}
                   data-testid="input-eth-amount"
                 />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
                     Ξ
                   </div>
                   <span className="text-sm font-semibold text-white">ETH</span>
@@ -704,7 +704,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </div>
 
             {/* Quick Amount Buttons */}
-            <div className="grid grid-cols-4 gap-2 mb-4">
+            <div className="grid grid-cols-4 gap-2 mb-3">
               {['0.001', '0.01', '0.1', 'Max'].map((label) => (
                 <Button
                   key={label}
@@ -712,7 +712,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   size="sm"
                   onClick={() => setQuickAmount(label)}
                   disabled={isTrading || !!txHash}
-                  className="h-9 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-white rounded-full"
+                  className="h-8 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-white rounded-full"
                 >
                   {label === 'Max' ? label : `${label} ETH`}
                 </Button>
@@ -720,12 +720,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </div>
 
             {/* Comment Input */}
-            <div className="mb-4">
+            <div className="mb-3">
               <Input
                 placeholder="Add a comment (optional)"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground rounded-xl"
+                className="h-9 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground rounded-xl text-sm"
                 disabled={isTrading || !!txHash}
                 maxLength={200}
               />
@@ -734,14 +734,14 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             {/* Action Button */}
             {!txHash ? (
               !isConnected ? (
-                <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                <div className="p-2.5 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                   <p className="text-xs text-yellow-500 text-center font-medium">
                     Please connect your wallet to trade
                   </p>
                 </div>
               ) : (
                 <Button
-                  className={`w-full h-12 text-base font-bold transition-all rounded-full ${
+                  className={`w-full h-11 text-base font-bold transition-all rounded-full ${
                     isBuying
                       ? 'bg-green-500 hover:bg-green-600'
                       : 'bg-red-500 hover:bg-red-600'
@@ -761,11 +761,11 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </Button>
               )
             ) : (
-              <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+              <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-green-400 text-sm mb-2">
+                    <div className="font-semibold text-green-400 text-sm mb-1.5">
                       Transaction Successful!
                     </div>
                     <a
@@ -784,18 +784,18 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             )}
 
             {/* Balance */}
-            <div className="mt-auto pt-4 text-xs text-muted-foreground text-right">
+            <div className="mt-auto pt-3 text-xs text-muted-foreground text-right">
               Balance: {parseFloat(balance).toFixed(6)} ETH
             </div>
           </TabsContent>
 
           {/* Comments Tab */}
-          <TabsContent value="comments" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
-            <div className="mb-4">
+          <TabsContent value="comments" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <div className="mb-3">
               <div className="flex gap-2">
                 <Input
                   placeholder="Add a comment..."
-                  className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground flex-1 rounded-xl"
+                  className="h-9 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground flex-1 rounded-xl text-sm"
                   disabled={!isConnected || createCommentMutation.isPending}
                   value={standaloneComment}
                   onChange={(e) => setStandaloneComment(e.target.value)}
@@ -809,7 +809,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 <Button
                   onClick={handleStandaloneComment}
                   disabled={!isConnected || createCommentMutation.isPending || !standaloneComment.trim()}
-                  className="h-10 rounded-full"
+                  className="h-9 rounded-full px-4 text-sm"
                 >
                   {createCommentMutation.isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -819,31 +819,31 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </Button>
               </div>
               {!isConnected && (
-                <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-xs text-muted-foreground mt-1.5">
                   Connect your wallet to comment
                 </p>
               )}
             </div>
 
-            <ScrollArea className="h-[350px]">
+            <ScrollArea className="flex-1">
               {commentsLoading ? (
                 <div className="flex items-center justify-center h-32">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                 </div>
               ) : comments && comments.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {comments.map((c) => (
                     <div
                       key={c.id}
-                      className="p-3 rounded-lg bg-muted/20 border border-border/30"
+                      className="p-2.5 rounded-lg bg-muted/20 border border-border/30"
                       data-testid={`comment-${c.id}`}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                           {c.userAddress.slice(2, 4).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 mb-0.5">
                             <span className="text-sm font-medium text-white truncate">
                               {c.userAddress.slice(0, 6)}...{c.userAddress.slice(-4)}
                             </span>
@@ -859,7 +859,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                               href={`https://basescan.org/tx/${c.transactionHash}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs text-primary/70 hover:text-primary flex items-center gap-1 mt-2"
+                              className="text-xs text-primary/70 hover:text-primary flex items-center gap-1 mt-1.5"
                               data-testid={`link-comment-tx-${c.id}`}
                             >
                               View transaction <ExternalLink className="w-3 h-3" />
@@ -871,8 +871,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center h-64 text-center">
-                  <MessageCircle className="w-12 h-12 text-muted-foreground/30 mb-3" />
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <MessageCircle className="w-10 h-10 text-muted-foreground/30 mb-2" />
                   <p className="text-sm font-medium text-white mb-1">No comments yet</p>
                   <p className="text-xs text-muted-foreground">
                     Be the first to add a comment
@@ -883,21 +883,21 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Holders Tab */}
-          <TabsContent value="holders" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
-            <div className="mb-4 flex items-center justify-between">
+          <TabsContent value="holders" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <div className="mb-3 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Total Holders</p>
-                <p className="text-xl font-bold text-white">{uniqueHoldersCount}</p>
+                <p className="text-xs text-muted-foreground">Total Holders</p>
+                <p className="text-lg font-bold text-white">{uniqueHoldersCount}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Supply</p>
-                <p className="text-xl font-bold text-white">
+                <p className="text-xs text-muted-foreground">Total Supply</p>
+                <p className="text-lg font-bold text-white">
                   {totalSupply ? parseFloat(totalSupply).toLocaleString(undefined, { maximumFractionDigits: 0 }) : '-'}
                 </p>
               </div>
             </div>
 
-            <ScrollArea className="h-[360px]">
+            <ScrollArea className="flex-1">
               {holders.length > 0 ? (
                 <div className="space-y-2">
                   {holders.map((holder, index) => {
@@ -942,23 +942,23 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                     return (
                       <div
                         key={holder.address}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
+                        className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-2 min-w-[30px]">
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5 min-w-[25px]">
                             <span className="text-xs font-bold text-muted-foreground">#{index + 1}</span>
                           </div>
-                          <div className={`w-10 h-10 rounded-full ${
+                          <div className={`w-8 h-8 rounded-full ${
                             index === 0
                               ? 'bg-gradient-to-br from-yellow-500 to-orange-500'
                               : isCreator
                                 ? 'bg-gradient-to-br from-primary to-secondary'
                                 : 'bg-gradient-to-br from-blue-500 to-cyan-500'
-                          } flex items-center justify-center text-sm font-bold text-white flex-shrink-0`}>
+                          } flex items-center justify-center text-xs font-bold text-white flex-shrink-0`}>
                             {holder.address.slice(2, 4).toUpperCase()}
                           </div>
                           <div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5">
                               <p className="text-sm font-semibold text-white">
                                 {holder.address.slice(0, 6)}...{holder.address.slice(-4)}
                               </p>
@@ -983,8 +983,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   })}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center h-64 text-center">
-                  <Users className="w-12 h-12 text-muted-foreground/30 mb-3" />
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <Users className="w-10 h-10 text-muted-foreground/30 mb-2" />
                   <p className="text-sm font-medium text-white mb-1">Loading holders...</p>
                   <p className="text-xs text-muted-foreground">
                     Fetching holder information from blockchain
@@ -995,25 +995,25 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Activity Tab */}
-          <TabsContent value="activity" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
-            <ScrollArea className="h-[420px]">
+          <TabsContent value="activity" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <ScrollArea className="flex-1">
               {commentsLoading ? (
                 <div className="flex items-center justify-center h-32">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                 </div>
               ) : comments && comments.filter(c => c.transactionHash).length > 0 ? (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   {comments.filter(c => c.transactionHash).map((c) => (
                     <div
                       key={c.id}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
+                      className="flex items-center gap-2.5 p-2.5 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
                       data-testid={`activity-${c.id}`}
                     >
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
                         {c.userAddress.slice(2, 4).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-0.5">
                           <span className="text-sm font-medium text-white truncate">
                             {c.userAddress.slice(0, 8)}...
                           </span>
@@ -1027,7 +1027,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                           </p>
                         </div>
                         {c.comment && (
-                          <p className="text-xs text-muted-foreground mt-1 italic">
+                          <p className="text-xs text-muted-foreground mt-0.5 italic">
                             "{c.comment}"
                           </p>
                         )}
@@ -1044,8 +1044,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center h-64 text-center">
-                  <ActivityIcon className="w-12 h-12 text-muted-foreground/30 mb-3" />
+                <div className="flex flex-col items-center justify-center h-48 text-center">
+                  <ActivityIcon className="w-10 h-10 text-muted-foreground/30 mb-2" />
                   <p className="text-sm font-medium text-white mb-1">No trades yet</p>
                   <p className="text-xs text-muted-foreground">
                     Trading activity will appear here
@@ -1056,9 +1056,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Details Tab */}
-          <TabsContent value="details" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-border/30">
+          <TabsContent value="details" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Info className="w-4 h-4" />
                   <span className="text-sm">Created</span>
@@ -1069,7 +1069,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </div>
 
               {coin.address && (
-                <div className="flex items-center justify-between py-3 border-b border-border/30">
+                <div className="flex items-center justify-between py-2 border-b border-border/30">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Coins className="w-4 h-4" />
                     <span className="text-sm">Contract address</span>
@@ -1092,7 +1092,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </div>
               )}
 
-              <div className="flex items-center justify-between py-3 border-b border-border/30">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <ActivityIcon className="w-4 h-4" />
                   <span className="text-sm">Chain</span>
@@ -1105,7 +1105,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </div>
               </div>
 
-              <div className="flex items-center justify-between py-3 border-b border-border/30">
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Users className="w-4 h-4" />
                   <span className="text-sm">Creator</span>
@@ -1116,7 +1116,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </div>
 
               {(coin as any).metadata?.originalUrl && (
-                <div className="flex items-center justify-between py-3">
+                <div className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <ExternalLink className="w-4 h-4" />
                     <span className="text-sm">Original post</span>
