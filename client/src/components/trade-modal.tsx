@@ -615,7 +615,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </DialogHeader>
 
             <Tabs defaultValue="trade" className="flex-1 flex flex-col overflow-hidden">
-              <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent px-4 flex-shrink-0">
+              <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent px-4">
                 <TabsTrigger value="trade" className="data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none">
                   Trade
                 </TabsTrigger>
@@ -633,7 +633,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="trade" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-y-auto min-h-0">{/* Trade Tab Content */}
+              <TabsContent value="trade" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">{/* Trade Tab Content */}
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-2 mb-3">
@@ -794,8 +794,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Comments Tab */}
-          <TabsContent value="comments" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
-            <div className="mb-3 flex-shrink-0">
+          <TabsContent value="comments" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <div className="mb-3">
               <div className="flex gap-2">
                 <Input
                   placeholder="Add a comment..."
@@ -829,7 +829,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               )}
             </div>
 
-            <ScrollArea className="flex-1 overflow-y-auto">
+            <ScrollArea className="flex-1">
               {commentsLoading ? (
                 <div className="flex items-center justify-center h-32">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -887,8 +887,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Holders Tab */}
-          <TabsContent value="holders" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
-            <div className="mb-3 flex items-center justify-between flex-shrink-0">
+          <TabsContent value="holders" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <div className="mb-3 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Total Holders</p>
                 <p className="text-lg font-bold text-white">{uniqueHoldersCount}</p>
@@ -901,7 +901,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </div>
             </div>
 
-            <ScrollArea className="flex-1 overflow-y-auto">
+            <ScrollArea className="flex-1">
               {holders.length > 0 ? (
                 <div className="space-y-2">
                   {holders.map((holder, index) => {
@@ -999,8 +999,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Activity Tab */}
-          <TabsContent value="activity" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
-            <ScrollArea className="flex-1 overflow-y-auto">
+          <TabsContent value="activity" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <ScrollArea className="flex-1">
               {commentsLoading ? (
                 <div className="flex items-center justify-center h-32">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -1060,8 +1060,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Details Tab */}
-          <TabsContent value="details" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
-            <div className="space-y-3 overflow-y-auto">
+          <TabsContent value="details" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">
+            <div className="space-y-3">
               <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Info className="w-4 h-4" />
