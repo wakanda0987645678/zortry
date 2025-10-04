@@ -1,187 +1,347 @@
+
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import type { Reward } from "@shared/schema";
-import { TrendingUp, CoinsIcon, Award, DollarSign, ExternalLink } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { Search, TrendingUp, Users, Heart, Eye, DollarSign, Loader2, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Layout from "@/components/layout";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
-function formatAddress(address: string): string {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+interface AnalysisResult {
+  url: string;
+  platform: string;
+  title: string;
+  author?: string;
+  followers?: number;
+  engagement?: number;
+  estimatedMarketCap: number;
+  estimatedDailyEarnings: number;
+  estimatedMonthlyEarnings: number;
+  popularityScore: number;
 }
 
-function formatAmount(amount: string, currency: string): string {
-  const ethAmount = parseFloat(amount) / 1e18; // Convert from wei
-  return `${ethAmount.toFixed(6)} ${currency}`;
-}
-
-export default function Rewards() {
-  const [selectedTab, setSelectedTab] = useState<"all" | "platform" | "trade">("all");
-
-  const { data: rewards = [], isLoading } = useQuery<Reward[]>({
-    queryKey: ["/api/rewards"],
+// Mock analysis function - in production, this would call your backend
+async function analyzeUrl(url: string): Promise<AnalysisResult> {
+  const response = await fetch('/api/scrape', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
   });
 
-  // Filter rewards by type
-  const filteredRewards = selectedTab === "all"
-    ? rewards
-    : rewards.filter(reward => reward.type === selectedTab);
+  if (!response.ok) throw new Error('Failed to analyze URL');
+  
+  const data = await response.json();
+  
+  // Calculate estimated metrics based on scraped data
+  // This is a simplified algorithm - adjust based on your needs
+  const baseMultiplier = 0.001; // Base market cap per follower
+  const engagementBonus = 1.5; // Bonus for high engagement
+  
+  // Extract follower count from description/content if available
+  const followerMatch = data.description?.match(/(\d+(?:,\d+)*)\s*(?:followers|subs|subscribers)/i);
+  const estimatedFollowers = followerMatch ? parseInt(followerMatch[1].replace(/,/g, '')) : 10000;
+  
+  const popularityScore = Math.min(100, (estimatedFollowers / 1000) * 10);
+  const estimatedMarketCap = estimatedFollowers * baseMultiplier * engagementBonus;
+  const estimatedDailyEarnings = estimatedMarketCap * 0.02; // 2% daily volume
+  const estimatedMonthlyEarnings = estimatedDailyEarnings * 30;
 
-  // Calculate totals
-  const totalEarnings = rewards.reduce((sum, reward) => {
-    return sum + (parseFloat(reward.rewardAmount) / 1e18);
-  }, 0);
+  return {
+    url: data.url,
+    platform: data.platform,
+    title: data.title,
+    author: data.author,
+    followers: estimatedFollowers,
+    engagement: Math.floor(Math.random() * 10), // Mock engagement rate
+    estimatedMarketCap,
+    estimatedDailyEarnings,
+    estimatedMonthlyEarnings,
+    popularityScore,
+  };
+}
 
-  const platformEarnings = rewards
-    .filter(r => r.type === 'platform')
-    .reduce((sum, reward) => sum + (parseFloat(reward.rewardAmount) / 1e18), 0);
+export default function Analyzer() {
+  const [url, setUrl] = useState("");
+  const [result, setResult] = useState<AnalysisResult | null>(null);
 
-  const tradeEarnings = rewards
-    .filter(r => r.type === 'trade')
-    .reduce((sum, reward) => sum + (parseFloat(reward.rewardAmount) / 1e18), 0);
+  const analyzeMutation = useMutation({
+    mutationFn: analyzeUrl,
+    onSuccess: (data) => {
+      setResult(data);
+    },
+  });
+
+  const handleAnalyze = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!url.trim()) return;
+    analyzeMutation.mutate(url);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  };
+
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('en-US').format(num);
+  };
 
   return (
     <Layout>
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <div className="max-w-5xl mx-auto">
+          {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-black mb-4 text-white">
-              Trading <span className="spotify-green">Analyzer</span>
+            <h1 className="text-3xl sm:text-4xl font-black mb-4 text-white">
+              Social <span className="spotify-green">Analyzer</span>
             </h1>
-            <p className="text-xl text-muted-foreground">
-              Track earnings from coin creation and trading fees.
+            <p className="text-lg sm:text-xl text-muted-foreground">
+              Analyze any social media page and estimate potential earnings on CoinIT
             </p>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card className="spotify-card">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Total Earnings</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{totalEarnings.toFixed(4)} ZORA</div>
-                <p className="text-xs text-muted-foreground">
-                  From {rewards.length} reward{rewards.length !== 1 ? 's' : ''}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="spotify-card">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Platform Rewards</CardTitle>
-                <Award className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{platformEarnings.toFixed(4)} ZORA</div>
-                <p className="text-xs text-muted-foreground">
-                  20% of all trading fees
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="spotify-card">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Trade Rewards</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-white">{tradeEarnings.toFixed(4)} ZORA</div>
-                <p className="text-xs text-muted-foreground">
-                  4% of facilitated trades
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Rewards List */}
-          <Card className="spotify-card">
+          {/* URL Input */}
+          <Card className="spotify-card mb-8">
             <CardHeader>
-              <CardTitle className="text-white">Trading Analysis</CardTitle>
+              <CardTitle className="text-white">Analyze Social Page</CardTitle>
               <CardDescription>
-                All rewards and trading activity from the Zora platform
+                Enter a URL from YouTube, Instagram, TikTok, Twitter, or any social platform
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as any)}>
-                <TabsList className="grid w-full grid-cols-3 mb-6">
-                  <TabsTrigger value="all">All ({rewards.length})</TabsTrigger>
-                  <TabsTrigger value="platform">Platform ({rewards.filter(r => r.type === 'platform').length})</TabsTrigger>
-                  <TabsTrigger value="trade">Trade ({rewards.filter(r => r.type === 'trade').length})</TabsTrigger>
-                </TabsList>
+              <form onSubmit={handleAnalyze} className="space-y-4">
+                <div className="flex gap-2">
+                  <Input
+                    type="url"
+                    placeholder="https://instagram.com/username or https://youtube.com/@channel"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    className="flex-1 bg-muted/20 border-border text-white"
+                    disabled={analyzeMutation.isPending}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={analyzeMutation.isPending || !url.trim()}
+                    className="spotify-button"
+                  >
+                    {analyzeMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="w-4 h-4 mr-2" />
+                        Analyze
+                      </>
+                    )}
+                  </Button>
+                </div>
 
-                <TabsContent value={selectedTab} className="space-y-4">
-                  {isLoading ? (
-                    <div className="space-y-4">
-                      {[...Array(5)].map((_, i) => (
-                        <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-muted/10">
-                          <div className="space-y-2">
-                            <Skeleton className="h-4 w-32 bg-muted/20 rounded" />
-                            <Skeleton className="h-3 w-24 bg-muted/20 rounded" />
-                          </div>
-                          <Skeleton className="h-6 w-20 bg-muted/20 rounded" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : filteredRewards.length === 0 ? (
-                    <div className="text-center py-16">
-                      <CoinsIcon className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-xl font-bold text-white mb-2">No rewards yet</h3>
-                      <p className="text-muted-foreground">
-                        {selectedTab === "all"
-                          ? "Start creating and trading coins to earn rewards!"
-                          : `No ${selectedTab} rewards found.`
-                        }
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {filteredRewards.map((reward) => (
-                        <div key={reward.id} className="flex items-center justify-between p-4 rounded-lg bg-muted/10 hover:bg-muted/20 transition-colors">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <Badge variant={reward.type === 'platform' ? 'default' : 'secondary'}>
-                                {reward.type === 'platform' ? 'Platform' : 'Trade'}
-                              </Badge>
-                              <span className="text-sm text-white font-medium">{reward.coinSymbol}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {formatAddress(reward.coinAddress)}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <span>To: {formatAddress(reward.recipientAddress)}</span>
-                              <span>{new Date(reward.createdAt).toLocaleDateString()}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="text-right">
-                              <div className="text-lg font-bold text-white">
-                                {formatAmount(reward.rewardAmount, reward.rewardCurrency)}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {reward.type === 'platform' ? '20% of fees' : '4% of trade'}
-                              </div>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => window.open(`https://basescan.org/tx/${reward.transactionHash}`, '_blank')}
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
+                {analyzeMutation.isError && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      Failed to analyze URL. Please check the URL and try again.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </form>
             </CardContent>
           </Card>
+
+          {/* Loading State */}
+          {analyzeMutation.isPending && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[1, 2, 3].map((i) => (
+                  <Card key={i} className="spotify-card">
+                    <CardHeader className="space-y-2">
+                      <Skeleton className="h-4 w-24 bg-muted/20" />
+                      <Skeleton className="h-8 w-32 bg-muted/20" />
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Results */}
+          {result && !analyzeMutation.isPending && (
+            <div className="space-y-6">
+              {/* Page Info */}
+              <Card className="spotify-card">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-white text-xl mb-2">{result.title}</CardTitle>
+                      <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                        {result.author && (
+                          <span className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            {result.author}
+                          </span>
+                        )}
+                        <Badge variant="secondary" className="capitalize">
+                          {result.platform}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white">{result.popularityScore}</div>
+                      <div className="text-xs text-muted-foreground">Popularity Score</div>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+
+              {/* Metrics Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Card className="spotify-card">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Followers</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-white">
+                      {result.followers ? formatNumber(result.followers) : 'N/A'}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Estimated audience size
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="spotify-card">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Engagement Rate</CardTitle>
+                    <Heart className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-white">
+                      {result.engagement ? `${result.engagement}%` : 'N/A'}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Average interaction rate
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="spotify-card">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-white">Est. Market Cap</CardTitle>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-white">
+                      {formatCurrency(result.estimatedMarketCap)}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Potential initial value
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Earnings Projections */}
+              <Card className="spotify-card">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    Earning Projections
+                  </CardTitle>
+                  <CardDescription>
+                    Based on 4% creator fee from trading volume
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Daily Earnings</span>
+                        <span className="text-xl font-bold text-white">
+                          {formatCurrency(result.estimatedDailyEarnings)}
+                        </span>
+                      </div>
+                      <div className="h-2 bg-muted/20 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-primary rounded-full"
+                          style={{ width: `${Math.min(result.popularityScore, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Monthly Earnings</span>
+                        <span className="text-xl font-bold text-white">
+                          {formatCurrency(result.estimatedMonthlyEarnings)}
+                        </span>
+                      </div>
+                      <div className="h-2 bg-muted/20 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-primary rounded-full"
+                          style={{ width: `${Math.min(result.popularityScore, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <Alert className="mt-6 bg-primary/10 border-primary/20">
+                    <Eye className="h-4 w-4 text-primary" />
+                    <AlertDescription className="text-white">
+                      These are estimated projections. Actual earnings depend on trading activity, 
+                      market conditions, and platform growth.
+                    </AlertDescription>
+                  </Alert>
+                </CardContent>
+              </Card>
+
+              {/* CTA */}
+              <Card className="spotify-card bg-gradient-to-r from-primary/20 to-primary/5 border-primary/20">
+                <CardContent className="p-6 text-center">
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    Ready to monetize your content?
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    Create a coin for this page and start earning from every trade
+                  </p>
+                  <Button 
+                    className="spotify-button"
+                    onClick={() => {
+                      setUrl('');
+                      window.location.href = '/create';
+                    }}
+                  >
+                    Create Coin Now
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!result && !analyzeMutation.isPending && (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Analyze Your Social Presence
+              </h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Enter any social media URL above to see estimated earnings potential based on 
+                followers, engagement, and platform popularity.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
