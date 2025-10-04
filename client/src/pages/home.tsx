@@ -23,19 +23,19 @@ export default function Home() {
   };
 
   const categories = [
-    { id: "all", label: "All" },
-    { id: "youtube", label: "YouTube" },
-    { id: "spotify", label: "Spotify" },
-    { id: "medium", label: "Medium" },
-    { id: "substack", label: "Substack" },
-    { id: "gitcoin", label: "Gitcoin" },
-    { id: "giveth", label: "Giveth" },
-    { id: "tiktok", label: "TikTok" },
-    { id: "instagram", label: "Instagram" },
-    { id: "twitter", label: "Twitter" },
-    { id: "github", label: "GitHub" },
-    { id: "farcaster", label: "Farcaster" },
-    { id: "blog", label: "Blog" },
+    { id: "all", label: "All", icon: "🌐" },
+    { id: "youtube", label: "YouTube", icon: "▶️" },
+    { id: "spotify", label: "Spotify", icon: "🎵" },
+    { id: "medium", label: "Medium", icon: "📝" },
+    { id: "substack", label: "Substack", icon: "📰" },
+    { id: "gitcoin", label: "Gitcoin", icon: "🪙" },
+    { id: "giveth", label: "Giveth", icon: "💝" },
+    { id: "tiktok", label: "TikTok", icon: "🎬" },
+    { id: "instagram", label: "Instagram", icon: "📸" },
+    { id: "twitter", label: "Twitter", icon: "🐦" },
+    { id: "github", label: "GitHub", icon: "💻" },
+    { id: "farcaster", label: "Farcaster", icon: "🎯" },
+    { id: "blog", label: "Blog", icon: "✍️" },
   ];
 
   const filteredCoins = useMemo(() => {
@@ -75,19 +75,19 @@ export default function Home() {
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {categories.map((category) => {
-                const count = getCoinCount(category.id);
                 return (
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`flex-shrink-0 flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                       selectedCategory === category.id
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted/20 text-muted-foreground hover:bg-muted/30 hover:text-foreground"
                     }`}
                     data-testid={`button-category-${category.id}`}
                   >
-                    {category.label} ({count})
+                    <span className="text-base">{category.icon}</span>
+                    {category.label}
                   </button>
                 );
               })}
