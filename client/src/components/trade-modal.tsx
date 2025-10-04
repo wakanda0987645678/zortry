@@ -633,7 +633,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="trade" className="flex-1 flex flex-col px-4 pb-4 mt-0 pt-3 overflow-y-auto min-h-0">{/* Trade Tab Content */}
+              <TabsContent value="trade" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-y-auto min-h-0">{/* Trade Tab Content */}
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-2 mb-3">
@@ -794,7 +794,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Comments Tab */}
-          <TabsContent value="comments" className="flex-1 flex flex-col px-4 pb-4 mt-0 pt-3 overflow-hidden min-h-0">
+          <TabsContent value="comments" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
             <div className="mb-3 flex-shrink-0">
               <div className="flex gap-2">
                 <Input
@@ -887,7 +887,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Holders Tab */}
-          <TabsContent value="holders" className="flex-1 flex flex-col px-4 pb-4 mt-0 pt-3 overflow-hidden min-h-0">
+          <TabsContent value="holders" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
             <div className="mb-3 flex items-center justify-between flex-shrink-0">
               <div>
                 <p className="text-xs text-muted-foreground">Total Holders</p>
@@ -999,7 +999,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Activity Tab */}
-          <TabsContent value="activity" className="flex-1 flex flex-col px-4 pb-4 mt-0 pt-3 overflow-hidden min-h-0">
+          <TabsContent value="activity" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
             <ScrollArea className="flex-1 overflow-y-auto">
               {commentsLoading ? (
                 <div className="flex items-center justify-center h-32">
@@ -1060,7 +1060,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Details Tab */}
-          <TabsContent value="details" className="flex-1 flex flex-col px-4 pb-4 mt-0 pt-3 overflow-hidden min-h-0">
+          <TabsContent value="details" className="flex-1 flex flex-col px-4 pb-4 mt-0 overflow-hidden min-h-0">
             <div className="space-y-3 overflow-y-auto">
               <div className="flex items-center justify-between py-2 border-b border-border/30">
                 <div className="flex items-center gap-2 text-muted-foreground">
