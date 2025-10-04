@@ -629,7 +629,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="trade" className="flex-1 px-6 pb-6 flex flex-col mt-0 pt-4">{/* Trade Tab Content */}
+              <TabsContent value="trade" className="flex-1 px-6 pb-6 flex flex-col mt-0 pt-4 min-h-[420px]">{/* Trade Tab Content */}
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-3 mb-4">
@@ -790,7 +790,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Comments Tab */}
-          <TabsContent value="comments" className="flex-1 px-6 pb-6 mt-0 pt-4">
+          <TabsContent value="comments" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
             <div className="mb-4">
               <div className="flex gap-2">
                 <Input
@@ -883,7 +883,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Holders Tab */}
-          <TabsContent value="holders" className="flex-1 px-6 pb-6 mt-0 pt-4">
+          <TabsContent value="holders" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Holders</p>
@@ -995,7 +995,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Activity Tab */}
-          <TabsContent value="activity" className="flex-1 px-6 pb-6 mt-0 pt-4">
+          <TabsContent value="activity" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
             <ScrollArea className="h-[420px]">
               {commentsLoading ? (
                 <div className="flex items-center justify-center h-32">
@@ -1056,7 +1056,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </TabsContent>
 
           {/* Details Tab */}
-          <TabsContent value="details" className="flex-1 px-6 pb-6 mt-0 pt-4">
+          <TabsContent value="details" className="flex-1 px-6 pb-6 mt-0 pt-4 min-h-[420px]">
             <div className="space-y-4">
               <div className="flex items-center justify-between py-3 border-b border-border/30">
                 <div className="flex items-center gap-2 text-muted-foreground">
