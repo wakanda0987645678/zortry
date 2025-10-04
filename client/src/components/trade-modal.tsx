@@ -58,6 +58,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   ]);
   const [timeframe, setTimeframe] = useState<'1H' | '1D' | 'W' | 'M' | 'All'>('1D');
   const [priceChange, setPriceChange] = useState<number>(0);
+  const [currentSlide, setCurrentSlide] = useState(0); // Added state for current slide tracking
 
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -172,7 +173,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${import.meta.env.VITE_NEXT_PUBLIC_ZORA_API_KEY || ''}`,
           },
-          body: JSON.stringify({
+          body: JSON.JSON.stringify({
             query: `
               query GetCoinPriceHistory($address: String!, $chainId: Int!) {
                 zora20Token(address: $address, chainId: $chainId) {
@@ -504,7 +505,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
             {/* Carousel - Image & Chart Slides */}
             <div className="flex-1 min-h-[200px] relative px-4">
-              <Carousel className="w-full h-full">
+              <Carousel className="w-full h-full" opts={{ loop: false }}
+                onSlideChanged={(index) => setCurrentSlide(index)}>
                 <CarouselContent className="h-full">
                   {/* Slide 1: Coin Image */}
                   <CarouselItem className="h-full">
@@ -577,24 +579,26 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </Carousel>
             </div>
 
-            {/* Timeframe Selector */}
-            <div className="flex gap-1.5 mt-3">
-              {(['1H', '1D', 'W', 'M', 'All'] as const).map((tf) => (
-                <Button
-                  key={tf}
-                  variant={timeframe === tf ? 'default' : 'ghost'}
-                  size="sm"
-                  className={`flex-1 h-7 text-xs ${
-                    timeframe === tf
-                      ? 'bg-primary text-white'
-                      : 'text-muted-foreground hover:text-white'
-                  }`}
-                  onClick={() => setTimeframe(tf)}
-                >
-                  {tf}
-                </Button>
-              ))}
-            </div>
+            {/* Timeframe Selector - Only show on chart slide */}
+            {currentSlide === 1 && (
+              <div className="flex gap-1.5 mt-3">
+                {(['1H', '1D', 'W', 'M', 'All'] as const).map((tf) => (
+                  <Button
+                    key={tf}
+                    variant={timeframe === tf ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`flex-1 h-7 text-xs ${
+                      timeframe === tf
+                        ? 'bg-primary text-white'
+                        : 'text-muted-foreground hover:text-white'
+                    }`}
+                    onClick={() => setTimeframe(tf)}
+                  >
+                    {tf}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Right side - Tabbed Interface */}
@@ -629,7 +633,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="trade" className="flex-1 px-4 pb-4 flex flex-col mt-0 pt-3 overflow-y-auto">{/* Trade Tab Content */}
+              <TabsContent value="trade" className="flex-1 px-4 pb-4 mt-0 pt-3 overflow-y-auto">{/* Trade Tab Content */}
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-2 mb-3">
