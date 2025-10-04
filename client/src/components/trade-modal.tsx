@@ -496,7 +496,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             </div>
 
             {/* Carousel - Image & Chart Slides */}
-            <div className="flex-1 min-h-[300px] relative">
+            <div className="flex-1 min-h-[300px] relative px-8">
               <Carousel className="w-full h-full">
                 <CarouselContent className="h-full">
                   {/* Slide 1: Coin Image */}
@@ -556,8 +556,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                     </div>
                   </CarouselItem>
                 </CarouselContent>
-                <CarouselPrevious className="left-2" />
-                <CarouselNext className="right-2" />
+                <CarouselPrevious className="left-0 bg-background/80 hover:bg-background" />
+                <CarouselNext className="right-0 bg-background/80 hover:bg-background" />
               </Carousel>
             </div>
 
