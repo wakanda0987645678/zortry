@@ -20,25 +20,28 @@ async function verifyContract() {
   const contractPath = join(__dirname, '../contracts/YoubuidlChannelsRegistry.sol');
   const sourceCode = readFileSync(contractPath, 'utf8');
 
+  const queryParams = new URLSearchParams({
+    chainid: '8453',
+    module: 'contract',
+    action: 'verifysourcecode',
+    apikey: BASESCAN_API_KEY
+  });
+
   const formData = new URLSearchParams();
-  formData.append('apikey', BASESCAN_API_KEY);
-  formData.append('module', 'contract');
-  formData.append('action', 'verifysourcecode');
   formData.append('contractaddress', CONTRACT_ADDRESS);
   formData.append('sourceCode', sourceCode);
   formData.append('codeformat', 'solidity-single-file');
   formData.append('contractname', 'YoubuidlChannelsRegistry');
-  formData.append('compilerversion', 'v0.8.20+commit.a1b79de6');
+  formData.append('compilerversion', 'v0.8.30+commit.73712a01');
   formData.append('optimizationUsed', '1');
   formData.append('runs', '200');
   formData.append('constructorArguements', '');
-  formData.append('libraries', '');
-  formData.append('evmversion', 'default');
+  formData.append('evmversion', 'cancun');
   formData.append('licenseType', '3'); // MIT License
 
   console.log("📤 Submitting verification request...\n");
 
-  const response = await fetch('https://api.basescan.org/api', {
+  const response = await fetch(`https://api.etherscan.io/v2/api?${queryParams}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -57,13 +60,14 @@ async function verifyContract() {
     await new Promise(resolve => setTimeout(resolve, 10000));
 
     const statusParams = new URLSearchParams({
+      chainid: '8453',
       apikey: BASESCAN_API_KEY,
       module: 'contract',
       action: 'checkverifystatus',
       guid: guid
     });
 
-    const statusResponse = await fetch(`https://api.basescan.org/api?${statusParams}`);
+    const statusResponse = await fetch(`https://api.etherscan.io/v2/api?${statusParams}`);
     const statusResult = await statusResponse.json();
 
     if (statusResult.status === '1') {
