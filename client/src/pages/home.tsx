@@ -3,14 +3,14 @@ import { Link } from "wouter";
 import type { Coin } from "@shared/schema";
 import CoinCard from "@/components/coin-card";
 import Layout from "@/components/layout";
-import { 
-  Coins as CoinsIcon, 
-  ChevronLeft, 
+import {
+  Coins as CoinsIcon,
+  ChevronLeft,
   ChevronRight,
   Globe,
-  PenTool
+  PenTool,
 } from "lucide-react";
-import { 
+import {
   SiYoutube,
   SiFarcaster,
   SiSpotify,
@@ -19,7 +19,7 @@ import {
   SiMedium,
   SiSubstack,
   SiGithub,
-  SiX
+  SiX,
 } from "react-icons/si";
 import { useState, useMemo, useRef } from "react";
 
@@ -48,10 +48,8 @@ export default function Home() {
     { id: "tiktok", label: "TikTok", Icon: SiTiktok },
     { id: "instagram", label: "Instagram", Icon: SiInstagram },
     { id: "medium", label: "Medium", Icon: SiMedium },
-    { id: "substack", label: "Substack", Icon: SiSubstack },
     { id: "giveth", label: "Giveth", Icon: CoinsIcon },
     { id: "twitter", label: "Twitter", Icon: SiX },
-    { id: "github", label: "GitHub", Icon: SiGithub },
     { id: "blog", label: "Blog", Icon: PenTool },
   ];
 
