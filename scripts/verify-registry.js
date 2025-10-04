@@ -10,7 +10,7 @@ const CONTRACT_ADDRESS = '0xa99d508b3d5f9e9bf4b18396250974e684529668';
 const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY;
 
 async function verifyContract() {
-  console.log("🔍 Verifying contract on Basescan...\n");
+  console.log("🔍 Verifying contract on Basescan (API V2)...\n");
   console.log("📍 Contract:", CONTRACT_ADDRESS);
 
   if (!BASESCAN_API_KEY) {
@@ -20,28 +20,25 @@ async function verifyContract() {
   const contractPath = join(__dirname, '../contracts/YoubuidlChannelsRegistry.sol');
   const sourceCode = readFileSync(contractPath, 'utf8');
 
-  const queryParams = new URLSearchParams({
-    module: 'contract',
-    action: 'verifysourcecode',
-    apikey: BASESCAN_API_KEY
-  });
-
+  // Use V2 API endpoint
   const formData = new URLSearchParams();
-  formData.append('chainId', '8453');
-  formData.append('codeformat', 'solidity-single-file');
-  formData.append('sourceCode', sourceCode);
+  formData.append('apikey', BASESCAN_API_KEY);
+  formData.append('module', 'contract');
+  formData.append('action', 'verifysourcecode');
   formData.append('contractaddress', CONTRACT_ADDRESS);
+  formData.append('sourceCode', sourceCode);
+  formData.append('codeformat', 'solidity-single-file');
   formData.append('contractname', 'YoubuidlChannelsRegistry');
   formData.append('compilerversion', 'v0.8.20+commit.a1b79de6');
   formData.append('optimizationUsed', '1');
   formData.append('runs', '200');
-  // Empty constructor arguments - contract has no constructor parameters
   formData.append('constructorArguements', '');
-  formData.append('evmversion', 'paris');
+  formData.append('evmversion', 'default');
+  formData.append('licenseType', '3'); // MIT License
 
-  console.log("📤 Submitting verification request...\n");
+  console.log("📤 Submitting verification request to V2 API...\n");
 
-  const response = await fetch(`https://api.basescan.org/api?${queryParams}`, {
+  const response = await fetch('https://api.basescan.org/v2/api', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -55,9 +52,9 @@ async function verifyContract() {
     const guid = result.result;
     console.log("✅ Verification submitted successfully!");
     console.log("📝 GUID:", guid);
-    console.log("\n⏳ Checking verification status in 5 seconds...\n");
+    console.log("\n⏳ Checking verification status in 10 seconds...\n");
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     const statusParams = new URLSearchParams({
       apikey: BASESCAN_API_KEY,
@@ -66,7 +63,7 @@ async function verifyContract() {
       guid: guid
     });
 
-    const statusResponse = await fetch(`https://api.basescan.org/api?${statusParams}`);
+    const statusResponse = await fetch(`https://api.basescan.org/v2/api?${statusParams}`);
     const statusResult = await statusResponse.json();
 
     if (statusResult.status === '1') {
