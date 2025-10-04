@@ -217,7 +217,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
 
   return (
     <div
-      className={`spotify-card rounded-2xl overflow-hidden ${isOwnCoin ? "ring-1 ring-primary/20" : ""} h-full flex flex-col`}
+      className={`spotify-card rounded-2xl overflow-hidden ${isOwnCoin ? "ring-1 ring-primary/20" : ""} h-full flex flex-col border-0`}
     >
       {/* Coin Image/Art - Top Section - Clickable */}
       <div
