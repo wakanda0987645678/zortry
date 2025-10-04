@@ -25,16 +25,16 @@ export default function Home() {
   const categories = [
     { id: "all", label: "All", icon: "🌐" },
     { id: "youtube", label: "YouTube", icon: "▶️" },
-    { id: "spotify", label: "Spotify", icon: "🎵" },
-    { id: "medium", label: "Medium", icon: "📝" },
-    { id: "substack", label: "Substack", icon: "📰" },
+    { id: "farcaster", label: "Farcaster", icon: "🎯" },
     { id: "gitcoin", label: "Gitcoin", icon: "🪙" },
-    { id: "giveth", label: "Giveth", icon: "💝" },
+    { id: "spotify", label: "Spotify", icon: "🎵" },
     { id: "tiktok", label: "TikTok", icon: "🎬" },
     { id: "instagram", label: "Instagram", icon: "📸" },
+    { id: "medium", label: "Medium", icon: "📝" },
+    { id: "substack", label: "Substack", icon: "📰" },
+    { id: "giveth", label: "Giveth", icon: "💝" },
+    { id: "tiktok", label: "TikTok", icon: "🎬" },
     { id: "twitter", label: "Twitter", icon: "🐦" },
-    { id: "github", label: "GitHub", icon: "💻" },
-    { id: "farcaster", label: "Farcaster", icon: "🎯" },
     { id: "blog", label: "Blog", icon: "✍️" },
   ];
 
@@ -57,7 +57,7 @@ export default function Home() {
     <Layout>
       {/* Category Bar */}
       <section className="p-4 sm:p-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="relative group">
             {/* Left Arrow */}
             <button
