@@ -196,20 +196,17 @@ export default function Creators() {
           {/* Loading State */}
           {isLoading ? (
             <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="spotify-card rounded-xl p-6 shimmer">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 bg-muted/20 rounded"></div>
-                      <div className="w-12 h-12 bg-muted/20 rounded-full"></div>
-                      <div className="space-y-2">
-                        <div className="w-32 h-4 bg-muted/20 rounded"></div>
-                        <div className="w-24 h-3 bg-muted/20 rounded"></div>
-                      </div>
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="spotify-card rounded-xl p-4 sm:p-6">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-muted/20 rounded-full animate-pulse flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="h-5 bg-muted/20 rounded w-32 sm:w-40 animate-pulse"></div>
+                      <div className="h-4 bg-muted/20 rounded w-24 sm:w-32 animate-pulse"></div>
                     </div>
-                    <div className="text-right space-y-2">
-                      <div className="w-20 h-4 bg-muted/20 rounded"></div>
-                      <div className="w-16 h-3 bg-muted/20 rounded"></div>
+                    <div className="text-right space-y-2 flex-shrink-0">
+                      <div className="h-5 bg-muted/20 rounded w-20 animate-pulse"></div>
+                      <div className="h-4 bg-muted/20 rounded w-16 animate-pulse"></div>
                     </div>
                   </div>
                 </div>

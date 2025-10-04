@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Layout from "@/components/layout";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function formatAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -25,8 +26,8 @@ export default function Rewards() {
   });
 
   // Filter rewards by type
-  const filteredRewards = selectedTab === "all" 
-    ? rewards 
+  const filteredRewards = selectedTab === "all"
+    ? rewards
     : rewards.filter(reward => reward.type === selectedTab);
 
   // Calculate totals
@@ -117,12 +118,12 @@ export default function Rewards() {
                   {isLoading ? (
                     <div className="space-y-4">
                       {[...Array(5)].map((_, i) => (
-                        <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-muted/10 shimmer">
+                        <div key={i} className="flex items-center justify-between p-4 rounded-lg bg-muted/10">
                           <div className="space-y-2">
-                            <div className="h-4 bg-muted/20 rounded w-32"></div>
-                            <div className="h-3 bg-muted/20 rounded w-24"></div>
+                            <Skeleton className="h-4 w-32 bg-muted/20 rounded" />
+                            <Skeleton className="h-3 w-24 bg-muted/20 rounded" />
                           </div>
-                          <div className="h-6 bg-muted/20 rounded w-20"></div>
+                          <Skeleton className="h-6 w-20 bg-muted/20 rounded" />
                         </div>
                       ))}
                     </div>
@@ -131,7 +132,7 @@ export default function Rewards() {
                       <CoinsIcon className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                       <h3 className="text-xl font-bold text-white mb-2">No rewards yet</h3>
                       <p className="text-muted-foreground">
-                        {selectedTab === "all" 
+                        {selectedTab === "all"
                           ? "Start creating and trading coins to earn rewards!"
                           : `No ${selectedTab} rewards found.`
                         }

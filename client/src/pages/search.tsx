@@ -5,6 +5,7 @@ import { useLocation } from "wouter";
 import type { Coin, Creator } from "@shared/schema";
 import Layout from "@/components/layout";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Search as SearchIcon, X, ChevronRight, Coins as CoinsIcon, Users, TrendingUp } from "lucide-react";
 import CoinCard from "@/components/coin-card";
 
@@ -16,11 +17,11 @@ export default function Search() {
   const [selectedCategory, setSelectedCategory] = useState<SearchCategory>("top");
   const [isFocused, setIsFocused] = useState(false);
 
-  const { data: coins = [] } = useQuery<Coin[]>({
+  const { data: coins = [], isLoading: isLoadingCoins } = useQuery<Coin[]>({
     queryKey: ["/api/coins"],
   });
 
-  const { data: creators = [] } = useQuery<Creator[]>({
+  const { data: creators = [], isLoading: isLoadingCreators } = useQuery<Creator[]>({
     queryKey: ["/api/creators"],
   });
 
@@ -125,7 +126,25 @@ export default function Search() {
 
         {/* Search Results Content */}
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 space-y-8">
-          {!hasSearchResults ? (
+          {(isLoadingCoins || isLoadingCreators) ? (
+            /* Loading State */
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-32" />
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="spotify-card rounded-xl p-3 space-y-3">
+                      <Skeleton className="aspect-square w-full rounded-lg" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : !hasSearchResults ? (
             /* Browse/Featured Content when no search */
             <>
               {/* Top Result Card */}

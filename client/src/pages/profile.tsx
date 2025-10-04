@@ -297,8 +297,18 @@ export default function Profile() {
 
         {isLoading ? (
           <div className="grid grid-cols-2 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="spotify-card rounded-xl overflow-hidden shimmer h-48"></div>
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="spotify-card rounded-xl overflow-hidden p-3 space-y-3">
+                <div className="aspect-square w-full bg-muted/20 rounded-lg animate-pulse"></div>
+                <div className="space-y-2">
+                  <div className="h-5 bg-muted/20 rounded w-3/4 animate-pulse"></div>
+                  <div className="h-4 bg-muted/20 rounded w-1/2 animate-pulse"></div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="h-4 bg-muted/20 rounded w-16 animate-pulse"></div>
+                  <div className="h-4 bg-muted/20 rounded w-16 animate-pulse"></div>
+                </div>
+              </div>
             ))}
           </div>
         ) : displayedCoins.length === 0 ? (

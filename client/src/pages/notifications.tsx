@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import type { Notification } from "@shared/schema";
@@ -10,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Notifications() {
   const { address, isConnected } = useAccount();
@@ -127,8 +127,8 @@ export default function Notifications() {
           {isLoading ? (
             <div className="space-y-3">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="spotify-card p-4 shimmer">
-                  <div className="h-12 bg-muted/20 rounded"></div>
+                <div key={i} className="spotify-card p-4">
+                  <Skeleton className="h-12 w-full rounded" />
                 </div>
               ))}
             </div>

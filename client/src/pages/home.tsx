@@ -126,16 +126,19 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           {isLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
-              {[...Array(8)].map((_, i) => (
+              {[...Array(12)].map((_, i) => (
                 <div
                   key={i}
-                  className="spotify-card rounded-xl overflow-hidden shimmer"
+                  className="spotify-card rounded-xl overflow-hidden p-3 sm:p-4 space-y-3"
                 >
-                  <div className="h-40 sm:h-48 bg-muted/20"></div>
-                  <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
-                    <div className="h-5 sm:h-6 bg-muted/20 rounded w-3/4"></div>
-                    <div className="h-3 sm:h-4 bg-muted/20 rounded w-1/2"></div>
-                    <div className="h-12 sm:h-16 bg-muted/20 rounded"></div>
+                  <div className="aspect-square w-full bg-muted/20 rounded-lg animate-pulse"></div>
+                  <div className="space-y-2">
+                    <div className="h-5 bg-muted/20 rounded w-3/4 animate-pulse"></div>
+                    <div className="h-4 bg-muted/20 rounded w-1/2 animate-pulse"></div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="h-4 bg-muted/20 rounded w-16 animate-pulse"></div>
+                    <div className="h-4 bg-muted/20 rounded w-16 animate-pulse"></div>
                   </div>
                 </div>
               ))}

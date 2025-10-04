@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { Coin } from "@shared/schema";
 import { Trophy, TrendingUp, DollarSign, Coins as CoinsIcon } from "lucide-react";
 import Layout from "@/components/layout";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Leaderboard() {
   const [selectedPeriod, setSelectedPeriod] = useState<"24h" | "7d" | "30d" | "all">("24h");
@@ -136,19 +137,37 @@ export default function Leaderboard() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-muted/10">
-                <tr>
-                  <th className="text-left p-4 text-muted-foreground font-semibold">Rank</th>
-                  <th className="text-left p-4 text-muted-foreground font-semibold">Coin</th>
-                  <th className="text-right p-4 text-muted-foreground font-semibold">Volume (24h)</th>
-                  <th className="text-right p-4 text-muted-foreground font-semibold">Price</th>
-                  <th className="text-right p-4 text-muted-foreground font-semibold">Change (24h)</th>
-                  <th className="text-right p-4 text-muted-foreground font-semibold">Holders</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedCoins.map((coin, index) => (
+            {isLoading ? (
+              <div className="p-4 space-y-3">
+                {[...Array(10)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-4 p-3">
+                    <Skeleton className="w-8 h-8 rounded" />
+                    <Skeleton className="w-10 h-10 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-5 w-40" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                    <Skeleton className="h-5 w-20" />
+                    <Skeleton className="h-5 w-20" />
+                    <Skeleton className="h-5 w-16" />
+                    <Skeleton className="h-5 w-12" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead className="bg-muted/10">
+                  <tr>
+                    <th className="text-left p-4 text-muted-foreground font-semibold">Rank</th>
+                    <th className="text-left p-4 text-muted-foreground font-semibold">Coin</th>
+                    <th className="text-right p-4 text-muted-foreground font-semibold">Volume (24h)</th>
+                    <th className="text-right p-4 text-muted-foreground font-semibold">Price</th>
+                    <th className="text-right p-4 text-muted-foreground font-semibold">Change (24h)</th>
+                    <th className="text-right p-4 text-muted-foreground font-semibold">Holders</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedCoins.map((coin, index) => (
                   <tr key={coin.id} className="border-b border-border hover:bg-muted/5">
                     <td className="p-4">
                       <div className="flex items-center gap-2">
@@ -179,6 +198,7 @@ export default function Leaderboard() {
                 ))}
               </tbody>
             </table>
+            )}
           </div>
         </div>
       </div>

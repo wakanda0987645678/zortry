@@ -16,6 +16,7 @@ import {
   Clock,
   DollarSign,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Channel {
   id: string;
@@ -38,6 +39,7 @@ export default function Channels() {
   const [tradeModalOpen, setTradeModalOpen] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Extract search parameter from URL
   useEffect(() => {
@@ -105,7 +107,23 @@ export default function Channels() {
       {/* Channels Grid */}
       <section className="px-4 md:px-8 pb-4 md:pb-8">
         <div className="max-w-7xl mx-auto">
-          {filteredChannels.length === 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              {[...Array(12)].map((_, i) => (
+                <div key={i} className="spotify-card rounded-xl p-3 space-y-3">
+                  <Skeleton className="aspect-square w-full rounded-lg" />
+                  <div className="space-y-2 text-center">
+                    <Skeleton className="h-5 w-3/4 mx-auto" />
+                    <Skeleton className="h-4 w-1/2 mx-auto" />
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredChannels.length === 0 ? (
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Hash className="w-8 h-8 text-muted-foreground" />
