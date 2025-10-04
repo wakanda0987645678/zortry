@@ -13,15 +13,13 @@ import {
 import { 
   SiYoutube,
   SiFarcaster,
-  SiGitcoin,
   SiSpotify,
   SiTiktok,
   SiInstagram,
   SiMedium,
   SiSubstack,
-  SiGiveth,
-  SiTwitter,
-  SiGithub
+  SiGithub,
+  SiX
 } from "react-icons/si";
 import { useState, useMemo, useRef } from "react";
 
@@ -52,7 +50,7 @@ export default function Home() {
     { id: "medium", label: "Medium", Icon: SiMedium },
     { id: "substack", label: "Substack", Icon: SiSubstack },
     { id: "giveth", label: "Giveth", Icon: CoinsIcon },
-    { id: "twitter", label: "Twitter", Icon: SiTwitter },
+    { id: "twitter", label: "Twitter", Icon: SiX },
     { id: "github", label: "GitHub", Icon: SiGithub },
     { id: "blog", label: "Blog", Icon: PenTool },
   ];
