@@ -1,3 +1,4 @@
+
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -34,6 +35,7 @@ async function verifyContract() {
   formData.append('compilerversion', 'v0.8.20+commit.a1b79de6');
   formData.append('optimizationUsed', '1');
   formData.append('runs', '200');
+  // Empty constructor arguments - contract has no constructor parameters
   formData.append('constructorArguements', '');
   formData.append('evmversion', 'paris');
 
@@ -53,9 +55,9 @@ async function verifyContract() {
     const guid = result.result;
     console.log("✅ Verification submitted successfully!");
     console.log("📝 GUID:", guid);
-    console.log("\n⏳ Checking verification status...\n");
+    console.log("\n⏳ Checking verification status in 5 seconds...\n");
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     const statusParams = new URLSearchParams({
       apikey: BASESCAN_API_KEY,
@@ -84,7 +86,7 @@ async function verifyContract() {
     console.error("   Message:", result.message);
     console.error("   Result:", result.result);
     
-    if (result.result.includes("already verified")) {
+    if (result.result && result.result.includes("already verified")) {
       console.log("\n✅ Contract is already verified!");
       console.log("🔗 View at: https://basescan.org/address/" + CONTRACT_ADDRESS + "#code");
     }
