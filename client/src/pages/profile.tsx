@@ -233,7 +233,7 @@ export default function Profile() {
                 </div>
               </div>
               <div className="text-3xl font-bold text-white mb-1">
-                ${totalEarnings.toFixed(2)} USDT
+                ${isLoadingEarnings ? '0.00' : totalEarnings.toFixed(2)} USDT
               </div>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
@@ -247,7 +247,7 @@ export default function Profile() {
           <div className="flex gap-2">
             <button
               onClick={() => setSelectedTab("created")}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
                 selectedTab === "created"
                   ? "text-white"
                   : "text-muted-foreground"
@@ -258,7 +258,7 @@ export default function Profile() {
             </button>
             <button
               onClick={() => setSelectedTab("owned")}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
                 selectedTab === "owned"
                   ? "text-white"
                   : "text-muted-foreground"
@@ -272,7 +272,7 @@ export default function Profile() {
           <div className="flex gap-2">
             <button
               onClick={() => setViewMode("list")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`p-2 rounded-full transition-colors ${
                 viewMode === "list"
                   ? "bg-muted/30 text-white"
                   : "text-muted-foreground hover:bg-muted/20"
@@ -283,7 +283,7 @@ export default function Profile() {
             </button>
             <button
               onClick={() => setViewMode("grid")}
-              className={`p-2 rounded-lg transition-colors ${
+              className={`p-2 rounded-full transition-colors ${
                 viewMode === "grid"
                   ? "bg-muted/30 text-white"
                   : "text-muted-foreground hover:bg-muted/20"

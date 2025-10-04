@@ -56,7 +56,7 @@ export default function Leaderboard() {
               <button
                 key={period}
                 onClick={() => setSelectedPeriod(period)}
-                className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                className={`px-4 py-2 rounded-full font-semibold transition-colors ${
                   selectedPeriod === period
                     ? "bg-primary text-black"
                     : "bg-muted/20 text-muted-foreground hover:text-white"
@@ -73,7 +73,7 @@ export default function Leaderboard() {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-lg font-semibold transition-colors capitalize ${
+                className={`px-4 py-2 rounded-full font-semibold transition-colors capitalize ${
                   selectedCategory === category
                     ? "bg-primary text-black"
                     : "bg-muted/20 text-muted-foreground hover:text-white"

@@ -80,7 +80,6 @@ export default function Layout({ children }: LayoutProps) {
 
   const desktopNavItems = [
     { href: "/", icon: Compass, label: "Explore" },
-    { href: "/search", icon: Search, label: "Search" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
     { href: "/rewards", icon: Award, label: "Analyzer" },
@@ -177,7 +176,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center gap-4">
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
+                  <button className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                     <Menu className="w-4 h-4" />
                   </button>
                 </SheetTrigger>
@@ -196,7 +195,7 @@ export default function Layout({ children }: LayoutProps) {
 
             <div className="flex items-center gap-2">
               <Link href="/create">
-                <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-3 py-1.5 rounded-lg transition-colors text-sm">
+                <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-3 py-1.5 rounded-full transition-colors text-sm">
                   <Plus className="w-3 h-3" />
                   Create
                 </button>
@@ -277,7 +276,7 @@ export default function Layout({ children }: LayoutProps) {
 
               {/* Create Button */}
               <Link href="/create">
-                <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-4 py-2 rounded-lg transition-colors">
+                <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-4 py-2 rounded-full transition-colors">
                   <Plus className="w-4 h-4" />
                   Create
                 </button>
