@@ -48,114 +48,6 @@ export default function Channels() {
     }
   }, [location]);
 
-  // Mock channels data
-  const mockChannels: Channel[] = [
-    {
-      id: "1",
-      name: "Meetings",
-      creator: "fullmetaldroid",
-      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=300&fit=crop",
-      marketCap: "$1k",
-      price: "$16.36",
-      holders: 3,
-      timeAgo: "9m",
-      priceChange: 12.5,
-      address: "0x1234567890123456789012345678901234567890",
-      symbol: "MEET"
-    },
-    {
-      id: "2",
-      name: "Titan Fries",
-      creator: "rangegouraji",
-      image: "https://images.unsplash.com/photo-1630409346775-8765a0bb0bb?w=400&h=300&fit=crop",
-      marketCap: "$49.3",
-      price: "$0.30",
-      holders: 3,
-      timeAgo: "13m",
-      priceChange: 8.2,
-      address: "0x2345678901234567890123456789012345678901",
-      symbol: "FRIES"
-    },
-    {
-      id: "3",
-      name: "glitch prayer angel",
-      creator: "lynthgc",
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop",
-      marketCap: "$62.33",
-      price: "$1.24",
-      holders: 3,
-      timeAgo: "16m",
-      priceChange: 15.7,
-      address: "0x3456789012345678901234567890123456789012",
-      symbol: "ANGEL"
-    },
-    {
-      id: "4",
-      name: "Digital Dreams",
-      creator: "cryptoartist",
-      image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop",
-      marketCap: "$156.8",
-      price: "$3.42",
-      holders: 8,
-      timeAgo: "22m",
-      priceChange: -2.1,
-      address: "0x4567890123456789012345678901234567890123",
-      symbol: "DREAMS"
-    },
-    {
-      id: "5",
-      name: "Neon City",
-      creator: "urbanexplorer",
-      image: "https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?w=400&h=300&fit=crop",
-      marketCap: "$89.2",
-      price: "$2.15",
-      holders: 5,
-      timeAgo: "28m",
-      priceChange: 7.3,
-      address: "0x5678901234567890123456789012345678901234",
-      symbol: "NEON"
-    },
-    {
-      id: "6",
-      name: "Space Odyssey",
-      creator: "cosmicvibes",
-      image: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=300&fit=crop",
-      marketCap: "$234.7",
-      price: "$5.67",
-      holders: 12,
-      timeAgo: "35m",
-      priceChange: 9.8,
-      address: "0x6789012345678901234567890123456789012345",
-      symbol: "SPACE"
-    },
-    {
-      id: "7",
-      name: "Ocean Waves",
-      creator: "aquamarine",
-      image: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop",
-      marketCap: "$78.4",
-      price: "$1.89",
-      holders: 6,
-      timeAgo: "42m",
-      priceChange: -0.5,
-      address: "0x7890123456789012345678901234567890123456",
-      symbol: "WAVES"
-    },
-    {
-      id: "8",
-      name: "Forest Spirits",
-      creator: "naturelover",
-      image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop",
-      marketCap: "$67.1",
-      price: "$1.23",
-      holders: 4,
-      timeAgo: "1h",
-      priceChange: 3.2,
-      address: "0x8901234567890123456789012345678901234567",
-      symbol: "FOREST"
-    }
-  ];
-
   const categories = [
     { id: "all", name: "All Channels", icon: Hash },
     { id: "trending", name: "Trending", icon: TrendingUp },
@@ -163,10 +55,7 @@ export default function Channels() {
     { id: "new", name: "New", icon: Plus },
   ];
 
-  const filteredChannels = mockChannels.filter(channel => 
-    channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    channel.creator.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredChannels: Channel[] = [];
 
   const handleTradeChannel = (channel: Channel) => {
     setSelectedChannel(channel);
@@ -231,7 +120,12 @@ export default function Channels() {
                 }
               </p>
               {!searchTerm && (
-                <Button className="spotify-button">Create First Channel</Button>
+                <Button 
+                  onClick={() => setCreateModalOpen(true)}
+                  className="spotify-button"
+                >
+                  Create First Channel
+                </Button>
               )}
             </div>
           ) : (
