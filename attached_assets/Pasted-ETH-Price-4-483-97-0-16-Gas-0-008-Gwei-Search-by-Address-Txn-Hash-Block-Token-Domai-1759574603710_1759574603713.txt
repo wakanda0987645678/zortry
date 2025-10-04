@@ -1,0 +1,259 @@
+ETH Price: $4,483.97 (-0.16%)
+Gas: 0.008 Gwei
+Search by Address / Txn Hash / Block / Token / Domain Name
+/
+BaseScan Logo
+Home
+Blockchain
+Transactions
+Latest L1→L2 Transactions
+Latest L2→L1 Transactions
+Contract Internal Transactions
+AA Transactions Beta
+EIP-7702 Authorizations Beta
+View Blocks
+View L1 Transaction Batches
+View L1 State Batches
+Top Accounts
+Verified Contracts
+Tokens
+Top Tokens (ERC-20)
+Token Transfers (ERC-20)
+Token Flow Visualizer
+Beta
+NFTs
+Latest Transfers
+Latest Mints
+Resources
+Charts & Stats
+Developers
+API Plans 
+API Documentation
+Code Reader Beta
+Verify Contract
+Similar Contract Search
+Contract Diff Checker
+Vyper Online Compiler
+Bytecode to Opcode
+Broadcast Transaction
+More
+Tools & Services
+Discover more of BaseScan's tools and services in one place.
+
+Tools
+Input Data Decoder Beta
+Unit Converter
+CSV Export
+Account Balance Checker
+Explore
+Gas Tracker
+Label Cloud
+Domain Name Lookup
+Services
+Token Approvals Beta
+Verified Signature
+Advanced Filter Beta
+|
+BASE0X
+My Profile
+Watch List
+Txn Private Notes
+Private Name Tags
+Token Ignore List
+API Dashboard
+Verified Address
+Custom ABI
+Advanced Filter
+Verify & Publish Contract Source Code
+Source code verification provides transparency for users interacting with smart contracts. By uploading the source code, BaseScan will match the compiled code with that on the blockchain. Read more.
+
+A simple and structured interface for verifying smart contracts that fit in a single file.
+
+1
+Enter Contract Details
+2
+Verify & Publish
+ Error! Invalid constructor arguments provided. Please verify that they are in ABI-encoded format
+Upload Contract Source Code
+If the contract compiles correctly at REMIX, it should also compile correctly here.
+We have limited support for verifying contracts created by another contract and there is a timeout of up to 45 seconds for each contract compiled.
+For programatic contract verification, check out the Contract API Endpoint.
+Contract Address:
+0xa99d508b3d5f9e9bf4b18396250974e684529668
+Compiler Type:
+SINGLE FILE / CONCATENATED METHOD
+Compiler Version:
+v0.8.20+commit.a1b79de6
+Enter the Solidity Contract Code below *
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract YoubuidlChannelsRegistry {
+    struct CoinRecord {
+        address coinAddress;
+        address creator;
+        bytes32 metadataHash;
+        uint256 timestamp;
+        bool exists;
+    }
+    
+    address public owner;
+    uint256 public totalCoinsRegistered;
+    
+    mapping(address => CoinRecord) public platformCoins;
+    mapping(address => address[]) public creatorCoins;
+    mapping(address => uint256) public creatorCoinCount;
+    
+    event CoinRegistered(
+        address indexed coinAddress,
+        address indexed creator,
+        bytes32 metadataHash,
+        uint256 timestamp
+    );
+    
+    event BatchRegistered(
+        uint256 count,
+        uint256 timestamp
+    );
+    
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can register coins");
+        _;
+    }
+    
+    constructor() {
+        owner = msg.sender;
+        totalCoinsRegistered = 0;
+    }
+    
+    function registerCoin(
+        address coinAddress,
+        address creator,
+        bytes32 metadataHash
+    ) public onlyOwner {
+        require(coinAddress != address(0), "Invalid coin address");
+        require(creator != address(0), "Invalid creator address");
+        require(!platformCoins[coinAddress].exists, "Coin already registered");
+        
+        platformCoins[coinAddress] = CoinRecord({
+            coinAddress: coinAddress,
+            creator: creator,
+            metadataHash: metadataHash,
+            timestamp: block.timestamp,
+            exists: true
+        });
+        
+        creatorCoins[creator].push(coinAddress);
+        creatorCoinCount[creator]++;
+        totalCoinsRegistered++;
+        
+        emit CoinRegistered(coinAddress, creator, metadataHash, block.timestamp);
+    }
+    
+    function registerBatch(
+        address[] memory coinAddresses,
+        address[] memory creators,
+        bytes32[] memory metadataHashes
+    ) public onlyOwner {
+        require(
+            coinAddresses.length == creators.length && 
+            creators.length == metadataHashes.length,
+            "Array length mismatch"
+        );
+        
+        for (uint256 i = 0; i < coinAddresses.length; i++) {
+            if (!platformCoins[coinAddresses[i]].exists) {
+                platformCoins[coinAddresses[i]] = CoinRecord({
+                    coinAddress: coinAddresses[i],
+                    creator: creators[i],
+                    metadataHash: metadataHashes[i],
+                    timestamp: block.timestamp,
+                    exists: true
+                });
+                
+                creatorCoins[creators[i]].push(coinAddresses[i]);
+                creatorCoinCount[creators[i]]++;
+                totalCoinsRegistered++;
+                
+                emit CoinRegistered(
+                    coinAddresses[i],
+                    creators[i],
+                    metadataHashes[i],
+                    block.timestamp
+                );
+            }
+        }
+        
+        emit BatchRegistered(coinAddresses.length, block.timestamp);
+    }
+    
+    function isPlatformCoin(address coinAddress) public view returns (bool) {
+        return platformCoins[coinAddress].exists;
+    }
+    
+    function getCoinRecord(address coinAddress) public view returns (
+        address creator,
+        bytes32 metadataHash,
+        uint256 timestamp,
+        bool exists
+    ) {
+        CoinRecord memory record = platformCoins[coinAddress];
+        return (
+            record.creator,
+            record.metadataHash,
+            record.timestamp,
+            record.exists
+        );
+    }
+    
+    function getCreatorCoins(address creator) public view returns (address[] memory) {
+        return creatorCoins[creator];
+    }
+    
+    function getCreatorCoinCount(address creator) public view returns (uint256) {
+        return creatorCoinCount[creator];
+    }
+    
+    function transferOwnership(address newOwner) public onlyOwner {
+        require(newOwner != address(0), "Invalid new owner");
+        owner = newOwner;
+    }
+}
+Advanced Configuration
+Optimization 
+Yes
+Runs (Optimizer) 
+200
+EVM Version to target 
+default (compiler defaults)
+License Type 
+3) MIT License (MIT)
+Constructor Arguments ABI-encoded
+For contracts that were created with constructor parameters
+0x608060405234801561000f575f5ffd5b50600436106100b1575f3560e01c8063bf6fae8e1161006e578063bf6fae8e14610207578063e8cb342a14610210578063eb43c9c314610238578063f1f4db73146102da578063f2fde38b146102ef578063f7c3eb5814610302575f5ffd5b806304691a1b146100b557806308ddc57f146100de57806347b7ad4f1461010b57806384af9d04146101365780638da5cb5b14610174578063963862f214610186575b5f5ffd5b6100c86100c3366004610aae565b610315565b6040516100d59190610ace565b60405180910390f35b6100fd6100ec366004610aae565b60046020525f908152604090205481565b6040519081526020016100d5565b61011e610119366004610b19565b610388565b6040516001600160a01b0390911681526020016100d5565b610164610144366004610aae565b6001600160a01b03165f9081526002602052604090206004015460ff1690565b60405190151581526020016100d5565b5f5461011e906001600160a01b031681565b6101d2610194366004610aae565b600260208190525f9182526040909120805460018201549282015460038301546004909301546001600160a01b039283169490921692909160ff1685565b604080516001600160a01b0396871681529590941660208601529284019190915260608301521515608082015260a0016100d5565b6100fd60015481565b6100fd61021e366004610aae565b6001600160a01b03165f9081526004602052604090205490565b6102ae610246366004610aae565b6001600160a01b039081165f90815260026020818152604092839020835160a08101855281548616815260018201549095169185018290529182015492840183905260038201546060850181905260049092015460ff16151560809094018490529391929091565b604080516001600160a01b039095168552602085019390935291830152151560608201526080016100d5565b6102ed6102e8366004610c1a565b6103bc565b005b6102ed6102fd366004610aae565b610790565b6102ed610310366004610d01565b610824565b6001600160a01b0381165f9081526003602090815260409182902080548351818402810184019094528084526060939283018282801561037c57602002820191905f5260205f20905b81546001600160a01b0316815260019091019060200180831161035e575b50505050509050919050565b6003602052815f5260405f2081815481106103a1575f80fd5b5f918252602090912001546001600160a01b03169150829050565b5f546001600160a01b031633146103ee5760405162461bcd60e51b81526004016103e590610d3b565b60405180910390fd5b81518351148015610400575080518251145b6104445760405162461bcd60e51b8152602060048201526015602482015274082e4e4c2f240d8cadccee8d040dad2e6dac2e8c6d605b1b60448201526064016103e5565b5f5b83518110156107505760025f85838151811061046457610464610d72565b6020908102919091018101516001600160a01b031682528101919091526040015f206004015460ff16610748576040518060a001604052808583815181106104ae576104ae610d72565b60200260200101516001600160a01b031681526020018483815181106104d6576104d6610d72565b60200260200101516001600160a01b031681526020018383815181106104fe576104fe610d72565b602002602001015181526020014281526020016001151581525060025f86848151811061052d5761052d610d72565b6020908102919091018101516001600160a01b0390811683528282019390935260409182015f908120855181549086166001600160a01b0319918216178255928601516001820180549190961693169290921790935590830151600282015560608301516003808301919091556080909301516004909101805491151560ff1990921691909117905584518590849081106105ca576105ca610d72565b60200260200101516001600160a01b03166001600160a01b031681526020019081526020015f2084828151811061060357610603610d72565b60209081029190910181015182546001810184555f93845291832090910180546001600160a01b0319166001600160a01b0390921691909117905583516004919085908490811061065657610656610d72565b60200260200101516001600160a01b03166001600160a01b031681526020019081526020015f205f81548092919061068d90610d86565b909155505060018054905f6106a183610d86565b91905055508281815181106106b8576106b8610d72565b60200260200101516001600160a01b03168482815181106106db576106db610d72565b60200260200101516001600160a01b03167fa681f26ce7003d56bfd13dfc49e8a09a28c08e530d49d6d4fcde880ade2b53bd84848151811061071f5761071f610d72565b60200260200101514260405161073f929190918252602082015260400190565b60405180910390a35b600101610446565b508251604080519182524260208301527f5147e56f82dd95b39d986545d47fcc2f02ebe9938671c93e73ec1f28404cef7d910160405180910390a1505050565b5f546001600160a01b031633146107b95760405162461bcd60e51b81526004016103e590610d3b565b6001600160a01b0381166108035760405162461bcd60e51b815260206004820152601160248201527024b73b30b634b2103732bb9037bbb732b960791b60448201526064016103e5565b5f80546001600160a01b0319166001600160a01b0392909216919091179055565b5f546001600160a01b0316331461084d5760405162461bcd60e51b81526004016103e590610d3b565b6001600160a01b03831661089a5760405162461bcd60e51b8152602060048201526014602482015273496e76616c696420636f696e206164647265737360601b60448201526064016103e5565b6001600160a01b0382166108f05760405162461bcd60e51b815260206004820152601760248201527f496e76616c69642063726561746f72206164647265737300000000000000000060448201526064016103e5565b6001600160a01b0383165f9081526002602052604090206004015460ff161561095b5760405162461bcd60e51b815260206004820152601760248201527f436f696e20616c7265616479207265676973746572656400000000000000000060448201526064016103e5565b6040805160a0810182526001600160a01b03808616808352858216602080850182815285870188815242606088019081526001608089018181525f88815260028088528c82209b518c54908c166001600160a01b0319918216178d5596518c8501805491909c1690881617909a559351988a019890985590516003808a019190915596516004988901805491151560ff199092169190911790558482529583528781208054968701815581528281209095018054909116909317909255825291909152908120805491610a2d83610d86565b909155505060018054905f610a4183610d86565b9091555050604080518281524260208201526001600160a01b0380851692908616917fa681f26ce7003d56bfd13dfc49e8a09a28c08e530d49d6d4fcde880ade2b53bd910160405180910390a3505050565b80356001600160a01b0381168114610aa9575f5ffd5b919050565b5f60208284031215610abe575f5ffd5b610ac782610a93565b9392505050565b602080825282518282018190525f918401906040840190835b81811015610b0e5783516001600160a01b0316835260209384019390920191600101610ae7565b509095945050505050565b5f5f60408385031215610b2a575f5ffd5b610b3383610a93565b946020939093013593505050565b634e487b7160e01b5f52604160045260245ffd5b604051601f8201601f1916810167ffffffffffffffff81118282101715610b7e57610b7e610b41565b604052919050565b5f67ffffffffffffffff821115610b9f57610b9f610b41565b5060051b60200190565b5f82601f830112610bb8575f5ffd5b8135610bcb610bc682610b86565b610b55565b8082825260208201915060208360051b860101925085831115610bec575f5ffd5b602085015b83811015610c1057610c0281610a93565b835260209283019201610bf1565b5095945050505050565b5f5f5f60608486031215610c2c575f5ffd5b833567ffffffffffffffff811115610c42575f5ffd5b610c4e86828701610ba9565b935050602084013567ffffffffffffffff811115610c6a575f5ffd5b610c7686828701610ba9565b925050604084013567ffffffffffffffff811115610c92575f5ffd5b8401601f81018613610ca2575f5ffd5b8035610cb0610bc682610b86565b8082825260208201915060208360051b850101925088831115610cd1575f5ffd5b6020840193505b82841015610cf3578335825260209384019390910190610cd8565b809450505050509250925092565b5f5f5f60608486031215610d13575f5ffd5b610d1c84610a93565b9250610d2a60208501610a93565b929592945050506040919091013590565b6020808252601d908201527f4f6e6c79206f776e65722063616e20726567697374657220636f696e73000000604082015260600190565b634e487b7160e01b5f52603260045260245ffd5b5f60018201610da357634e487b7160e01b5f52601160045260245ffd5b506001019056fea2646970667358221220bfe9e25818c8e0cc131fb9f92c297df769b7395bd935749131703f1500b54e3e64736f6c634300081e0033
+For additional information on Constructor Arguments, see our KB entry
+
+
+Back to Top
+Base Logo
+Powered By Base
+Basescan is a Block Explorer and Analytics Platform for Base
+
+Company
+Brand Assets
+Contact Us
+Terms & Privacy
+Bug Bounty 
+Community
+API Documentation
+Knowledge Base
+Network Status
+Products & Services
+Advertise 
+Explorer as a Service (EaaS) 
+API Plans 
+Priority Support
+Blockscan 
+BaseScan © 2025 (BASE-B1) | ⛏ Built by Team Etherscan
+
+Donations: 0x71c765...d8976f 
