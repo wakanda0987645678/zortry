@@ -21,6 +21,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 interface TradeModalProps {
   coin: Coin;
@@ -479,7 +480,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-3xl bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden">
         <div className="flex min-h-[500px]">
-          {/* Left side - Price Chart */}
+          {/* Left side - Carousel with Image and Chart */}
           <div className="w-5/12 bg-gradient-to-br from-muted/20 to-muted/10 flex flex-col p-6">
             {/* Market Cap and Price Change */}
             <div className="mb-4">
@@ -494,41 +495,70 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </div>
             </div>
 
-            {/* Chart */}
-            <div className="flex-1 min-h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.3} />
-                  <XAxis
-                    dataKey="time"
-                    stroke="#888"
-                    fontSize={10}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    stroke="#888"
-                    fontSize={10}
-                    tickLine={false}
-                    tickFormatter={(value) => `$${value.toFixed(4)}`}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1a1a1a',
-                      border: '1px solid #333',
-                      borderRadius: '8px',
-                      fontSize: '12px'
-                    }}
-                    formatter={(value: any) => [`$${value.toFixed(6)}`, 'Price']}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#22c55e"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+            {/* Carousel - Image & Chart Slides */}
+            <div className="flex-1 min-h-[300px] relative">
+              <Carousel className="w-full h-full">
+                <CarouselContent className="h-full">
+                  {/* Slide 1: Coin Image */}
+                  <CarouselItem className="h-full">
+                    <div className="h-full flex items-center justify-center bg-gradient-to-br from-muted/10 to-muted/5 rounded-lg overflow-hidden">
+                      {displayImage ? (
+                        <img
+                          src={displayImage}
+                          alt={coin.metadata?.title || coin.name}
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-muted-foreground">
+                          <Coins className="w-16 h-16 mb-2 opacity-30" />
+                          <p className="text-sm">No image available</p>
+                        </div>
+                      )}
+                    </div>
+                  </CarouselItem>
+
+                  {/* Slide 2: Price Chart */}
+                  <CarouselItem className="h-full">
+                    <div className="h-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={chartData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.3} />
+                          <XAxis
+                            dataKey="time"
+                            stroke="#888"
+                            fontSize={10}
+                            tickLine={false}
+                          />
+                          <YAxis
+                            stroke="#888"
+                            fontSize={10}
+                            tickLine={false}
+                            tickFormatter={(value) => `$${value.toFixed(4)}`}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: '#1a1a1a',
+                              border: '1px solid #333',
+                              borderRadius: '8px',
+                              fontSize: '12px'
+                            }}
+                            formatter={(value: any) => [`$${value.toFixed(6)}`, 'Price']}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="price"
+                            stroke="#22c55e"
+                            strokeWidth={2}
+                            dot={false}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious className="left-2" />
+                <CarouselNext className="right-2" />
+              </Carousel>
             </div>
 
             {/* Timeframe Selector */}
@@ -548,21 +578,6 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   {tf}
                 </Button>
               ))}
-            </div>
-
-            {/* Toggle between chart and image */}
-            <div className="flex gap-2 mt-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex-1 h-8 text-xs text-muted-foreground hover:text-white"
-                onClick={() => {
-                  // Could add state to toggle between chart and image
-                }}
-              >
-                <TrendingUp className="w-3 h-3 mr-1" />
-                Chart
-              </Button>
             </div>
           </div>
 
