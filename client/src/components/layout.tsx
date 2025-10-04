@@ -194,6 +194,16 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <div className="flex items-center gap-2">
+              <Link href="/notifications">
+                <button className={`relative w-9 h-9 rounded-full flex items-center justify-center transition-colors ${location === "/notifications" ? "bg-primary/20 text-primary" : "hover:bg-muted/20"}`}>
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </Link>
               <Link href="/create">
                 <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-3 py-1.5 rounded-full transition-colors text-sm">
                   <Plus className="w-3 h-3" />
@@ -228,16 +238,6 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 );
               })}
-              <Link href="/notifications">
-                <button className={`nav-button relative ${location === "/notifications" ? "active" : ""}`}>
-                  <Bell className="w-5 h-5" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
-                  )}
-                </button>
-              </Link>
             </div>
           </footer>
         </div>

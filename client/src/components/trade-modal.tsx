@@ -478,7 +478,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-3xl bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden rounded-3xl">
+      <DialogContent className="sm:max-w-3xl bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden sm:rounded-3xl">
         <div className="flex min-h-[500px]">
           {/* Left side - Carousel with Image and Chart */}
           <div className="w-5/12 bg-gradient-to-br from-muted/20 to-muted/10 flex flex-col p-6">
@@ -641,7 +641,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             <div className="flex gap-2 mb-4">
               <Button
                 onClick={() => setIsBuying(true)}
-                className={`flex-1 h-10 text-sm font-bold transition-all ${
+                className={`flex-1 h-10 text-sm font-bold transition-all rounded-full ${
                   isBuying
                     ? 'bg-green-500 hover:bg-green-600 text-white'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
@@ -653,7 +653,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </Button>
               <Button
                 onClick={() => setIsBuying(false)}
-                className={`flex-1 h-10 text-sm font-bold transition-all ${
+                className={`flex-1 h-10 text-sm font-bold transition-all rounded-full ${
                   !isBuying
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
@@ -674,7 +674,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   min="0"
                   value={ethAmount}
                   onChange={(e) => setEthAmount(e.target.value)}
-                  className="h-14 text-2xl font-bold pr-20 bg-muted/30 border-border/50 text-white"
+                  className="h-14 text-2xl font-bold pr-20 bg-muted/30 border-border/50 text-white rounded-2xl"
                   disabled={isTrading || !!txHash}
                   data-testid="input-eth-amount"
                 />
@@ -696,7 +696,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   size="sm"
                   onClick={() => setQuickAmount(label)}
                   disabled={isTrading || !!txHash}
-                  className="h-9 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-white"
+                  className="h-9 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-white rounded-full"
                 >
                   {label === 'Max' ? label : `${label} ETH`}
                 </Button>
@@ -709,7 +709,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 placeholder="Add a comment (optional)"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground"
+                className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground rounded-xl"
                 disabled={isTrading || !!txHash}
                 maxLength={200}
               />
@@ -725,7 +725,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </div>
               ) : (
                 <Button
-                  className={`w-full h-12 text-base font-bold transition-all ${
+                  className={`w-full h-12 text-base font-bold transition-all rounded-full ${
                     isBuying
                       ? 'bg-green-500 hover:bg-green-600'
                       : 'bg-red-500 hover:bg-red-600'
@@ -779,7 +779,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               <div className="flex gap-2">
                 <Input
                   placeholder="Add a comment..."
-                  className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground flex-1"
+                  className="h-10 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground flex-1 rounded-xl"
                   disabled={!isConnected || createCommentMutation.isPending}
                   value={standaloneComment}
                   onChange={(e) => setStandaloneComment(e.target.value)}
@@ -793,7 +793,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 <Button
                   onClick={handleStandaloneComment}
                   disabled={!isConnected || createCommentMutation.isPending || !standaloneComment.trim()}
-                  className="h-10"
+                  className="h-10 rounded-full"
                 >
                   {createCommentMutation.isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
