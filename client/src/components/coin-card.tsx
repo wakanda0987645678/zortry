@@ -222,14 +222,14 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
       {/* Coin Image/Art - Top Section - Clickable */}
       <div
         onClick={() => !isOwnCoin && setTradeDialogOpen(true)}
-        className={`relative w-full h-40 bg-gradient-to-br from-muted/20 to-muted/10 ${!isOwnCoin ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
+        className={`relative w-full h-40 bg-gradient-to-br from-muted/20 to-muted/10 overflow-hidden ${!isOwnCoin ? "cursor-pointer hover:opacity-90 transition-opacity" : ""}`}
       >
         {getCurrentImageSrc() ? (
           <img
             key={getCurrentImageSrc()}
             src={getCurrentImageSrc() || ""}
             alt={coin.metadata?.title || coin.name}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
             onError={handleImageError}
             data-testid={`img-coin-${coin.address}`}
           />
