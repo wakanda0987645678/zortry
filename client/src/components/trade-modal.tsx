@@ -526,9 +526,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
                   {/* Slide 2: Price Chart */}
                   <CarouselItem className="h-full">
-                    <div className="h-full w-full" style={{ minHeight: '200px' }}>
+                    <div className="h-full w-full flex items-center justify-center" style={{ minHeight: '200px' }}>
                       {chartData.length > 0 ? (
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height={250}>
                           <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.3} />
                             <XAxis
