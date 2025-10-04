@@ -50,7 +50,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   }>>([]);
   const [totalSupply, setTotalSupply] = useState<string | null>(null);
   const [uniqueHoldersCount, setUniqueHoldersCount] = useState<number>(0);
-  const [chartData, setChartData] = useState<Array<{ time: string; price: number }>>([]);
+  const [chartData, setChartData] = useState<Array<{ time: string; price: number }>>([
+    { time: '12:00 AM', price: 0.001 },
+    { time: '6:00 AM', price: 0.0015 },
+    { time: '12:00 PM', price: 0.002 },
+    { time: '6:00 PM', price: 0.0025 },
+  ]);
   const [timeframe, setTimeframe] = useState<'1H' | '1D' | 'W' | 'M' | 'All'>('1D');
   const [priceChange, setPriceChange] = useState<number>(0);
 
@@ -211,21 +216,23 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           }
         } else {
           // Fallback: generate sample data points from market cap if no history
+          const basePrice = parseFloat(marketCap || '1000') / 1000000;
           setChartData([
-            { time: '12:00 AM', price: 0.001 },
-            { time: '6:00 AM', price: 0.0015 },
-            { time: '12:00 PM', price: 0.002 },
-            { time: '6:00 PM', price: parseFloat(marketCap || '0') / 1000000 },
+            { time: '12:00 AM', price: basePrice * 0.8 },
+            { time: '6:00 AM', price: basePrice * 0.9 },
+            { time: '12:00 PM', price: basePrice * 0.95 },
+            { time: '6:00 PM', price: basePrice },
           ]);
         }
       } catch (error) {
         console.error('Error fetching chart data:', error);
-        // Use fallback data
+        // Use fallback data based on market cap
+        const basePrice = parseFloat(marketCap || '1000') / 1000000;
         setChartData([
-          { time: '12:00 AM', price: 0.001 },
-          { time: '6:00 AM', price: 0.0015 },
-          { time: '12:00 PM', price: 0.002 },
-          { time: '6:00 PM', price: parseFloat(marketCap || '0') / 1000000 },
+          { time: '12:00 AM', price: basePrice * 0.8 },
+          { time: '6:00 AM', price: basePrice * 0.9 },
+          { time: '12:00 PM', price: basePrice * 0.95 },
+          { time: '6:00 PM', price: basePrice },
         ]);
       }
     }
@@ -519,40 +526,49 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
                   {/* Slide 2: Price Chart */}
                   <CarouselItem className="h-full">
-                    <div className="h-full">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={chartData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.3} />
-                          <XAxis
-                            dataKey="time"
-                            stroke="#888"
-                            fontSize={10}
-                            tickLine={false}
-                          />
-                          <YAxis
-                            stroke="#888"
-                            fontSize={10}
-                            tickLine={false}
-                            tickFormatter={(value) => `$${value.toFixed(4)}`}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: '#1a1a1a',
-                              border: '1px solid #333',
-                              borderRadius: '8px',
-                              fontSize: '12px'
-                            }}
-                            formatter={(value: any) => [`$${value.toFixed(6)}`, 'Price']}
-                          />
-                          <Line
-                            type="monotone"
-                            dataKey="price"
-                            stroke="#22c55e"
-                            strokeWidth={2}
-                            dot={false}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
+                    <div className="h-full w-full" style={{ minHeight: '300px' }}>
+                      {chartData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.3} />
+                            <XAxis
+                              dataKey="time"
+                              stroke="#888"
+                              fontSize={10}
+                              tickLine={false}
+                            />
+                            <YAxis
+                              stroke="#888"
+                              fontSize={10}
+                              tickLine={false}
+                              tickFormatter={(value) => `$${value.toFixed(4)}`}
+                            />
+                            <Tooltip
+                              contentStyle={{
+                                backgroundColor: '#1a1a1a',
+                                border: '1px solid #333',
+                                borderRadius: '8px',
+                                fontSize: '12px'
+                              }}
+                              formatter={(value: any) => [`$${value.toFixed(6)}`, 'Price']}
+                            />
+                            <Line
+                              type="monotone"
+                              dataKey="price"
+                              stroke="#22c55e"
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-muted-foreground">
+                          <div className="text-center">
+                            <TrendingUp className="w-12 h-12 mx-auto mb-2 opacity-30" />
+                            <p className="text-sm">Loading price data...</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </CarouselItem>
                 </CarouselContent>
