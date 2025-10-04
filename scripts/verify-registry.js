@@ -10,7 +10,7 @@ const CONTRACT_ADDRESS = '0xa99d508b3d5f9e9bf4b18396250974e684529668';
 const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY;
 
 async function verifyContract() {
-  console.log("🔍 Verifying contract on Basescan (API V2)...\n");
+  console.log("🔍 Verifying contract on Basescan...\n");
   console.log("📍 Contract:", CONTRACT_ADDRESS);
 
   if (!BASESCAN_API_KEY) {
@@ -20,7 +20,6 @@ async function verifyContract() {
   const contractPath = join(__dirname, '../contracts/YoubuidlChannelsRegistry.sol');
   const sourceCode = readFileSync(contractPath, 'utf8');
 
-  // Use V2 API endpoint
   const formData = new URLSearchParams();
   formData.append('apikey', BASESCAN_API_KEY);
   formData.append('module', 'contract');
@@ -36,9 +35,9 @@ async function verifyContract() {
   formData.append('evmversion', 'default');
   formData.append('licenseType', '3'); // MIT License
 
-  console.log("📤 Submitting verification request to V2 API...\n");
+  console.log("📤 Submitting verification request...\n");
 
-  const response = await fetch('https://api.basescan.org/v2/api', {
+  const response = await fetch('https://api.basescan.org/api', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -63,7 +62,7 @@ async function verifyContract() {
       guid: guid
     });
 
-    const statusResponse = await fetch(`https://api.basescan.org/v2/api?${statusParams}`);
+    const statusResponse = await fetch(`https://api.basescan.org/api?${statusParams}`);
     const statusResult = await statusResponse.json();
 
     if (statusResult.status === '1') {
