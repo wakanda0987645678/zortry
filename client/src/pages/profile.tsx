@@ -232,18 +232,12 @@ export default function Profile() {
                   <span>Live</span>
                 </div>
               </div>
-              {isLoadingEarnings ? (
-                <div className="space-y-2">
-                  <div className="h-8 bg-muted/20 rounded w-32 shimmer"></div>
-                  <div className="h-4 bg-muted/20 rounded w-48 shimmer"></div>
+              <>
+                <div className="text-3xl font-bold text-white mb-1">
+                  ${totalEarnings.toFixed(2)} USDT
                 </div>
-              ) : (
-                <>
-                  <div className="text-3xl font-bold text-white mb-1">
-                    ${totalEarnings.toFixed(2)}
-                  </div>
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                     From {createdCoins.length} coin{createdCoins.length !== 1 ? 's' : ''}
                   </div>
                 </>

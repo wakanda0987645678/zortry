@@ -478,7 +478,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-3xl bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-3xl bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden rounded-3xl">
         <div className="flex min-h-[500px]">
           {/* Left side - Carousel with Image and Chart */}
           <div className="w-5/12 bg-gradient-to-br from-muted/20 to-muted/10 flex flex-col p-6">

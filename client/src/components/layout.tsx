@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useNavigate } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -40,8 +40,9 @@ export default function Layout({ children }: LayoutProps) {
   const { isConnected } = useAccount();
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const { address } = useAccount();
+  const navigate = useNavigate();
 
-  const { data: notifications = [] } = useQuery<Notification[]>({
+  const { data: notifications = [], isLoading: isLoadingNotifications } = useQuery<Notification[]>({
     queryKey: [`/api/notifications/${address}/unread`],
     enabled: !!address,
     refetchInterval: 10000, // Poll every 10 seconds
