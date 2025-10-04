@@ -1,4 +1,4 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "@/components/ui/button";
 import { Wallet } from "lucide-react";
 
@@ -19,11 +19,11 @@ export default function WalletConnectButton() {
         return (
           <div
             {...(!ready && {
-              'aria-hidden': true,
+              "aria-hidden": true,
               style: {
                 opacity: 0,
-                pointerEvents: 'none',
-                userSelect: 'none',
+                pointerEvents: "none",
+                userSelect: "none",
               },
             })}
           >
@@ -35,8 +35,8 @@ export default function WalletConnectButton() {
                     className="spotify-button"
                     data-testid="button-connect-wallet"
                   >
-                    <Wallet className="w-4 h-4 mr-2" />
-                    Connect Wallet
+                    <Wallet className="w-3 h-4 mr-2" />
+                    Connect
                   </Button>
                 );
               }
@@ -67,13 +67,13 @@ export default function WalletConnectButton() {
                           width: 16,
                           height: 16,
                           borderRadius: 999,
-                          overflow: 'hidden',
+                          overflow: "hidden",
                           marginRight: 8,
                         }}
                       >
                         {chain.iconUrl && (
                           <img
-                            alt={chain.name ?? 'Chain icon'}
+                            alt={chain.name ?? "Chain icon"}
                             src={chain.iconUrl}
                             style={{ width: 16, height: 16 }}
                           />
@@ -92,7 +92,7 @@ export default function WalletConnectButton() {
                     {account.displayName}
                     {account.displayBalance
                       ? ` (${account.displayBalance})`
-                      : ''}
+                      : ""}
                   </Button>
                 </div>
               );
