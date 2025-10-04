@@ -26,6 +26,8 @@ import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import TradeModal from "@/components/trade-modal";
 import "@/lib/zora";
+import { createAvatar } from '@dicebear/core';
+import { avataaars } from '@dicebear/collection';
 
 const GATEWAY_URLS = [
   "ipfs.io",
@@ -275,9 +277,14 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
               </span>
             </div>
             <div className="flex items-center gap-1" title={coin.creator}>
-              <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-[7px] font-bold text-primary-foreground">
-                {coin.creator.slice(2, 4).toUpperCase()}
-              </div>
+              <img
+                src={createAvatar(avataaars, {
+                  seed: coin.creator,
+                  size: 14,
+                }).toDataUri()}
+                alt={`${coin.creator} avatar`}
+                className="w-3.5 h-3.5 rounded-full"
+              />
             </div>
           </div>
 
