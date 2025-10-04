@@ -45,17 +45,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (axios.isAxiosError(error)) {
         if (error.code === 'ECONNABORTED') {
-          return res.status(408).json({ error: 'Request timeout' });
+          return res.status(408).json({ 
+            error: 'Request timeout - the page took too long to load' 
+          });
         }
         if (error.response?.status === 404) {
-          return res.status(404).json({ error: 'Page not found' });
+          return res.status(404).json({ 
+            error: 'Page not found - please check the URL is correct' 
+          });
         }
         if (error.response?.status === 403) {
-          return res.status(403).json({ error: 'Access forbidden' });
+          return res.status(403).json({ 
+            error: 'Access forbidden - this platform blocks automated access' 
+          });
+        }
+        if (error.response?.status === 429) {
+          return res.status(429).json({ 
+            error: 'Rate limit exceeded - Instagram and TikTok often block scrapers. Try YouTube, Medium, or blog URLs instead.' 
+          });
         }
       }
 
-      res.status(500).json({ error: 'Failed to scrape content' });
+      res.status(500).json({ 
+        error: 'Failed to scrape content - some platforms block automated access. Try a different URL or platform.' 
+      });
     }
   });
 

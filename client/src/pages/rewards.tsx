@@ -149,10 +149,19 @@ export default function Analyzer() {
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                      Failed to analyze URL. Please check the URL and try again.
+                      Failed to analyze URL. Some platforms (Instagram, TikTok) may block automated access. 
+                      Try YouTube, Medium, or blog URLs for better results.
                     </AlertDescription>
                   </Alert>
                 )}
+
+                <Alert className="bg-muted/10 border-muted/20">
+                  <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                  <AlertDescription className="text-muted-foreground text-sm">
+                    <strong>Note:</strong> Instagram and TikTok often block automated analysis. 
+                    For best results, use YouTube channels, Medium profiles, or blog URLs.
+                  </AlertDescription>
+                </Alert>
               </form>
             </CardContent>
           </Card>
