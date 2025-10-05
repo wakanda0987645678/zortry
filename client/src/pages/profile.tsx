@@ -21,7 +21,7 @@ import {
   Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getProfileCoins, getCoin } from "@zoralabs/coins-sdk";
+import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -60,13 +60,16 @@ export default function Profile() {
     return [];
   }, []);
 
-  const displayedCoins = selectedTab === "created" ? createdCoins : ownedCoins;
+  const displayedCoins = selectedTab === "created" 
+    ? createdCoins.filter(coin => coin.address !== null) as Array<typeof createdCoins[0] & { address: string }>
+    : ownedCoins;
 
   useEffect(() => {
-    if (!address || !isConnected) {
+    if (!address || !isConnected || !createdCoins.length) {
       setTotalEarnings(0);
       setTotalMarketCap(0);
       setTotalHolders(0);
+      setIsLoadingStats(false);
       return;
     }
 
@@ -75,41 +78,34 @@ export default function Profile() {
 
     async function fetchAllStats() {
       try {
-        const response = await getProfileCoins({
-          identifier: address,
-          count: 100,
-        });
-
-        const profile: any = response.data?.profile;
         let earnings = 0;
         let marketCap = 0;
         let holders = 0;
 
-        if (profile?.createdCoins?.edges) {
-          for (const edge of profile.createdCoins.edges) {
-            const coin: any = edge.node;
+        for (const coin of createdCoins) {
+          if (coin.address && coin.status === 'active') {
+            try {
+              const coinData = await getCoin({
+                address: coin.address,
+                chain: base.id,
+              });
 
-            if (coin?.creatorEarnings && coin.creatorEarnings.length > 0) {
-              earnings += parseFloat(coin.creatorEarnings[0].amountUsd || "0");
-            }
-
-            if (coin?.address) {
-              try {
-                const coinData = await getCoin({
-                  address: coin.address,
-                  chain: base.id,
-                });
-
-                const tokenData = coinData.data?.zora20Token;
-                if (tokenData?.marketCap) {
-                  marketCap += parseFloat(tokenData.marketCap);
-                }
-                if (tokenData?.uniqueHolders) {
-                  holders += tokenData.uniqueHolders;
-                }
-              } catch (err) {
-                console.error(`Error fetching coin stats for ${coin.address}:`, err);
+              const tokenData = coinData.data?.zora20Token;
+              
+              if (tokenData?.creatorEarnings && tokenData.creatorEarnings.length > 0) {
+                const earningAmount = parseFloat(String(tokenData.creatorEarnings[0].amountUsd || tokenData.creatorEarnings[0].amount?.amountDecimal || "0"));
+                earnings += earningAmount;
               }
+              
+              if (tokenData?.marketCap) {
+                marketCap += parseFloat(tokenData.marketCap);
+              }
+              
+              if (tokenData?.uniqueHolders) {
+                holders += tokenData.uniqueHolders;
+              }
+            } catch (err) {
+              console.error(`Error fetching coin stats for ${coin.address}:`, err);
             }
           }
         }
@@ -136,7 +132,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, [address, isConnected]);
+  }, [address, isConnected, createdCoins]);
 
   const formatAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -514,7 +510,15 @@ export default function Profile() {
         ) : (
           <div className={viewMode === "grid" ? "grid grid-cols-2 gap-4" : "space-y-4"}>
             {displayedCoins.map((coin) => (
-              <CoinCard key={coin.id} coin={coin} isOwnCoin={selectedTab === "created"} />
+              <CoinCard 
+                key={coin.id} 
+                coin={{
+                  ...coin,
+                  createdAt: coin.createdAt.toISOString(),
+                  ipfsUri: coin.ipfsUri ?? undefined
+                }} 
+                isOwnCoin={selectedTab === "created"} 
+              />
             ))}
           </div>
         )}
