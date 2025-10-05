@@ -21,7 +21,7 @@ import {
   Moon,
   Sun,
 } from "lucide-react";
-import NotificationIcon from "@/assets/notificaIcon (1).svg?react";
+import NotificationIcon from "@/assets/notificationIcon.svg?react";
 import WalletConnectButton from "./wallet-connect-button";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
