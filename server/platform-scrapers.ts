@@ -89,19 +89,22 @@ async function scrapeTikTokOembed(url: string): Promise<ScrapedData> {
     const userData = response.data?.data;
     if (!userData) throw new Error('No user data found');
 
-    const user = userData.user || userData;
-    const stats = userData.stats || {};
+    const user = userData.user || userData.userInfo || userData;
+    const stats = userData.stats || userData.userInfo?.stats || user.stats || {};
+
+    const followerCount = stats.followerCount || stats.follower_count || user.followerCount || user.follower_count || 0;
+    const videoCount = stats.videoCount || stats.video_count || user.videoCount || user.video_count || 0;
 
     return {
       url,
       platform: 'tiktok',
       title: `TikTok - @${username}`,
-      author: user.nickname || username,
-      description: user.signature || `TikTok profile for @${username}`,
-      image: user.avatar_larger?.url_list?.[0] || user.avatar_thumb?.url_list?.[0] || '',
-      content: user.signature || '',
-      followers: stats.follower_count || stats.followerCount || 0,
-      engagement: stats.video_count || stats.videoCount || 0,
+      author: user.nickname || user.uniqueId || username,
+      description: user.signature || user.bio || `TikTok profile for @${username}`,
+      image: user.avatarLarger || user.avatar_larger?.url_list?.[0] || user.avatar_thumb?.url_list?.[0] || user.avatarThumb || '',
+      content: user.signature || user.bio || '',
+      followers: followerCount,
+      engagement: videoCount,
     };
   } catch (error) {
     console.error('TikTok scraping error:', error);

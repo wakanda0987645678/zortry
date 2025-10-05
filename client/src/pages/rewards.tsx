@@ -40,9 +40,14 @@ async function analyzeUrl(url: string): Promise<AnalysisResult> {
   const baseMultiplier = 0.001; // Base market cap per follower
   const engagementBonus = 1.5; // Bonus for high engagement
   
-  // Extract follower count from description/content if available
-  const followerMatch = data.description?.match(/(\d+(?:,\d+)*)\s*(?:followers|subs|subscribers)/i);
-  const estimatedFollowers = followerMatch ? parseInt(followerMatch[1].replace(/,/g, '')) : 10000;
+  // Use followers from scraped data if available, otherwise try to extract from description
+  let estimatedFollowers = data.followers || 0;
+  
+  // If followers not in data, try to extract from description as fallback
+  if (!estimatedFollowers) {
+    const followerMatch = data.description?.match(/(\d+(?:,\d+)*)\s*(?:followers|subs|subscribers)/i);
+    estimatedFollowers = followerMatch ? parseInt(followerMatch[1].replace(/,/g, '')) : 10000;
+  }
   
   const popularityScore = Math.min(100, (estimatedFollowers / 1000) * 10);
   const estimatedMarketCap = estimatedFollowers * baseMultiplier * engagementBonus;
@@ -55,7 +60,7 @@ async function analyzeUrl(url: string): Promise<AnalysisResult> {
     title: data.title,
     author: data.author,
     followers: estimatedFollowers,
-    engagement: Math.floor(Math.random() * 10), // Mock engagement rate
+    engagement: data.engagement || Math.floor(Math.random() * 10),
     estimatedMarketCap,
     estimatedDailyEarnings,
     estimatedMonthlyEarnings,
