@@ -93,6 +93,7 @@ export default function Layout({ children }: LayoutProps) {
     { href: "/", icon: Compass, label: "Explore" },
     { href: "/search", icon: Search, label: "Search" },
     { href: "/create", icon: Plus, label: "Create" },
+    { href: "/creators", icon: Users, label: "Creators" },
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
