@@ -43,6 +43,14 @@
   --chart-3: 30 80% 55%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 0 0% 6%;
+  --sidebar-primary: 68 78% 66%;
+  --sidebar-primary-foreground: 0 0% 0%;
+  --sidebar-accent: 0 0% 94%;
+  --sidebar-accent-foreground: 0 0% 6%;
+  --sidebar-border: 0 0% 88%;
+  --sidebar-ring: 68 78% 66%;
 }
 
 .light {
@@ -66,6 +74,14 @@
   --input: 214.3 31.8% 91.4%;
   --ring: 222.2 84% 4.9%;
   --radius: 0.5rem;
+  --sidebar: 0 0% 100%;
+  --sidebar-foreground: 222.2 84% 4.9%;
+  --sidebar-primary: 222.2 47.4% 11.2%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 40% 96.1%;
+  --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+  --sidebar-border: 214.3 31.8% 91.4%;
+  --sidebar-ring: 222.2 84% 4.9%;
 }
 
 .dark {
@@ -144,16 +160,16 @@
   }
 
   .spotify-card {
-    background: linear-gradient(135deg, rgba(24, 24, 24, 0.95), rgba(18, 18, 18, 0.95));
+    background: hsl(var(--card));
     backdrop-filter: blur(20px);
-    border: none;
+    border: 1px solid hsl(var(--border));
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
   .spotify-card:hover {
-    background: linear-gradient(135deg, rgba(40, 40, 40, 0.95), rgba(30, 30, 30, 0.95));
+    background: hsl(var(--accent));
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(205, 235, 99, 0.1);
+    box-shadow: 0 8px 32px hsl(var(--foreground) / 0.1), 0 0 0 1px hsl(var(--primary) / 0.1);
   }
 
   .hover-lift {
