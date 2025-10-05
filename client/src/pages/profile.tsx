@@ -286,16 +286,16 @@ export default function Profile() {
           </div>
 
           {/* Stats Grid - Compact */}
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="grid grid-cols-4 gap-2 mb-6">
             <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">
+              <div className="text-xl font-bold text-white mb-1">
                 {isLoadingStats ? '-' : createdCoins.length}
               </div>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">Coins</div>
             </div>
 
-            <div className="text-center border-x border-border/30">
-              <div className="text-2xl font-bold text-white mb-1">
+            <div className="text-center">
+              <div className="text-xl font-bold text-white mb-1">
                 {isLoadingStats ? '-' : totalMarketCap >= 1000000
                   ? `$${(totalMarketCap / 1000000).toFixed(2)}M`
                   : totalMarketCap >= 1000
@@ -306,10 +306,19 @@ export default function Profile() {
             </div>
 
             <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">
+              <div className="text-xl font-bold text-white mb-1">
                 {isLoadingStats ? '-' : totalHolders}
               </div>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">Holders</div>
+            </div>
+
+            <div className="text-center">
+              <div className="text-xl font-bold text-green-500 mb-1">
+                {isLoadingStats ? '-' : totalEarnings >= 1000
+                  ? `$${(totalEarnings / 1000).toFixed(1)}k`
+                  : `$${totalEarnings.toFixed(2)}`}
+              </div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wide">Earnings</div>
             </div>
           </div>
 
@@ -355,56 +364,62 @@ export default function Profile() {
 
         {/* Edit Profile Modal */}
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent className="sm:max-w-[425px] bg-card border-border rounded-xl">
-            <DialogHeader>
-              <DialogTitle className="text-foreground">Edit Profile</DialogTitle>
+          <DialogContent className="sm:max-w-[400px] bg-card border-border rounded-3xl p-6">
+            <DialogHeader className="pb-2">
+              <DialogTitle className="text-foreground text-xl font-bold">Edit Profile</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="space-y-4">
               {/* Profile Image Upload */}
-              <div className="space-y-2 text-center">
-                <label className="text-sm font-medium text-foreground">Profile Image</label>
-                <div className="flex items-center justify-center">
-                  <label htmlFor="profile-image-upload" className="cursor-pointer">
-                    <img
-                      src={profileImage ? URL.createObjectURL(profileImage) : createAvatar(avataaars, {
-                        seed: address || 'anonymous',
-                        size: 96,
-                      }).toDataUri()}
-                      alt="Profile Preview"
-                      className="w-24 h-24 rounded-full border-4 border-primary shadow-lg"
-                    />
-                  </label>
+              <div className="flex flex-col items-center">
+                <label htmlFor="profile-image-upload" className="cursor-pointer group relative">
+                  <img
+                    src={profileImage ? URL.createObjectURL(profileImage) : createAvatar(avataaars, {
+                      seed: address || 'anonymous',
+                      size: 96,
+                    }).toDataUri()}
+                    alt="Profile Preview"
+                    className="w-24 h-24 rounded-full border-4 border-primary shadow-lg transition-opacity group-hover:opacity-80"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="bg-black/50 rounded-full px-3 py-1 text-xs text-white">
+                      Change
+                    </div>
+                  </div>
+                </label>
+                <Input
+                  id="profile-image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </div>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Username</label>
                   <Input
-                    id="profile-image-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                    className="bg-muted/20 border-border text-foreground rounded-xl h-11"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground mb-1.5 block">Bio</label>
+                  <Textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="Tell us about yourself..."
+                    rows={3}
+                    className="bg-muted/20 border-border text-foreground resize-none rounded-xl"
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Username</label>
-                <Input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your username"
-                  className="bg-background border-border text-foreground rounded-lg"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Bio</label>
-                <Textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="Tell us about yourself..."
-                  rows={4}
-                  className="bg-background border-border text-foreground resize-none rounded-lg"
-                />
-              </div>
+              
               <Button
                 onClick={handleSaveProfile}
-                className="w-full bg-primary hover:bg-primary/90 text-black font-bold rounded-lg"
+                className="w-full bg-primary hover:bg-primary/90 text-black font-bold rounded-xl h-11"
               >
                 Save Changes
               </Button>
