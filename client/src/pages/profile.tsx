@@ -16,7 +16,6 @@ import {
   Edit2,
   Users,
   Coins as CoinsIcon,
-  Settings,
   ChevronRight,
   Loader2
 } from "lucide-react";
@@ -232,9 +231,6 @@ export default function Profile() {
               >
                 <Edit2 className="w-4 h-4" />
                 EDIT
-              </button>
-              <button className="w-10 h-10 bg-muted/30 hover:bg-muted/40 rounded-full flex items-center justify-center transition-colors">
-                <Settings className="w-5 h-5 text-white" />
               </button>
             </div>
           </div>

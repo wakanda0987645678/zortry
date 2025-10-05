@@ -86,7 +86,6 @@ export default function Layout({ children }: LayoutProps) {
     { href: "/channels", icon: Hash, label: "Channels" },
     { href: "/creators", icon: Users, label: "Creators" },
     { href: "/rewards", icon: Award, label: "Analyzer" },
-    { href: "/leaderboard", icon: Trophy, label: "Leaderboard" },
     { href: "/faq", icon: HelpCircle, label: "FAQ" },
   ];
 
