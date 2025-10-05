@@ -380,51 +380,100 @@ export default function Creators() {
                     data-testid={`creator-${creator.address}`}
                   >
                     {/* Mobile Layout */}
-                    <div className="flex sm:hidden items-center gap-3 p-4">
-                      {/* Rank Number */}
-                      <div className={`text-2xl font-black ${getRankColor(index)} flex-shrink-0 w-8`}>
-                        {index + 1}
-                      </div>
+                    <div className="flex sm:hidden flex-col p-4">
+                      {/* First Row: Rank, Avatar, Name, Trade Button */}
+                      <div className="flex items-center gap-3 mb-3">
+                        {/* Rank Number */}
+                        <div className={`text-2xl font-black ${getRankColor(index)} flex-shrink-0 w-8`}>
+                          {index + 1}
+                        </div>
 
-                      {/* Avatar with colored background */}
-                      <div 
-                        className={`relative flex-shrink-0 cursor-pointer rounded-full p-1 ${getAvatarBgColor(index)}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedCreatorAddress(creator.address);
-                          setIsProfileModalOpen(true);
-                        }}
-                      >
-                        <img
-                          src={creator.avatarUrl}
-                          alt={creator.name || creator.address}
-                          className="w-12 h-12 rounded-full"
-                          data-testid={`avatar-${creator.address}`}
-                        />
-                      </div>
+                        {/* Avatar with colored background */}
+                        <div 
+                          className={`relative flex-shrink-0 cursor-pointer rounded-full p-1 ${getAvatarBgColor(index)}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedCreatorAddress(creator.address);
+                            setIsProfileModalOpen(true);
+                          }}
+                        >
+                          <img
+                            src={creator.avatarUrl}
+                            alt={creator.name || creator.address}
+                            className="w-12 h-12 rounded-full"
+                            data-testid={`avatar-${creator.address}`}
+                          />
+                        </div>
 
-                      {/* Creator Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-foreground font-bold text-base truncate" data-testid={`name-${creator.address}`}>
-                            {isCurrentUser ? 'You' : (creator.name || formatAddress(creator.address))}
-                          </h3>
-                          {index === 0 && (
-                            <Award className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                        {/* Creator Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-foreground font-bold text-base truncate" data-testid={`name-${creator.address}`}>
+                              {isCurrentUser ? 'You' : (creator.name || formatAddress(creator.address))}
+                            </h3>
+                            {index === 0 && (
+                              <Award className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                            )}
+                          </div>
+                          {isVeteran && (
+                            <div className="flex items-center gap-1 mt-1">
+                              <Flame className="w-3 h-3 text-orange-500" />
+                              <span className="text-xs text-orange-600 dark:text-orange-500 font-medium">1+ year</span>
+                            </div>
                           )}
                         </div>
-                        {isVeteran && (
-                          <div className="flex items-center gap-1 mt-1">
-                            <Flame className="w-3 h-3 text-orange-500" />
-                            <span className="text-xs text-orange-600 dark:text-orange-500 font-medium">1+ year</span>
-                          </div>
-                        )}
+
+                        {/* Trade Button */}
+                        <Button
+                          size="sm"
+                          className="h-8 px-3 text-xs bg-primary hover:bg-primary/90 text-black font-bold rounded-full flex-shrink-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (creator.coins && creator.coins.length > 0) {
+                              setSelectedCoin(creator.coins[0]);
+                              setIsTradeModalOpen(true);
+                            }
+                          }}
+                          disabled={!creator.coins || creator.coins.length === 0}
+                          data-testid={`button-trade-${creator.address}`}
+                        >
+                          Trade
+                        </Button>
                       </div>
 
-                      {/* Market Cap */}
-                      <div className="text-right flex-shrink-0">
-                        <div className="text-lg font-bold text-foreground" data-testid={`mobile-marketcap-${creator.address}`}>
-                          ${creator.totalMarketCap}
+                      {/* Second Row: Stats Grid */}
+                      <div className="grid grid-cols-4 gap-2 pl-11">
+                        <div className="text-center">
+                          <div className="text-foreground font-bold text-sm" data-testid={`mobile-coins-${creator.address}`}>
+                            {creator.totalCoins}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Coins
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-foreground font-bold text-sm" data-testid={`mobile-marketcap-${creator.address}`}>
+                            ${creator.totalMarketCap}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Market Cap
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-foreground font-bold text-sm" data-testid={`mobile-holders-${creator.address}`}>
+                            {creator.totalHolders}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Holders
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-green-500 font-bold text-sm" data-testid={`mobile-earnings-${creator.address}`}>
+                            ${creator.totalEarnings.toFixed(2)}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Earnings
+                          </div>
                         </div>
                       </div>
                     </div>
