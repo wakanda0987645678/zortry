@@ -240,31 +240,31 @@ export default function Creators() {
 
   return (
     <Layout>
-      <div className="p-8">
+      <div className="p-4 sm:p-8 overflow-x-hidden">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-black mb-4 text-foreground">
+                <h1 className="text-xl sm:text-2xl font-black mb-3 sm:mb-4 text-foreground">
                   Top <span className="spotify-green">Creators</span>
                 </h1>
-                <p className="text-l text-muted-foreground">
+                <p className="text-sm sm:text-base text-muted-foreground">
                   Discover the most successful content creators on CoinIT.
                 </p>
               </div>
 
               {/* Inline Stats */}
-              <div className="flex flex-wrap gap-6 text-right">
+              <div className="flex flex-wrap gap-4 sm:gap-6 text-left lg:text-right">
                 <div className="text-center lg:text-right">
-                  <div className="text-1xl font-black text-foreground">
+                  <div className="text-lg sm:text-xl font-black text-foreground">
                     {filteredCreators.length}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
                     Active Creators
                   </div>
                 </div>
                 <div className="text-center lg:text-right">
-                  <div className="text-1xl font-black text-foreground">
+                  <div className="text-lg sm:text-xl font-black text-foreground">
                     $
                     {filteredCreators
                       .reduce(
@@ -273,12 +273,12 @@ export default function Creators() {
                       )
                       .toFixed(2)}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
                     Total Market Cap
                   </div>
                 </div>
                 <div className="text-center lg:text-right">
-                  <div className="text-1xl font-black text-foreground">
+                  <div className="text-lg sm:text-xl font-black text-foreground">
                     {filteredCreators.length > 0
                       ? Math.round(
                           filteredCreators.reduce(
@@ -288,7 +288,7 @@ export default function Creators() {
                         )
                       : 0}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
                     Avg. Coins
                   </div>
                 </div>
@@ -297,10 +297,10 @@ export default function Creators() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex gap-4 mb-8">
+          <div className="flex gap-2 sm:gap-4 mb-6 sm:mb-8 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
             <button
               onClick={() => setSelectedTab("top")}
-              className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+              className={`px-4 sm:px-6 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${
                 selectedTab === "top"
                   ? "bg-primary text-black"
                   : "bg-muted/20 text-muted-foreground hover:text-foreground"
@@ -310,7 +310,7 @@ export default function Creators() {
             </button>
             <button
               onClick={() => setSelectedTab("rising")}
-              className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+              className={`px-4 sm:px-6 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${
                 selectedTab === "rising"
                   ? "bg-primary text-black"
                   : "bg-muted/20 text-muted-foreground hover:text-foreground"
@@ -320,7 +320,7 @@ export default function Creators() {
             </button>
             <button
               onClick={() => setSelectedTab("new")}
-              className={`px-6 py-2 rounded-full font-semibold transition-colors ${
+              className={`px-4 sm:px-6 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap flex-shrink-0 ${
                 selectedTab === "new"
                   ? "bg-primary text-black"
                   : "bg-muted/20 text-muted-foreground hover:text-foreground"
