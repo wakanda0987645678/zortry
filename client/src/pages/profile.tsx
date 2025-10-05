@@ -1,14 +1,13 @@
-
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 import type { Coin } from "@shared/schema";
 import Layout from "@/components/layout";
 import CoinCard from "@/components/coin-card";
-import { 
-  User as UserIcon, 
-  Share2, 
-  Grid3x3, 
+import {
+  User as UserIcon,
+  Share2,
+  Grid3x3,
   List,
   Copy,
   Check,
@@ -18,7 +17,8 @@ import {
   Users,
   Coins as CoinsIcon,
   Settings,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getProfileCoins, getCoin } from "@zoralabs/coins-sdk";
@@ -42,6 +42,7 @@ export default function Profile() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const { toast } = useToast();
 
   const { data: coins = [], isLoading } = useQuery<Coin[]>({
@@ -50,7 +51,7 @@ export default function Profile() {
 
   const createdCoins = useMemo(() => {
     if (!address) return [];
-    return coins.filter(coin => 
+    return coins.filter(coin =>
       coin.creator.toLowerCase() === address.toLowerCase()
     );
   }, [coins, address]);
@@ -87,7 +88,7 @@ export default function Profile() {
         if (profile?.createdCoins?.edges) {
           for (const edge of profile.createdCoins.edges) {
             const coin: any = edge.node;
-            
+
             if (coin?.creatorEarnings && coin.creatorEarnings.length > 0) {
               earnings += parseFloat(coin.creatorEarnings[0].amountUsd || "0");
             }
@@ -181,6 +182,24 @@ export default function Profile() {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setProfileImage(e.target.files[0]);
+    }
+  };
+
+  const handleSaveProfile = () => {
+    // Placeholder for actual profile save logic
+    // This would involve uploading the image (if changed) and updating username/bio
+    setIsEditModalOpen(false);
+    toast({
+      title: "Profile updated",
+      description: "Your profile has been updated successfully",
+    });
+    // Reset image state after saving
+    setProfileImage(null);
+  };
+
   if (!isConnected) {
     return (
       <Layout>
@@ -228,7 +247,7 @@ export default function Profile() {
           <div className="flex flex-col items-center text-center mb-6">
             <div className="relative mb-4">
               <img
-                src={createAvatar(avataaars, {
+                src={profileImage ? URL.createObjectURL(profileImage) : createAvatar(avataaars, {
                   seed: address || 'anonymous',
                   size: 128,
                 }).toDataUri()}
@@ -277,10 +296,10 @@ export default function Profile() {
 
             <div className="text-center border-x border-border/30">
               <div className="text-2xl font-bold text-white mb-1">
-                {isLoadingStats ? '-' : totalMarketCap >= 1000000 
-                  ? `$${(totalMarketCap / 1000000).toFixed(2)}M` 
-                  : totalMarketCap >= 1000 
-                    ? `$${(totalMarketCap / 1000).toFixed(1)}k` 
+                {isLoadingStats ? '-' : totalMarketCap >= 1000000
+                  ? `$${(totalMarketCap / 1000000).toFixed(2)}M`
+                  : totalMarketCap >= 1000
+                    ? `$${(totalMarketCap / 1000).toFixed(1)}k`
                     : `$${totalMarketCap.toFixed(2)}`}
               </div>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">Market Cap</div>
@@ -336,18 +355,41 @@ export default function Profile() {
 
         {/* Edit Profile Modal */}
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent className="sm:max-w-[425px] bg-card border-border">
+          <DialogContent className="sm:max-w-[425px] bg-card border-border rounded-xl">
             <DialogHeader>
               <DialogTitle className="text-foreground">Edit Profile</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
+              {/* Profile Image Upload */}
+              <div className="space-y-2 text-center">
+                <label className="text-sm font-medium text-foreground">Profile Image</label>
+                <div className="flex items-center justify-center">
+                  <label htmlFor="profile-image-upload" className="cursor-pointer">
+                    <img
+                      src={profileImage ? URL.createObjectURL(profileImage) : createAvatar(avataaars, {
+                        seed: address || 'anonymous',
+                        size: 96,
+                      }).toDataUri()}
+                      alt="Profile Preview"
+                      className="w-24 h-24 rounded-full border-4 border-primary shadow-lg"
+                    />
+                  </label>
+                  <Input
+                    id="profile-image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Username</label>
                 <Input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your username"
-                  className="bg-background border-border text-foreground"
+                  className="bg-background border-border text-foreground rounded-lg"
                 />
               </div>
               <div className="space-y-2">
@@ -357,18 +399,12 @@ export default function Profile() {
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="Tell us about yourself..."
                   rows={4}
-                  className="bg-background border-border text-foreground resize-none"
+                  className="bg-background border-border text-foreground resize-none rounded-lg"
                 />
               </div>
               <Button
-                onClick={() => {
-                  setIsEditModalOpen(false);
-                  toast({
-                    title: "Profile updated",
-                    description: "Your profile has been updated successfully",
-                  });
-                }}
-                className="w-full bg-primary hover:bg-primary/90 text-black font-bold"
+                onClick={handleSaveProfile}
+                className="w-full bg-primary hover:bg-primary/90 text-black font-bold rounded-lg"
               >
                 Save Changes
               </Button>
@@ -455,8 +491,8 @@ export default function Profile() {
               {selectedTab === "created" ? "No coins created yet" : "No coins owned yet"}
             </h3>
             <p className="text-muted-foreground mb-6">
-              {selectedTab === "created" 
-                ? "Create your first coin to get started" 
+              {selectedTab === "created"
+                ? "Create your first coin to get started"
                 : "Start collecting coins to build your portfolio"}
             </p>
           </div>
