@@ -296,7 +296,7 @@ export default function Layout({ children }: LayoutProps) {
                 onClick={toggleTheme}
                 variant="ghost"
                 size="icon"
-                className="w-9 h-9"
+                className="w-9 h-9 text-foreground"
                 data-testid="button-toggle-theme"
               >
                 {theme === "dark" ? (

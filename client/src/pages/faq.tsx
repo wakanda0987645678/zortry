@@ -101,13 +101,13 @@ export default function FAQ() {
       <div className="p-8">
         <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
           <div className="mb-8 text-center">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-              <HelpCircle className="w-8 h-8 text-black" />
+            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+              <HelpCircle className="w-5 h-5 text-black" />
             </div>
             <h1 className="text-2xl font-black mb-4 text-foreground">
-              Frequently Asked <span className="spotify-green">Questions</span>
+              F.A.Q<span className="spotify-green"></span>
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-l text-muted-foreground">
               Everything you need to know about CoinIT and content tokenization.
             </p>
           </div>
