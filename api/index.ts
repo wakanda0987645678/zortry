@@ -47,10 +47,14 @@ async function initializeApp() {
   if (!isInitialized) {
     await registerRoutes(app);
     
-    try {
-      await autoMigrateOnStartup();
-    } catch (error) {
-      console.error("Failed to run auto migration:", error);
+    // Skip auto-migration in production/Vercel to avoid cold start delays
+    // Run migrations manually or via a separate process
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        await autoMigrateOnStartup();
+      } catch (error) {
+        console.error("Failed to run auto migration:", error);
+      }
     }
     
     isInitialized = true;
