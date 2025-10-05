@@ -270,21 +270,25 @@ export default function Profile() {
           <div className="grid grid-cols-3 gap-3 mb-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-white mb-1">
-                {createdCoins.length}
+                {isLoadingStats ? '-' : createdCoins.length}
               </div>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">Coins</div>
             </div>
 
             <div className="text-center border-x border-border/30">
               <div className="text-2xl font-bold text-white mb-1">
-                ${isLoadingStats ? '0' : totalMarketCap > 1000 ? `${(totalMarketCap / 1000).toFixed(1)}k` : totalMarketCap.toFixed(0)}
+                {isLoadingStats ? '-' : totalMarketCap >= 1000000 
+                  ? `$${(totalMarketCap / 1000000).toFixed(2)}M` 
+                  : totalMarketCap >= 1000 
+                    ? `$${(totalMarketCap / 1000).toFixed(1)}k` 
+                    : `$${totalMarketCap.toFixed(2)}`}
               </div>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">Market Cap</div>
             </div>
 
             <div className="text-center">
               <div className="text-2xl font-bold text-white mb-1">
-                {isLoadingStats ? '0' : totalHolders}
+                {isLoadingStats ? '-' : totalHolders}
               </div>
               <div className="text-xs text-muted-foreground uppercase tracking-wide">Holders</div>
             </div>
