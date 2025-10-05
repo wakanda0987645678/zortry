@@ -44,7 +44,7 @@ export default function CreateCoinModal({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto p-4 rounded-full">
         <DialogHeader className="space-y-1">
-          <DialogTitle className="text-xl font-bold text-white">
+          <DialogTitle className="text-xl font-bold text-foreground">
             Create a coin
           </DialogTitle>
           <p className="text-sm text-muted-foreground">

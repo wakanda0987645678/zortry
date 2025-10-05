@@ -34,10 +34,10 @@ const ProfileCardModal = ({ creatorAddress, open, onOpenChange }: { creatorAddre
           <DialogTitle>Creator Profile</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center p-4">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-lg font-bold text-white mb-3">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-lg font-bold text-foreground mb-3">
             {creatorAddress.slice(0, 4).toUpperCase()}
           </div>
-          <p className="text-lg font-semibold text-white mb-1">{creatorAddress.slice(0, 10)}...</p>
+          <p className="text-lg font-semibold text-foreground mb-1">{creatorAddress.slice(0, 10)}...</p>
           <p className="text-sm text-muted-foreground mb-3">@{creatorAddress.slice(0, 8)}</p>
           <p className="text-xs text-muted-foreground text-center mb-4">Some placeholder stats like Marketcap, Holders would go here.</p>
           <Button className="w-full rounded-full">Follow</Button>
@@ -520,7 +520,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             <div className="mb-3">
               <p className="text-xs text-muted-foreground mb-0.5">Market cap</p>
               <div className="flex items-baseline gap-2">
-                <h3 className="text-xl font-bold text-white">
+                <h3 className="text-xl font-bold text-foreground">
                   ${marketCap || '0'}
                 </h3>
                 <span className={`text-xs font-semibold ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
@@ -615,8 +615,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                     size="sm"
                     className={`flex-1 h-7 text-xs ${
                       timeframe === tf
-                        ? 'bg-primary text-white'
-                        : 'text-muted-foreground hover:text-white'
+                        ? 'bg-primary text-black'
+                        : 'text-muted-foreground hover:text-foreground'
                     }`}
                     onClick={() => setTimeframe(tf)}
                   >
@@ -632,7 +632,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             <DialogHeader className="px-4 pt-4 pb-2">
               <DialogTitle className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-white">{coin.name}</h3>
+                  <h3 className="text-lg font-bold text-foreground">{coin.name}</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     @{formatAddress(coin.creator)}
                   </p>
@@ -671,13 +671,13 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">24H Volume</p>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-foreground">
                   {volume24h ? `$${volume24h}` : 'Loading...'}
                 </p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Creator Earnings</p>
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-foreground">
                   {creatorEarnings ? `$${parseFloat(creatorEarnings).toFixed(2)}` : 'Loading...'}
                 </p>
               </div>
@@ -689,7 +689,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 onClick={() => setIsBuying(true)}
                 className={`flex-1 h-9 text-sm font-bold transition-all rounded-full ${
                   isBuying
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
+                    ? 'bg-green-500 hover:bg-green-600 text-foreground'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
                 }`}
                 disabled={isTrading || !!txHash}
@@ -701,7 +701,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 onClick={() => setIsBuying(false)}
                 className={`flex-1 h-9 text-sm font-bold transition-all rounded-full ${
                   !isBuying
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    ? 'bg-red-500 hover:bg-red-600 text-foreground'
                     : 'bg-transparent text-muted-foreground hover:bg-muted/50 border border-border/30'
                 }`}
                 disabled={isTrading || !!txHash}
@@ -720,15 +720,15 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   min="0"
                   value={ethAmount}
                   onChange={(e) => setEthAmount(e.target.value)}
-                  className="h-12 text-xl font-bold pr-20 bg-muted/30 border-border/50 text-white rounded-2xl"
+                  className="h-12 text-xl font-bold pr-20 bg-muted/30 border-border/50 text-foreground rounded-2xl"
                   disabled={isTrading || !!txHash}
                   data-testid="input-eth-amount"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-                  <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-foreground text-xs font-bold">
                     Ξ
                   </div>
-                  <span className="text-sm font-semibold text-white">ETH</span>
+                  <span className="text-sm font-semibold text-foreground">ETH</span>
                 </div>
               </div>
             </div>
@@ -742,7 +742,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   size="sm"
                   onClick={() => setQuickAmount(label)}
                   disabled={isTrading || !!txHash}
-                  className="h-8 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-white rounded-full"
+                  className="h-8 text-xs bg-muted/20 hover:bg-muted/40 border-border/30 text-foreground rounded-full"
                 >
                   {label === 'Max' ? label : `${label} ETH`}
                 </Button>
@@ -755,7 +755,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 placeholder="Add a comment (optional)"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="h-9 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground rounded-xl text-sm"
+                className="h-9 bg-muted/20 border-border/30 text-foreground placeholder:text-muted-foreground rounded-xl text-sm"
                 disabled={isTrading || !!txHash}
                 maxLength={200}
               />
@@ -775,7 +775,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                     isBuying
                       ? 'bg-green-500 hover:bg-green-600'
                       : 'bg-red-500 hover:bg-red-600'
-                  } text-white`}
+                  } text-foreground`}
                   onClick={handleTrade}
                   disabled={isTrading || createCommentMutation.isPending || !ethAmount || parseFloat(ethAmount) <= 0}
                   data-testid="button-confirm-trade"
@@ -825,7 +825,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               <div className="flex gap-2">
                 <Input
                   placeholder="Add a comment..."
-                  className="h-9 bg-muted/20 border-border/30 text-white placeholder:text-muted-foreground flex-1 rounded-xl text-sm"
+                  className="h-9 bg-muted/20 border-border/30 text-foreground placeholder:text-muted-foreground flex-1 rounded-xl text-sm"
                   disabled={!isConnected || createCommentMutation.isPending}
                   value={standaloneComment}
                   onChange={(e) => setStandaloneComment(e.target.value)}
@@ -869,12 +869,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                       data-testid={`comment-${c.id}`}
                     >
                       <div className="flex items-start gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-foreground flex-shrink-0">
                           {c.userAddress.slice(2, 4).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-sm font-medium text-white truncate">
+                            <span className="text-sm font-medium text-foreground truncate">
                               {c.userAddress.slice(0, 6)}...{c.userAddress.slice(-4)}
                             </span>
                             <span className="text-xs text-muted-foreground">
@@ -903,7 +903,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               ) : (
                 <div className="flex flex-col items-center justify-center h-48 text-center">
                   <MessageCircle className="w-10 h-10 text-muted-foreground/30 mb-2" />
-                  <p className="text-sm font-medium text-white mb-1">No comments yet</p>
+                  <p className="text-sm font-medium text-foreground mb-1">No comments yet</p>
                   <p className="text-xs text-muted-foreground">
                     Be the first to add a comment
                   </p>
@@ -917,11 +917,11 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Total Holders</p>
-                <p className="text-lg font-bold text-white">{uniqueHoldersCount}</p>
+                <p className="text-lg font-bold text-foreground">{uniqueHoldersCount}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Total Supply</p>
-                <p className="text-lg font-bold text-white">
+                <p className="text-lg font-bold text-foreground">
                   {totalSupply ? parseFloat(totalSupply).toLocaleString(undefined, { maximumFractionDigits: 0 }) : '-'}
                 </p>
               </div>
@@ -984,7 +984,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                               : isCreator
                                 ? 'bg-gradient-to-br from-primary to-secondary'
                                 : 'bg-gradient-to-br from-blue-500 to-cyan-500'
-                          } flex items-center justify-center text-xs font-bold text-white flex-shrink-0`}
+                          } flex items-center justify-center text-xs font-bold text-foreground flex-shrink-0`}
                             // Add onClick to open Profile Card Modal
                             onClick={() => {
                               // You might want to fetch specific creator details here if needed
@@ -996,7 +996,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                           </div>
                           <div>
                             <div className="flex items-center gap-1.5">
-                              <p className="text-sm font-semibold text-white">
+                              <p className="text-sm font-semibold text-foreground">
                                 {holder.address.slice(0, 6)}...{holder.address.slice(-4)}
                               </p>
                               {isCreator && (
@@ -1011,7 +1011,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-bold text-white">
+                          <p className="text-sm font-bold text-foreground">
                             {formattedPercentage}%
                           </p>
                         </div>
@@ -1022,7 +1022,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               ) : (
                 <div className="flex flex-col items-center justify-center h-48 text-center">
                   <Users className="w-10 h-10 text-muted-foreground/30 mb-2" />
-                  <p className="text-sm font-medium text-white mb-1">Loading holders...</p>
+                  <p className="text-sm font-medium text-foreground mb-1">Loading holders...</p>
                   <p className="text-xs text-muted-foreground">
                     Fetching holder information from blockchain
                   </p>
@@ -1046,12 +1046,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                       className="flex items-center gap-2.5 p-2.5 rounded-lg hover:bg-muted/10 transition-colors border-b border-border/30"
                       data-testid={`activity-${c.id}`}
                     >
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-foreground flex-shrink-0">
                         {c.userAddress.slice(2, 4).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <span className="text-sm font-medium text-white truncate">
+                          <span className="text-sm font-medium text-foreground truncate">
                             {c.userAddress.slice(0, 8)}...
                           </span>
                           <span className="text-xs font-bold text-green-500">
@@ -1083,7 +1083,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
               ) : (
                 <div className="flex flex-col items-center justify-center h-48 text-center">
                   <ActivityIcon className="w-10 h-10 text-muted-foreground/30 mb-2" />
-                  <p className="text-sm font-medium text-white mb-1">No trades yet</p>
+                  <p className="text-sm font-medium text-foreground mb-1">No trades yet</p>
                   <p className="text-xs text-muted-foreground">
                     Trading activity will appear here
                   </p>
@@ -1100,7 +1100,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   <Info className="w-4 h-4" />
                   <span className="text-sm">Created</span>
                 </div>
-                <span className="text-sm font-medium text-white">
+                <span className="text-sm font-medium text-foreground">
                   {new Date(coin.createdAt).toLocaleDateString()}
                 </span>
               </div>
@@ -1112,12 +1112,12 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                     <span className="text-sm">Contract address</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-mono text-white">
+                    <span className="text-sm font-mono text-foreground">
                       {coin.address.slice(0, 6)}...{coin.address.slice(-4)}
                     </span>
                     <button
                       onClick={() => copyToClipboard(coin.address!)}
-                      className="text-muted-foreground hover:text-white transition-colors"
+                      className="text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {copiedAddress ? (
                         <Check className="w-4 h-4 text-green-500" />
@@ -1136,9 +1136,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-white">B</span>
+                    <span className="text-[10px] font-bold text-foreground">B</span>
                   </div>
-                  <span className="text-sm font-medium text-white">Base</span>
+                  <span className="text-sm font-medium text-foreground">Base</span>
                 </div>
               </div>
 

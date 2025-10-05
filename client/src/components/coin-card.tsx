@@ -242,7 +242,7 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         )}
         {!isOwnCoin && (
           <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-            <TrendingUp className="w-6 h-6 text-white drop-shadow-lg" />
+            <TrendingUp className="w-6 h-6 text-foreground drop-shadow-lg" />
           </div>
         )}
       </div>
