@@ -390,7 +390,7 @@ export default function Creators() {
 
                         {/* Avatar with colored background */}
                         <div 
-                          className={`relative flex-shrink-0 cursor-pointer rounded-full p-1 ${getAvatarBgColor(index)}`}
+                          className={`relative flex-shrink-0 cursor-pointer rounded-full p-0.5 ${getAvatarBgColor(index)}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedCreatorAddress(creator.address);
@@ -400,7 +400,7 @@ export default function Creators() {
                           <img
                             src={creator.avatarUrl}
                             alt={creator.name || creator.address}
-                            className="w-12 h-12 rounded-full"
+                            className="w-10 h-10 rounded-full"
                             data-testid={`avatar-${creator.address}`}
                           />
                         </div>
