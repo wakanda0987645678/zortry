@@ -1,0 +1,5647 @@
+Customer
+Tiktok
+Instagram
+Youtube
+Threads
+Reddit
+Twitch
+Twitter
+get
+User Info
+get
+User Tweets
+get
+Post Info
+Snapchat
+redocly logoAPI docs by Redocly
+Social Media Scraping API Documentation | EnsembleData
+Download OpenAPI specification:Download
+
+
+EnsembleData is a social media data provider since 2020. We provide unrestricted and publicly available data extracted in real-time from the social media.
+
+Our platform handles millions of requests daily. We do not enforce rate limits due to our ability to rapidly scale our infrastructure based on demand.
+
+Our platform currency is the so-called units. The units charged per request depend on the complexity of the API and the passed parameters. A detailed description of the units charged can be found in each corresponding API documentation.
+
+Check out our pricing. Any questions? Contact us.
+
+Sign up for a free trial.
+
+Run our APIs with Postman!
+
+Customer
+Set of APIs for customers for checking their Social Media Scraping APIs usage. Every customer gets assigned a unique token needed for accessing all our APIs. The token has to be used in all the GET requests sent to our infrastructure.
+
+Get Units Used
+This API allows ours clients to check the number of units used on a certain date.
+
+API Pricing (per request): 0 units
+API usage examples
+Token does not exist:
+-> Error code 491 returned.
+Cost: 0 units
+
+Token exists:
+-> Units usage for date returned.
+Cost: 0 units
+
+
+Try the API
+
+query Parameters
+date
+required
+string (Date)
+Example: date=2022-11-19
+Date for which units usage has to be fetched
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+500
+Something went wrong
+
+
+get
+/customer/get-used-units
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/customer/get-used-units"
+params = {
+  "date": "2022-11-19",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"tiktok": 2367,
+"instagram": 802,
+"reddit": 83,
+"youtube": 1209,
+"twitch": 232
+}
+}
+Get Units History
+This API allows our clients to check the number of units used in the last N days from today.
+
+API Pricing (per request): 0 units
+API usage examples
+Token does not exist:
+-> Error code 491 returned.
+Cost: 0 units
+
+Token exists:
+-> Units usage history returned.
+Cost: 0 units
+
+
+Try the API
+
+query Parameters
+days
+required
+integer (Days)
+Example: days=10
+Last N days for which units usage history has to be fetched
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+500
+Something went wrong
+
+
+get
+/customer/get-history
+Request samples
+Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+# pip install ensembledata
+from ensembledata.api import EDClient
+
+client = EDClient(token="YOUR-TOKEN-HERE")
+result = client.customer.get_usage_history(
+    days=10,
+)
+
+print(result.data)
+print(result.units_charged)
+
+Response samples
+200422491500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{}
+]
+}
+Tiktok
+Real-time Tiktok data scraping API for publicly available data. Scrape Tiktok videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+Hashtag Search
+Fetch chunk of posts containing a given hashtag.
+
+The posts are fetched directly from https://www.tiktok.com/tag/magic. A single call to this endpoint returns about 20 posts. Use the cursor parameter to fetch more posts. (cursor=0 will fetch posts 1-20, cursor=20 will fetch posts 21-40 and so on). The maximum cursor which can be used is around 4000-5000 depending on the hashtag. See the cursor query parameter below for more information.
+
+API Pricing (per request): 1 unit
+API usage examples
+Hashtag exists:
+-> 20 posts returned.
+Cost: 1 unit
+
+Hashtag does not exist:
+-> 0 posts returned.
+Cost: 1 unit
+
+Cursor is too big:
+-> 0 posts returned.
+Cost: 1 unit
+
+
+Try the API
+
+query Parameters
+name
+required
+string (Name)
+Example: name=magic
+Hashtag to search (input without #).
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/hashtag/posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/hashtag/posts"
+params = {
+  "name": "magic",
+  "cursor": 0,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 20,
+"data": []
+}
+}
+Full Hashtag Search
+Fetch all the posts that Tiktok shows for a given hashtag.
+
+All the posts are fetched directly from https://www.tiktok.com/tag/magic and filter out any that are were not posted within the last N days. This is a convenience endpoint which internally calls the 'Hashtag Search' endpoint repeatedly (iterating the cursor) to collect all the posts for a given hashtag in one api call. Additionally, any posts which were created more than N days ago are filtered out.
+
+The max_depth is the total number of calls which need to be made to the 'Search Hashtag' endpoint to collect all the posts. The maximum value of max_depth is 250, given that 1 call retrieves 20 posts and a maximum of 5000 posts can be retrieved from TikTok. The cost is max_depth divided by 10 to provide a discount over manually making all the individual calls to the 'Search Hashtag' endpoint.
+
+API Pricing (per request): max_depth / 10 units
+API usage examples
+Hashtag does not exist:
+-> 0 posts returned.
+Cost: 1 unit
+
+Hashtag exists, days is set to 10000 and hashtag has 80 posts (max_depth here is 4 because 80 total posts / 20 posts per chunk):
+-> 80 posts returned.
+Cost: 1 unit
+
+Hashtag exists, days is set to 10000 and hashtag has 800 posts (max_depth here is 40 because 800 total posts / 20 posts per chunk):
+-> 800 posts returned.
+Cost: 4 units
+
+Hashtag exists, days is set to 10 and hashtag has 800 posts (max_depth here is 40 because 800 total posts / 20 posts per chunk) and only 10 posts are from the past 10 days:
+-> 10 posts returned.
+Cost: 4 units
+
+Hashtag exists, days is set to 10000 and hashtag has 3200 posts (max_depth here is 160 because 3200 total posts / 20 posts per chunk):
+-> 3200 posts returned.
+Cost: 16 units
+
+Hashtag exists, days is set to 10 and hashtag has 3200 posts (max_depth here is 160 because 3200 total posts / 20 posts per chunk) and only 10 posts are from the past 10 days:
+-> 10 posts returned.
+Cost: 16 units
+
+
+Try the API
+
+query Parameters
+name
+required
+string (Name)
+Example: name=nichie
+Hashtag to search (input without #).
+
+days
+required
+integer (Days)
+Example: days=90
+Filter out posts created more than N days ago.
+
+remap_output	
+boolean (Remap Output)
+Default: true
+Example: remap_output=true
+If True, map the output to match the TikTok Web API. If False, the mapping is matches the mobile TikTok API.
+
+max_cursor	
+integer (Max Cursor)
+Default: 10000
+Example: max_cursor=10000
+The endpont will stop fetching more posts once it reaches this cursor value (famous hashtags can return up to 4000-5000 posts, therefore, the cursor typically stops at 4000-5000).
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/hashtag/recent-posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/hashtag/recent-posts"
+params = {
+  "name": "nichie",
+  "days": 90,
+  "remap_output": True,
+  "max_cursor": 10000,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"id": "622",
+"description": "Show us your mystical magical tricks in a musical, and make sure to tag it!",
+"is_commerce": false,
+"video_count": 6955041,
+"view_count": 121946001354,
+"posts": []
+}
+}
+Keyword Search
+Fetch posts for a given keyword from the Tiktok mobile app search video bar according to filter based on time and sorting.
+
+Returns a maximum of 20 posts per call (if match_exactly is true, it returns 10 posts per call). Note: the cost becomes (1 + #returned_posts) when get_author_stats is true. See the cursor query parameter below for information on how to fetch more posts.
+
+API Pricing (per request): 1 unit
+API usage examples
+Keyword exists:
+-> 20 posts returned.
+Cost: 1 unit
+
+Keyword exists and does not have any more posts:
+-> 14 posts returned.
+Cost: 1 unit
+
+Keyword exists and match_exactly parameter is True:
+-> 10 posts returned.
+Cost: 1 unit
+
+Keyword exists and match_exactly parameter is True and get_author_stats is True:
+-> 15 posts returned.
+Cost: 16 units
+
+Cursor is too big:
+-> 0 posts returned.
+Cost: 1 unit
+
+
+Try the API
+
+query Parameters
+name
+required
+string (Name)
+Example: name=tesla
+The keyword to search.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+period
+required
+string (Period)
+Enum: "0" "1" "7" "30" "90" "180"
+Example: period=1
+Only return posts more recent than the given period. The value corresponds to the number of days to filter on.
+
+sorting	
+string (Sorting)
+Default: "0"
+Enum: "0" "1"
+Example: sorting=0
+The posts are sorted by relevance if sorting=0, and by most liked if sorting=1.
+
+country	
+string (Country)
+Default: ""
+Example: country=us
+Retrieve the posts as if in the specified country (US, FR, UK, DE, etc.)
+
+match_exactly	
+boolean (Match Exactly)
+Default: false
+Fetch only videos where the input keyword has to be exactly present in the video caption. If true, it returns 10 posts per request.
+
+get_author_stats	
+boolean (Get Author Stats)
+Default: false
+Whether to include extra statistics about the author of the post such as their following count, follower count, favoriting (likes) count etc.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+466
+Invalid country code
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/keyword/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/keyword/search"
+params = {
+  "name": "tesla",
+  "cursor": 0,
+  "period": "1",
+  "sorting": "0",
+  "country": "us",
+  "match_exactly": False,
+  "get_author_stats": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422466491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 20,
+"data": []
+}
+}
+Full Keyword Search
+Fetch all possible posts for a given keyword from the Tiktok mobile app search video bar according to filter based on time. This API automatically manages the pagination for our 'Keyword Search' endpoint.
+
+This is a convenience endpoint which internally calls the 'Keyword Search' endpoint repeatedly (iterating the cursor) to collect all the posts for a given keyword in one api call.
+
+API Pricing (per request): #returned_posts / 20 units
+
+Try the API
+query Parameters
+name
+required
+string (Name)
+Example: name=magic
+The keyword to search.
+
+period
+required
+string (Period)
+Enum: "0" "1" "7" "30" "90" "180"
+Example: period=1
+Only return posts more recent than the given period. The value corresponds to the number of days to filter on.
+
+sorting	
+string (Sorting)
+Default: "0"
+Enum: "0" "1"
+Example: sorting=0
+The posts are sorted by relevance if sorting=0, and by most liked if sorting=1.
+
+country	
+string (Country)
+Default: ""
+Example: country=us
+Retrieve the posts as if in the specified country (US, FR, UK, DE, etc.)
+
+match_exactly	
+boolean (Match Exactly)
+Default: false
+Fetch only videos where the input keyword has to be exactly present in the video caption. ATTENTION: If match_exactly=True, the API cost is #returned_posts / 10
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+466
+Invalid country code
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/keyword/full-search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/keyword/full-search"
+params = {
+  "name": "magic",
+  "period": "1",
+  "sorting": "0",
+  "country": "us",
+  "match_exactly": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422466491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+User Posts From Username
+Fetch user posts from their username. Depth 1 returns the 10 most recent posts, depth N returns the N * 10 most recent posts. The endpoint only returns posts that are not restricted by TikTok.
+
+API Pricing (per request): 1 + depth units
+API usage examples
+Username does not exist:
+-> 0 posts returned.
+Cost: 1 unit
+
+Username exists, but user does not have any posts:
+-> 0 posts returned.
+Cost: 1 unit
+
+Username exists, depth is set to 1 and user has more than 10 posts:
+-> 10 posts returned.
+Cost: 2 units
+
+Username exists, depth is set to 1 and user has 5 posts:
+-> 5 posts returned.
+Cost: 2 units
+
+Username exists, depth is set to 10 and user has more than 100 posts:
+-> 100 posts returned.
+Cost: 11 units
+
+Username exists, depth is set to 10 and user only has 45 posts:
+-> 45 posts returned.
+Cost: 6 units
+
+Username exists, depth is set to 100, user only has 15 posts more recent than given oldest_createtime:
+-> 15 posts returned.
+Cost: 3 units
+
+
+Try the API
+
+query Parameters
+username
+required
+string (Username) non-empty
+Example: username=daviddobrik
+Username of the user.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+start_cursor	
+integer (Start Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next start_cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+oldest_createtime	
+integer (Oldest Createtime)
+Example: oldest_createtime=1667843879
+This parameter is used as a stopping condition for fetching posts. If a post older than the provided oldest_createtime is found, the system will stop fetching posts and return the results. For instance, if depth is 10, the system will aim to send 10 requests. However, if an oldest_createtime is set, and we find a post which is older than the oldest_createtime, the system will not send any more requests and return the results. Note: we do not filter out posts older than the provided oldest_createtime before returning the results. Please do this filtering in your own integration if required.
+
+alternative_method	
+boolean (Alternative Method)
+Default: false
+If true, it uses a more recent method for fetching the posts. In this case, the returned JSON contains a few more fields, for instance captions for the Tiktok videos (cla_info).
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+download_video	
+boolean (Download Video)
+Default: false
+When new_version=True, set this parameter to True to have the API include the cookie_download field within the video object, which is required for downloading content via the play or download URLs. This will NOT consume more units.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+463
+Invalid username or user id
+
+474
+Profile not available in region
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/posts"
+params = {
+  "username": "daviddobrik",
+  "depth": 1,
+  "start_cursor": 0,
+  "oldest_createtime": 1667843879,
+  "alternative_method": False,
+  "new_version": False,
+  "download_video": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422463474491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+],
+"nextCursor": 1698533373000
+}
+User Posts From Secuid
+Fetch user posts from their secondary user ID. Depth 1 returns the 10 most recent posts, depth N returns the N * 10 most recent posts. The endpoint only returns posts that are not restricted by TikTok.
+
+API Pricing (per request): depth units
+API usage examples
+secUid does not exist:
+-> 0 posts returned.
+Cost: 1 unit
+
+secUid exists, but user does not have any posts:
+-> 0 posts returned.
+Cost: 1 unit
+
+secUid exists, depth is set to 1 and user has more than 10 posts:
+-> 10 posts returned.
+Cost: 1 unit
+
+secUid exists, depth is set to 1 and user has 5 posts:
+-> 5 posts returned.
+Cost: 1 unit
+
+secUid exists, depth is set to 10 and user has more than 100 posts:
+-> 100 posts returned.
+Cost: 10 units
+
+secUid exists, depth is set to 10 and user only has 45 posts:
+-> 45 posts returned.
+Cost: 5 units
+
+secUid exists, depth is set to 100, user only has 15 posts more recent than given oldest_createtime:
+-> 15 posts returned.
+Cost: 2 units
+
+
+Try the API
+
+query Parameters
+secUid
+required
+string (Secuid) non-empty
+Example: secUid=MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b
+The user's secondary user ID.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+start_cursor	
+integer (Start Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next start_cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+oldest_createtime	
+integer (Oldest Createtime)
+Example: oldest_createtime=1667843879
+This parameter is used as a stopping condition for fetching posts. If a post older than the provided oldest_createtime is found, the system will stop fetching posts and return the results. For instance, if depth is 10, the system will aim to send 10 requests. However, if an oldest_createtime is set, and we find a post which is older than the oldest_createtime, the system will not send any more requests and return the results. Note: we do not filter out posts older than the provided oldest_createtime before returning the results. Please do this filtering in your own integration if required.
+
+alternative_method	
+boolean (Alternative Method)
+Default: false
+If true, it uses a more recent method for fetching the posts. In this case, the returned JSON contains a few more fields, for instance captions for the Tiktok videos (cla_info).
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+download_video	
+boolean (Download Video)
+Default: false
+When new_version=True, set this parameter to True to have the API include the cookie_download field within the video object, which is required for downloading content via the play or download URLs. This will NOT consume more units.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+474
+Profile not available in region
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/posts-from-secuid
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/posts-from-secuid"
+params = {
+  "secUid": "MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b",
+  "depth": 1,
+  "start_cursor": 0,
+  "oldest_createtime": 1667843879,
+  "alternative_method": False,
+  "new_version": False,
+  "download_video": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422474491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+],
+"nextCursor": 1699553318000
+}
+User Info From Username
+Fetch user information and statistics from their username. The data returned includes country, language, biography, profile picture, engagement statistics etc.
+
+API Pricing (per request): 1 unit
+API usage examples
+Username does not exist:
+-> null returned.
+Cost: 1 unit
+
+Username exists:
+-> info returned.
+Cost: 1 unit
+
+
+Try the API
+
+query Parameters
+username
+required
+string (Username) non-empty
+Example: username=daviddobrik
+The username to fetch info for.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+463
+Invalid username or user id
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/info"
+params = {
+  "username": "daviddobrik",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422463491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"user": {},
+"stats": {}
+}
+}
+User Info From Secuid
+Fetch user information and statistics from their secondary user ID. The data returned includes country, language, biography, profile picture, engagement statistics etc.
+
+API Pricing (per request): 1 unit
+API usage examples
+secUid does not exist:
+-> null returned.
+Cost: 1 unit
+
+secUid exists:
+-> info returned.
+Cost: 1 unit
+
+
+Try the API
+
+query Parameters
+secUid
+required
+string (Secuid) non-empty
+Example: secUid=MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b
+The secondary user ID to fetch info for.
+
+alternative_method	
+boolean (Alternative Method)
+Default: false
+Use an alternative endpoint for fetching the data. If true, the returned JSON contains some additional information compared to the default method.
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/info-from-secuid
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/info-from-secuid"
+params = {
+  "secUid": "MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b",
+  "alternative_method": False,
+  "new_version": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"user": {}
+}
+}
+User Search
+Fetch list of users whose username might be related to the given keyword.
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+keyword
+required
+string (Keyword) non-empty
+Example: keyword=daviddobrik
+Keyword to search users from.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/search"
+params = {
+  "keyword": "daviddobrik",
+  "cursor": 0,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 10,
+"users": []
+}
+}
+Post Info
+Fetch post information and statistics from URL.
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+url
+required
+string (Url)
+Example: url=https://www.tiktok.com/@daviddobrik/video/7165262254722534698
+The url of the post containing the username and video ID. You should be able to copy this value directly from the search bar in your browser.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+download_video	
+boolean (Download Video)
+Default: false
+When new_version=True, set this parameter to True to have the API include the cookie_download field within the video object, which is required for downloading content via the play or download URLs. This will NOT consume more units.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+462
+Invalid url
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/post/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/post/info"
+params = {
+  "url": "https://www.tiktok.com/@daviddobrik/video/7165262254722534698",
+  "token": "YOUR-TOKEN-HERE",
+  "new_version": False,
+  "download_video": False
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422462491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+Multiple Post Info
+Fetch information for multiple post IDs.
+
+The endpoint can handle a maximum of 100 posts at once. The endpoint only returns the post information for posts that exist and that are not restricted by TikTok.
+
+API Pricing (per request): 2 * #returned_posts units
+
+Try the API
+query Parameters
+ids
+required
+string (Ids) >= 2 characters
+Example: ids=7210531475052236078;7102806710334606597;710280671033460623434597
+Aweme IDs (Post IDs) separated by semicolons as shown in the example.
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+download_video	
+boolean (Download Video)
+Default: false
+When new_version=True, set this parameter to True to have the API include the cookie_download field within the video object, which is required for downloading content via the play or download URLs. This will NOT consume more units.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+464
+Maximum number of post IDs exceed
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/post/multi-info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/post/multi-info"
+params = {
+  "ids": "7210531475052236078;7102806710334606597;710280671033460623434597",
+  "new_version": False,
+  "download_video": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422464491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+Post Comments
+Fetch comments for a given post. Each request returns a chunk of 30 comments.
+
+See the cursor query parameter below for information on how to manage pagination (fetch more comments).
+
+API Pricing (per request): 1 unit
+API usage examples
+Aweme ID does not exist:
+-> null returned.
+Cost: 1 unit
+
+Aweme ID exists and has 20 comments:
+-> 20 comments returned.
+Cost: 1 unit
+
+Aweme ID exists and has more than 30 comments:
+-> 30 comments and cursor for next request returned.
+Cost: 1 unit
+
+
+Try the API
+
+query Parameters
+aweme_id
+required
+string (Aweme Id) non-empty
+Example: aweme_id=7348608161672187167
+The aweme ID of the post (post ID).
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/post/comments
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/post/comments"
+params = {
+  "aweme_id": "7348608161672187167",
+  "cursor": 0,
+  "new_version": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 30,
+"comments": [],
+"total": 1944
+}
+}
+Post Comment Replies
+Fetch the replies to a comments for a given post.
+
+Each request returns a chunk of 30 replies to a comment. See the cursor query parameter below for information on how to manage pagination (fetch more replies).
+
+API Pricing (per request): 1 unit
+API usage examples
+Comment ID does not exist:
+-> null returned.
+Cost: 1 unit
+
+Comment ID exists and has 20 replies:
+-> 20 replies to the comment returned.
+Cost: 1 unit
+
+Comment ID exists and has more than 30 replies:
+-> 30 replies to the comment and cursor for next request returned.
+Cost: 1 unit
+
+
+Try the API
+
+query Parameters
+aweme_id
+required
+string (Aweme Id)
+Example: aweme_id=7348608161672187167
+The aweme ID of the post (post ID).
+
+comment_id
+required
+string (Comment Id) non-empty
+Example: comment_id=7348609743096988422
+The id of the comment to fetch replies for.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/post/comments-replies
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/post/comments-replies"
+params = {
+  "aweme_id": "7348608161672187167",
+  "comment_id": "7348609743096988422",
+  "cursor": 0,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"comments": [],
+"total": 38,
+"nextCursor": 31
+}
+}
+Music Search
+Fetch information about music based on a string.
+
+See the cursor query parameter below for information on how to manage pagination (fetch more results).
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+name
+required
+string (Name)
+Example: name=fix%20you
+The music string to base the search on.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+sorting	
+string (MusicSorting)
+Default: "0"
+Enum: "0" "1" "2" "3" "4"
+Example: sorting=0
+Sort posts using a metric. 0=relevance, 1=most_used, 2=most_recent, 3=shortest, 4=longest.
+
+filter_by	
+string (MusicFilter)
+Default: "0"
+Enum: "0" "1" "2"
+Example: filter_by=0
+Filter posts by some value. 0=No filter applied, 1=search only titles, 2=search only creators.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/music/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/music/info"
+params = {
+  "name": "fix%20you",
+  "cursor": 0,
+  "sorting": "0",
+  "filter_by": "0",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 10,
+"music": []
+}
+}
+Music Posts
+Fetch the videos which have a particular piece of music in the background.
+
+The music_id will need to be found from other APIs (any of the APIs that return posts, will also contain the music id for the music used in the video).
+
+See the cursor query parameter below for information on how to manage pagination (fetch more results).
+
+API Pricing (per request): 3 units
+
+Try the API
+query Parameters
+music_id
+required
+string (Music Id)
+Example: music_id=7063948643480488709
+The id for the piece of music.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/music/posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/music/posts"
+params = {
+  "music_id": "7063948643480488709",
+  "cursor": 0,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 18,
+"aweme_list": []
+}
+}
+Music Details
+Fetch detailed information for a music ID.
+
+The music id will need to be found from other APIs (any of the APIs that return posts, will also contain the music id for the music used in the video).
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+id
+required
+string (Id)
+Example: id=7063948643480488709
+Music ID whose information has to be fetched.
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/music/details
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/music/details"
+params = {
+  "id": "7063948643480488709",
+  "new_version": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"album": "",
+"artists": [ ],
+"audition_duration": 14,
+"author": "charlieonnafriday",
+"author_deleted": false,
+"author_position": null,
+"avatar_large": {},
+"avatar_medium": {},
+"avatar_thumb": {},
+"binded_challenge_id": 0,
+"can_not_reuse": false,
+"collect_stat": 0,
+"commercial_right_type": 2,
+"cover_hd": {},
+"cover_large": {},
+"cover_medium": {},
+"cover_thumb": {},
+"dmv_auto_show": false,
+"duration": 14,
+"duration_high_precision": {},
+"external_song_info": [ ],
+"extra": "{\"aed_music_dur\":14.261,\"beats\":{},\"can_read\":true,\"can_reuse\":true,\"erase_type\":0,\"erase_uid\":0,\"from_user_id\":7228331883410884102,\"has_edited\":1,\"is_ugc_mapping\":false,\"is_used\":1,\"owner_id\":6848800592026993670,\"resource_status\":0,\"review_unshelve_reason\":0,\"reviewed\":0,\"schedule_search_time\":0}",
+"id": 7206361075929992000,
+"id_str": "7206361075929991979",
+"is_allow_shoot": true,
+"is_audio_url_with_cookie": false,
+"is_author_artist": false,
+"is_commerce_music": true,
+"is_del_video": false,
+"is_matched_metadata": false,
+"is_original": false,
+"is_original_sound": true,
+"is_pgc": false,
+"is_restricted": false,
+"is_shooting_allow": true,
+"is_video_self_see": false,
+"log_extra": "{\"meta_song_matched_type\":\"\",\"ttm_matched_type\":\"\",\"ttm_track_id\":\"\",\"matched_meta_song_id\":\"\",\"vid\":\"\",\"owner_id\":\"6848800592026993670\"}",
+"lyric_short_position": null,
+"mid": "7206361075929991979",
+"multi_bit_rate_play_info": [],
+"mute_share": false,
+"offline_desc": "",
+"owner_handle": "charlieonnafriday",
+"owner_id": "6848800592026993670",
+"owner_nickname": "charlieonnafriday",
+"play_url": {},
+"position": null,
+"prevent_download": false,
+"prevent_item_download_status": 0,
+"preview_end_time": 0,
+"preview_start_time": 0,
+"reason_type": 0,
+"recommend_status": 100,
+"sec_uid": "MS4wLjABAAAAMMyzMKoizDbduLMglGVWFTNZ1lG-Jt0ViccJ93wbQcletnnIJDnak1oJ23O2FAKb",
+"share_info": {},
+"shoot_duration": 14,
+"source_platform": 72,
+"status": 1,
+"strong_beat_url": {},
+"tag_list": null,
+"title": "charlieonnafriday thats what i get",
+"tt_to_dsp_song_infos": null,
+"user_count": 374,
+"video_duration": 14
+}
+}
+User Followers
+Fetch followers for a given user.
+
+Each request returns a chunk of 100 followers. See the cursor query parameter below for information on how to manage pagination (fetch more followers). Tiktok returns in total the 10,000 most recent followers. Note: if the secUid doesn't exists, the cost is just 1 unit.
+
+API Pricing (per request): 2 units
+API usage examples
+secUid does not exist:
+-> null returned.
+Cost: 1 unit
+
+secUid exists and has 40 followers:
+-> 40 followers returned.
+Cost: 2 units
+
+secUid exists and has more than 100 followers:
+-> 100 followers and cursor for next request returned.
+Cost: 2 units
+
+
+Try the API
+
+query Parameters
+id
+required
+string (Id)
+Example: id=6784819479778378757
+The id of the user.
+
+secUid
+required
+string (Secuid) non-empty
+Example: secUid=MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b
+The secondary id of the user.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/followers
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/followers"
+params = {
+  "id": "6784819479778378757",
+  "secUid": "MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b",
+  "cursor": 0,
+  "new_version": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 1668768146,
+"followers": [],
+"total": 5874939
+}
+}
+User Followings
+Fetch followings for a given user.
+
+Each request returns a chunk of 100 followings. See the cursor and page_token query parameters below for information on how to manage pagination (fetch more followings). Note: if the secUid doesn't exists, the cost is just 1 unit.
+
+API Pricing (per request): 2 units
+API usage examples
+secUid does not exist:
+-> null returned.
+Cost: 1 unit
+
+secUid exists and has 40 followings:
+-> 40 followings returned.
+Cost: 2 units
+
+secUid exists and has more than 100 followings:
+-> 100 followings and cursor for next request returned.
+Cost: 2 units
+
+
+Try the API
+
+query Parameters
+id
+required
+string (Id)
+Example: id=6784819479778378757
+The id of the user.
+
+secUid
+required
+string (Secuid) non-empty
+Example: secUid=MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b
+The secondary id of the user.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+page_token	
+string (Page Token)
+Default: ""
+Secondary cursor to manage pagination (initially empty). The page_token for next request is returned by the previous response as the nextPageToken. This works in the same way as the cursor parameter.
+
+new_version	
+boolean (New Version)
+Default: false
+Set to True to enable an alternate version of the TikTok API that returns only the essential fields, resulting in a faster response.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/followings
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/followings"
+params = {
+  "id": "6784819479778378757",
+  "secUid": "MS4wLjABAAAAQ45IcDZIqrknyl0FDjs7xDlcxlaRE7CcBx1ENxYkWK00UpeKTTlCQWKxq6t9QM6b",
+  "cursor": 0,
+  "page_token": "",
+  "new_version": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 1664399904,
+"nextPageToken": "eyJtYXhfY3Vyc29yIjoxNjk4NDkxMTYxLCJtaW5fY3Vyc29yIjoxNjY0Mzk5OTA0LCJmaW5pc2hfaW5zZXJ0X21hZiI6dHJ1ZX0=",
+"followings": [],
+"total": 327
+}
+}
+User Liked Posts
+Fetch the list of liked posts of a user (only if publicly available).
+
+See the cursor query parameter below for information on how to manage pagination (fetch more posts).
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+secUid
+required
+string (Secuid) non-empty
+Example: secUid=MS4wLjABAAAAzdgqSwTVcRLGFPY7J-JnwnH3QQQ8sozmxYSmE5Fxeuql6jjokm5Lui0tl_WrDYWD
+The secondary id of the user.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/user/liked-posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/user/liked-posts"
+params = {
+  "secUid": "MS4wLjABAAAAzdgqSwTVcRLGFPY7J-JnwnH3QQQ8sozmxYSmE5Fxeuql6jjokm5Lui0tl_WrDYWD",
+  "cursor": 0,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 1617308384000,
+"liked_posts": []
+}
+}
+Lives Search
+Fetch lives posts for a given keyword from the Tiktok mobile app search lives section.
+
+Returns a maximum of 20 lives per call. See the cursor query parameter below for information on how to fetch more posts.
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+keyword
+required
+string (Keyword)
+Example: keyword=magic
+The keyword from which to search for Tiktok live posts.
+
+cursor	
+integer (Cursor)
+Default: 0
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+country	
+string (Country)
+Default: ""
+Example: country=us
+Retrieve the lives posts as if in the specified country (US, FR, UK, DE, etc.). If country is not empty string, 1 more unit gets charged.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+466
+Invalid country code
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/tt/live/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/tt/live/search"
+params = {
+  "keyword": "magic",
+  "cursor": 0,
+  "country": "us",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422466491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"nextCursor": 20,
+"lives": []
+}
+}
+Instagram
+Real-time Instagram data scraping API for publicly available data. Scrape Instagram videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+User Posts
+Fetch user posts from the user ID.
+
+Returns depth * chunk_size results. Note: if no posts can be retrieved the cost is 1. See the start_cursor and depth query parameters below for information on how to manage pagination (fetch more posts).
+
+API Pricing (per request): #returned_posts units
+API usage examples
+User does not exist:
+-> 0 posts returned.
+Cost: 1 unit
+
+User is private:
+-> 0 posts returned.
+Cost: 1 unit
+
+User exists and does not have posts:
+-> 0 posts returned.
+Cost: 1 unit
+
+User exists, depth 5, chunk_size 10:
+-> 50 posts returned.
+Cost: 50 units
+
+User exists, depth 5, chunk_size 10 and has only 15 posts:
+-> 15 posts returned.
+Cost: 15 units
+
+User exists, depth 5, chunk_size 10 and has only 5 posts more recent than timestamp:
+-> 5 posts returned.
+Cost: 5 units
+
+
+Try the API
+
+query Parameters
+user_id
+required
+integer (User Id) > -1
+Example: user_id=18428658
+ID of the user.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+oldest_timestamp	
+integer (Oldest Timestamp)
+Example: oldest_timestamp=1666262030
+This parameter is used as a stopping condition for fetching posts. If a post older than the provided oldest_timestamp is found, the system will stop fetching posts and return the results. For instance, if depth is 10, the system will aim to send 10 requests. However, if an oldest_timestamp is set, and we find a post which is older than the oldest_timestamp, the system will not send any more requests and return the results. Note: we do not filter out posts older than the provided oldest_timestamp before returning the results. Please do this filtering in your own integration if required.
+
+chunk_size	
+integer (Chunk Size) [ 1 .. 20 ]
+Default: 10
+Example: chunk_size=10
+The number of posts to fetch per depth. If alternative_method=False, the maximum allowed chunk_size is 20. If alternative_method=True, the maximum chunk_size is 12.
+
+start_cursor	
+string (Start Cursor)
+Default: ""
+Parameter to manually handle pagination. Each response contains a last_cursor which can be used to retrieve the next page of results by sending it as the next start_cursor. If the last_cursor is not present in the response, it means that there are no more results to retrieve.
+
+alternative_method	
+boolean (Alternative Method)
+Default: false
+If true, use a different method to fetch the user posts from the ID (this method returns at least 1 non pinned post when start_cursor is an empty string). The response JSON will be differ from the default method.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+471
+User restricted
+
+472
+Private user
+
+473
+User not found
+
+474
+Profile not available in region
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/user/posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/user/posts"
+params = {
+  "user_id": 18428658,
+  "depth": 1,
+  "oldest_timestamp": 1666262030,
+  "chunk_size": 10,
+  "start_cursor": "",
+  "alternative_method": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422471472473474491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"count": 6255,
+"posts": [],
+"last_cursor": "QVFDbnZzcllvOW56YTZtUExNd2JuVV9nZXNyLTdoOVl1cTFSQmtkbzFRdXY5R0p1bXFvdEs5T21taGZ0THY5SWxhYk9weU84bjFPb21xbEQ4Q0NoS284aA=="
+}
+}
+User Basic Stats
+Fetch basic user information from their user ID.
+
+API Pricing (per request): 4 units
+
+Try the API
+query Parameters
+user_id
+required
+integer (User Id) > -1
+Example: user_id=18428658
+ID of the user.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+471
+User restricted
+
+473
+User not found
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/user/basic-info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/user/basic-info"
+params = {
+  "user_id": 18428658,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422471473491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"id": "18428658",
+"profile_pic_url": "https://instagram.fccu20-1.fna.fbcdn.net/v/t51.2885-19/314397231_636674618202803_1672434101401302981_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fccu20-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=l3Gr9p5si28AX9f1keu&edm=AGW0Xe4BAAAA&ccb=7-5&oh=00_AfAvSXwmxwVbCbQETStnDqgWmAcv7nHU_XPlUbGXdTVbzg&oe=653E691E&_nc_sid=94fea1",
+"username": "kimkardashian",
+"followers": 364173221,
+"following": 295
+}
+}
+User Info
+Fetch user info from their username.
+
+API Pricing (per request): 3 units
+
+Try the API
+query Parameters
+username
+required
+string (Username)
+Example: username=daviddobrik
+The user's username.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+463
+Invalid username or user id
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/user/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/user/info"
+params = {
+  "username": "daviddobrik",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422463491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"pk": "608037384",
+"username": "daviddobrik",
+"full_name": "DAVID DOBRIK",
+"is_private": false,
+"pk_id": "608037384",
+"profile_pic_url": "https://scontent-sof1-2.cdninstagram.com/v/t51.2885-19/230450603_264712611724539_303604753939440399_n.jpg?stp=dst-jpg_s150x150&_nc_ht=scontent-sof1-2.cdninstagram.com&_nc_cat=1&_nc_ohc=MvnPh4-nyWAAX9-1yFa&edm=AHG7ALcBAAAA&ccb=7-5&oh=00_AfDCDN1mh62ZoQD_YKOVUm2kjMcQzoqeOpw6D2IukDhD6w&oe=637C3DF8&_nc_sid=5cbaad",
+"profile_pic_id": "2630761615224413584_608037384",
+"is_verified": true,
+"has_anonymous_profile_picture": false,
+"has_highlight_reels": false,
+"has_opt_eligible_shop": false,
+"account_badges": [ ],
+"latest_reel_media": 0,
+"live_broadcast_id": null,
+"should_show_category": false
+}
+}
+User Detailed Info
+Fetch detailed user info from their username.
+
+API Pricing (per request): 10 units
+
+Try the API
+query Parameters
+username
+required
+string (Username) non-empty
+Example: username=daviddobrik
+The user's username.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+471
+User restricted
+
+473
+User not found
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/user/detailed-info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/user/detailed-info"
+params = {
+  "username": "daviddobrik",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422471473491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"ai_agent_type": null,
+"biography": "Doughbriks Pizza now open :)\n@doughbriks \nSnapchat: @DavidDobrik\nAll my links:",
+"bio_links": [],
+"fb_profile_biolink": null,
+"biography_with_entities": {},
+"blocked_by_viewer": false,
+"restricted_by_viewer": null,
+"country_block": false,
+"eimu_id": "108360233893332",
+"external_url": "https://hoo.be/daviddobrik",
+"external_url_linkshimmed": "https://l.instagram.com/?u=https%3A%2F%2Fhoo.be%2Fdaviddobrik&e=AT0Py9_OxcGe3wbx4YuDCs06m2II-iOKnaodY-T7aPFmyZe-0GZfiphJxCyrzw0ue39WEBIEEDA9Neth2vdxHOz2IQaggNQ7",
+"edge_followed_by": {},
+"fbid": "17841401121529500",
+"followed_by_viewer": false,
+"edge_follow": {},
+"follows_viewer": false,
+"full_name": "DAVID DOBRIK",
+"group_metadata": null,
+"has_ar_effects": false,
+"has_clips": true,
+"has_guides": false,
+"has_channel": false,
+"has_blocked_viewer": false,
+"highlight_reel_count": 0,
+"has_requested_viewer": false,
+"hide_like_and_view_counts": false,
+"id": "608037384",
+"is_business_account": false,
+"is_professional_account": true,
+"is_supervision_enabled": false,
+"is_guardian_of_viewer": false,
+"is_supervised_by_viewer": false,
+"is_supervised_user": false,
+"is_embeds_disabled": false,
+"is_joined_recently": false,
+"guardian_id": null,
+"business_address_json": "{\"city_name\": null, \"city_id\": null, \"latitude\": null, \"longitude\": null, \"street_address\": null, \"zip_code\": null}",
+"business_contact_method": "TEXT",
+"business_email": null,
+"business_phone_number": null,
+"business_category_name": null,
+"overall_category_name": null,
+"category_enum": null,
+"category_name": "Public figure",
+"is_private": false,
+"is_verified": true,
+"is_verified_by_mv4b": false,
+"is_regulated_c18": false,
+"edge_mutual_followed_by": {},
+"pinned_channels_list_count": 0,
+"profile_pic_url": "https://instagram.fykz2-1.fna.fbcdn.net/v/t51.2885-19/337829073_527023776272478_5326739325084383675_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fykz2-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=cpMsicccwiUAX_dJA6A&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfBGpYaUfaJ7ECyiK-xoAJkwoyAAs18UBOJuw9ldZIow3w&oe=6571474F&_nc_sid=8b3546",
+"profile_pic_url_hd": "https://instagram.fykz2-1.fna.fbcdn.net/v/t51.2885-19/337829073_527023776272478_5326739325084383675_n.jpg?stp=dst-jpg_s320x320&_nc_ht=instagram.fykz2-1.fna.fbcdn.net&_nc_cat=1&_nc_ohc=cpMsicccwiUAX_dJA6A&edm=AOQ1c0wBAAAA&ccb=7-5&oh=00_AfAuhFvUoSYWI69ebEk7tnKbInm3MpwlKeEVqHPHR-tyZQ&oe=6571474F&_nc_sid=8b3546",
+"requested_by_viewer": false,
+"should_show_category": false,
+"should_show_public_contacts": true,
+"show_account_transparency_details": true,
+"remove_message_entrypoint": false,
+"transparency_label": null,
+"transparency_product": null,
+"username": "daviddobrik",
+"connected_fb_page": null,
+"pronouns": [ ],
+"edge_felix_video_timeline": {},
+"edge_owner_to_timeline_media": {},
+"edge_saved_media": {},
+"edge_media_collections": {},
+"edge_related_profiles": {}
+}
+}
+User Follower Count
+Fetch the number of followers from a user ID.
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+user_id
+required
+integer (User Id) > -1
+Example: user_id=18428658
+ID of the user.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/user/followers
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/user/followers"
+params = {
+  "user_id": 18428658,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"count": 333819001
+}
+}
+User Reels
+Fetch the user's reels from their user ID.
+
+Depth 1 returns 10 results, depth N returns N * 10 results. See the depth and cursor query parameters below for information on how to manage pagination (fetch more reels).
+
+API Pricing (per request): #returned_reels units
+
+Try the API
+query Parameters
+user_id
+required
+integer (User Id) > -1
+Example: user_id=18428658
+User ID.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+include_feed_video	
+boolean (Include Feed Video)
+Default: true
+Example: include_feed_video=true
+If true, also includes videos posted in user feed.
+
+oldest_timestamp	
+integer (Oldest Timestamp)
+Example: oldest_timestamp=1666262030
+This parameter is used as a stopping condition for fetching posts. If a post older than the provided oldest_timestamp is found, the system will stop fetching posts and return the results. For instance, if depth is 10, the system will aim to send 10 requests. However, if an oldest_timestamp is set, and we find a post which is older than the oldest_timestamp, the system will not send any more requests and return the results. Note: we do not filter out posts older than the provided oldest_timestamp before returning the results. Please do this filtering in your own integration if required.
+
+start_cursor	
+string (Start Cursor)
+Default: ""
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next start_cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+chunk_size	
+integer (Chunk Size) > 2
+Default: 10
+Example: chunk_size=10
+The number of reels to fetch per depth.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/user/reels
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/user/reels"
+params = {
+  "user_id": 18428658,
+  "depth": 1,
+  "include_feed_video": True,
+  "oldest_timestamp": 1666262030,
+  "start_cursor": "",
+  "chunk_size": 10,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"reels": [],
+"nextCursor": "QVFCSFFDSnV5dTVsYk1BSTJCNndoUXlCZ1kzRUNqaXd5Sm5OcUxOVHJVNURoY2xZWTVWSUU4ampMakR4bWRORFpJanJ5ODlsZklIZzBWYk1QWWFpNG1HNQ"
+}
+}
+User Tagged Posts
+Fetch posts for which the given user ID has been tagged.
+
+Each call returns the 10 most recent posts where the user has been tagged. See the cursor query parameter below for information on how to manage pagination (fetch more posts).
+
+API Pricing (per request): #returned_posts units
+
+Try the API
+query Parameters
+user_id
+required
+integer (User Id) > -1
+Example: user_id=325734299
+User ID.
+
+cursor	
+string (Cursor)
+Default: ""
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+chunk_size	
+integer (Chunk Size) > 0
+Default: 10
+Example: chunk_size=10
+Number of posts to fetch per request.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/user/tagged-posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/user/tagged-posts"
+params = {
+  "user_id": 325734299,
+  "cursor": "",
+  "chunk_size": "10",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"posts": [],
+"nextCursor": "QVFDY2ZDeG1pY01YenVvazR0bVBkQnZhVmhES1Y3blpvU1FWc3BUQ0xEcFprejRPV1BRVlJPanZTaXNUNkZ2dkUxOVJrZ3dUMC12eWRrbkFFallveFI1Rg=="
+}
+}
+Post Info & Comments
+Fetch post information and statistics from shortcode. Additionally, the 50 most recent comments in the post can be fetched.
+
+API Pricing (per request): 2 + ceil(#comments_fetched / 5) units
+
+Try the API
+query Parameters
+code
+required
+string (Code)
+Example: code=CjDN1tzMIjR
+Shortcode of the post.
+
+n_comments_to_fetch	
+integer (N Comments To Fetch)
+Default: 0
+How many comments to fetch per post (max allowed is 50).
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/post/details
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/post/details"
+params = {
+  "code": "CjDN1tzMIjR",
+  "n_comments_to_fetch": 0,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"__typename": "GraphImage",
+"id": "2937252247889807569",
+"shortcode": "CjDN1tzMIjR",
+"dimensions": {},
+"gating_info": null,
+"fact_check_overall_rating": null,
+"fact_check_information": null,
+"sensitivity_friction_info": null,
+"sharing_friction_info": {},
+"media_overlay_info": null,
+"media_preview": "ACkq54DNWYovmAPemIhODg1eQY25HRv50ANuIAi7qzyc1tTNtePjdyRj3IrLul2SN0AJyMdMe1CGV8UYpRzS8UwLCYAH/wBapGfjj6/lUKngc/5/76pHY46/r/8AXNAieeXfhgcFcEVG8nnrgDkdcnP5eg9qbFGJOW4UdT/SrEfHCgY/z370hlDHODxim1PNgNgdB+v1qHNAEu/A68/j/jSNIWGP6moqUUwLKfc/Gkd+MDioU70hpAITSUUUwP/Z",
+"display_url": "https://instagram.fadb1-1.fna.fbcdn.net/v/t51.2885-15/309432321_3230890627134090_3961661080053411517_n.webp?stp=dst-jpg_e35&_nc_ht=instagram.fadb1-1.fna.fbcdn.net&_nc_cat=106&_nc_ohc=gCw0Ye5iM_0AX-hFjPs&edm=AP_V10EBAAAA&ccb=7-5&oh=00_AfBF-6fuENuc1UePAqZvAZYukIUmSvF6dUVn9LOxBaJ46A&oe=637CF3B4&_nc_sid=4f375e",
+"display_resources": [],
+"accessibility_caption": null,
+"is_video": false,
+"tracking_token": "eyJ2ZXJzaW9uIjo1LCJwYXlsb2FkIjp7ImlzX2FuYWx5dGljc190cmFja2VkIjp0cnVlLCJ1dWlkIjoiZWNkNzdiNTUyOGUyNDRiZWI0YjMxOWJlNGQyZTI4NWQyOTM3MjUyMjQ3ODg5ODA3NTY5In0sInNpZ25hdHVyZSI6IiJ9",
+"edge_media_to_tagged_user": {},
+"edge_media_to_caption": {},
+"caption_is_edited": false,
+"has_ranked_comments": false,
+"edge_media_to_comment": {},
+"comments_disabled": false,
+"commenting_disabled_for_viewer": false,
+"taken_at_timestamp": 1664367775,
+"edge_media_preview_like": {},
+"edge_media_to_sponsor_user": {},
+"location": null,
+"viewer_has_liked": false,
+"viewer_has_saved": false,
+"viewer_has_saved_to_collection": false,
+"viewer_in_photo_of_you": false,
+"viewer_can_reshare": true,
+"owner": {},
+"is_ad": false,
+"edge_web_media_to_related_media": {},
+"edge_related_profiles": {}
+}
+}
+Post Comments
+Fetch post POPULAR (only ~ 15) or RECENT comments. Popular comments only can be fetched with empty cursor, no more are shown. Recent comments can be paginated over using the cursor.
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+media_id
+required
+integer (Media Id)
+Example: media_id=3511510130787749851
+Media ID can be found using the other APIs.
+
+cursor
+required
+string (Cursor)
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+sorting
+required
+string (CommentsSorting)
+Enum: "popular" "recent"
+Example: sorting=popular
+Fetch TOP comments (only 15 allowed) OR RECENT (start from most recent and iterate)
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/post/comments
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/post/comments"
+params = {
+  "media_id": "3511510130787749851",
+  "cursor": "",
+  "sorting": "popular",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"comments": [],
+"nextCursor": "{\\\"server_cursor\\\": \\\"QVFEZC01eGxyeUlfUXFfRU5VNHNJcFlFZkxNODl1bFh3clBXUjhXZzA5anh0WGhCSUxnaU1fVGstQ0tHekRtb3lES1l5aXVMaXZMTWhHYjF2UzBfei0wRlNNaHduc2thbzFkandaam9RRmFCLWc=\\\", \\\"is_server_cursor_inverse\\\": true}"
+}
+}
+Music Posts
+Fetch posts from a music ID.
+
+See the cursor query parameter below for information on how to manage pagination (fetch more posts).
+
+API Pricing (per request): #returned_posts units
+
+Try the API
+query Parameters
+id
+required
+string (Id)
+Example: id=3473785566185564
+Music ID.
+
+cursor	
+string (Cursor)
+Default: ""
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/music/posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/music/posts"
+params = {
+  "id": "3473785566185564",
+  "cursor": "",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"posts": [],
+"metadata": {},
+"media_count": {},
+"nextCursor": "GqbElsa7gueE8VnGjtmbwIKg2lmKvqKKts6L5FnM7ZHC0s-RkFrO6uqj5bm82VmYqOGrsrjs_Vme2660_IK--1nezfSiheHW6Fne45fowPeA51m2vK3SmbjO5lkm-JW-voVjFBQ0AikIGAAaCDoGGQwA"
+}
+}
+Search
+Fetch users, places and hashtags information from text.
+
+API Pricing (per request): 4 units
+
+Try the API
+query Parameters
+text
+required
+string (Text)
+Example: text=Cristiano Ronaldo
+Text to search.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/instagram/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/instagram/search"
+params = {
+  "text": "Cristiano Ronaldo",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"hashtags": [],
+"places": [],
+"users": []
+}
+}
+Youtube
+Real-time Youtube data scraping API for publicly available data. Scrape Youtube videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+Keyword Search
+Fetch videos from a given keyword.
+
+Depth 1 returns approx. 20 videos, Depth N returns approx. 20 * N videos.
+
+The videos are fetched directly from https://www.youtube.com/results?search_query=magic. By default, this endpoint will search using the All category on Youtube. If you want to search in a specific category, use the Featured Categories Search endpoint.
+
+See the start_cursor query parameter below for information on how to manage pagination (fetch more videos).
+
+API Pricing (per request): depth units
+API usage examples
+Depth 1:
+-> 20 videos returned.
+Cost: 1 unit
+
+Depth 5:
+-> 100 videos returned.
+Cost: 5 units
+
+Depth 100 but keyword only has 100 videos:
+-> 100 videos returned.
+Cost: 5 units
+
+Depth 100:
+-> 2000 videos returned.
+Cost: 100 units
+
+
+Try the API
+
+query Parameters
+keyword
+required
+string (Keyword) non-empty
+Example: keyword=magic
+The keyword to base the search on.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+start_cursor	
+string (Start Cursor)
+Default: ""
+If no start cursor is specified, it fetches the results from the 'All' category on the Youtube search. Other cursors can be fetched by first sending a request to our Featured Categories Search endpoint.
+
+period	
+string (Period)
+Default: "overall"
+Enum: "overall" "hour" "today" "week" "month" "year"
+Example: period=overall
+Time filter to return only videos from a certain time period (overall, this hour, today, this week, this month, This year).
+
+sorting	
+string (Sorting)
+Default: "relevance"
+Enum: "relevance" "time" "views" "rating"
+Example: sorting=relevance
+Sort results based on a parameter (relevance, upload time, view count, rating).
+
+get_additional_info	
+boolean (Get Additional Info)
+Default: false
+Fetch additional info for the video (number of subscribers, likes and comments) and channel owner. 1 extra unit is charged per video.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/search"
+params = {
+  "keyword": "magic",
+  "depth": 1,
+  "start_cursor": "",
+  "period": "overall",
+  "sorting": "relevance",
+  "get_additional_info": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"posts": []
+}
+}
+Featured Categories Search
+Fetch the related categories showing on Youtube search keyword.
+
+The cursor returned for each category can be used as start_cursor in the Youtube Search Keyword API for fetching videos of the chosen category.
+
+The categories are fetched directly from https://www.youtube.com/results?search_query=magic.
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+name
+required
+string (Name) non-empty
+Example: name=magic
+The keyword to base the search of the suggested categories on.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/search/featured-categories
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/search/featured-categories"
+params = {
+  "name": "magic",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{},
+{}
+]
+}
+Hashtag Search
+Fetch videos from a given hashtag. Depth 1 returns approx. 35 videos, Depth N returns approx. 35 * N videos.
+
+The videos are fetched directly from https://www.youtube.com/hashtag/magic.
+
+API Pricing (per request): #returned_videos / 20 units
+
+Try the API
+query Parameters
+name
+required
+string (Name) non-empty
+Example: name=magic
+The hashtag to base the search on.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+only_shorts	
+boolean (Only Shorts)
+Default: false
+If true, only fetches shorts.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/hashtag/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/hashtag/search"
+params = {
+  "name": "magic",
+  "depth": 1,
+  "only_shorts": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"info": {},
+"videos": []
+}
+}
+Channel Detailed Info
+Get detailed information for a specific Youtube channel from its ID (youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA).
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+browseId
+required
+string (Browseid) >= 4 characters
+Example: browseId=UCnQghMm3Z164JFhScQYFTBw
+Channel ID.
+
+from_url	
+boolean (From Url)
+Default: false
+if true, the browseId needs to be a url like youtube.com/@... OR youtube.com/channel/... OR youtube.com/c/.... If True, 1 extra unit is charged.
+
+get_additional_info	
+boolean (Get Additional Info)
+Default: false
+Fetch additional information for the channel (title, avatars, thumbails...) If True, 1 extra unit is charged.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+465
+Invalid Youtube URL
+
+471
+User restricted
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/detailed-info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/detailed-info"
+params = {
+  "browseId": "UCnQghMm3Z164JFhScQYFTBw",
+  "from_url": False,
+  "get_additional_info": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422465471491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"metadata": {},
+"shareChannel": {}
+}
+}
+Channel Videos
+Fetch videos for a given channel from its ID (youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA).
+
+Depth 1 returns approx. 25 videos, Depth N returns approx. 25 * N videos.
+
+API Pricing (per request): #returned_videos / 10 units
+API usage examples
+Depth 1:
+-> 22 videos returned.
+Cost: 3 units
+
+Depth 5 but channel has only 20 videos:
+-> 20 videos returned.
+Cost: 2 units
+
+Depth 50:
+-> 100 videos returned.
+Cost: 10 units
+
+Depth 100:
+-> 2000 videos returned.
+Cost: 200 units
+
+
+Try the API
+
+query Parameters
+browseId
+required
+string (Browseid) >= 5 characters
+Example: browseId=UCnQghMm3Z164JFhScQYFTBw
+Channel ID.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/videos
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/videos"
+params = {
+  "browseId": "UCnQghMm3Z164JFhScQYFTBw",
+  "depth": 1,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"user": {},
+"videos": []
+}
+}
+Channel Shorts
+Fetch Youtube Shorts for a given channel from its ID (youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA).
+
+Depth 1 returns approx. 50 videos, Depth N returns approx. 50 * N videos.
+
+API Pricing (per request): #returned_shorts / 10 units
+API usage examples
+Depth 1:
+-> 53 shorts returned.
+Cost: 6 units
+
+Depth 5 but channel only has 20 shorts:
+-> 20 shorts returned.
+Cost: 2 units
+
+Depth 10:
+-> 500 videos returned.
+Cost: 50 units
+
+Depth 50:
+-> 2500 videos returned.
+Cost: 250 units
+
+
+Try the API
+
+query Parameters
+browseId
+required
+string (Browseid) >= 4 characters
+Example: browseId=UClAa0YLrW4MaIKOWaeZR9Xg
+Channel ID.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/shorts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/shorts"
+params = {
+  "browseId": "UClAa0YLrW4MaIKOWaeZR9Xg",
+  "depth": 1,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"user": {},
+"shorts": []
+}
+}
+Channel Streams
+Fetch Youtube Live Streams for a given channel from its ID (youtube.com/channel/UChBQgieUidXV1CmDxSdRm3g).
+
+Depth 1 returns approx. 30 videos, Depth N returns approx. 30 * N videos.
+
+API Pricing (per request): #returned_streams / 10 units
+API usage examples
+Depth 1:
+-> 30 streams returned.
+Cost: 3 units
+
+Depth 5 but channel only has 20 streams:
+-> 20 streams returned.
+Cost: 2 units
+
+Depth 10:
+-> 300 streams returned.
+Cost: 30 units
+
+
+Try the API
+
+query Parameters
+browseId
+required
+string (Browseid) >= 4 characters
+Example: browseId=UChBQgieUidXV1CmDxSdRm3g
+Channel ID.
+
+depth
+required
+integer (Depth) > 0
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/streams
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/streams"
+params = {
+  "browseId": "UChBQgieUidXV1CmDxSdRm3g",
+  "depth": 1,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"user": {},
+"streams": []
+}
+}
+Video / Short Details
+Fetch statistics for a Youtube short or video from its channel ID (youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA).
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+id
+required
+string (Id) non-empty
+Example: id=0nmRyN8gjrQ
+Youtube short or video ID.
+
+alternative_method	
+boolean (Alternative Method)
+Default: false
+If true, Uses a different method to fetch the statistics for the Youtube short or video. The response JSON will differ from the default method.
+
+get_subscribers_count	
+boolean (Get Subscribers Count)
+Default: false
+If true, fetches the number of subscribers for the channel owner of the video. 1 additional unit is charged.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/get-short-stats
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/get-short-stats"
+params = {
+  "id": "0nmRyN8gjrQ",
+  "alternative_method": False,
+  "get_subscribers_count": False,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"likeButton": {},
+"reelPlayerHeaderSupportedRenderers": {},
+"menu": {},
+"nextItemButton": {},
+"prevItemButton": {},
+"subscribeButtonRenderer": {},
+"style": "REEL_PLAYER_OVERLAY_STYLE_SHORTS",
+"viewCommentsButton": {},
+"trackingParams": "CBkQsLUEIhMI4InDl9CFiAMVCNs_BB27ECMP",
+"shareButton": {},
+"pivotButton": {}
+}
+}
+Channel Subscriber Count
+Fetch the number of subscribers for a channel from its ID (youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA).
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+browseId
+required
+string (Browseid) >= 5 characters
+Example: browseId=UCnQghMm3Z164JFhScQYFTBw
+Channel ID.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/followers
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/followers"
+params = {
+  "browseId": "UCnQghMm3Z164JFhScQYFTBw",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+{
+"data": "12.8K"
+}
+Channel Username To Id
+Get the channel ID (youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA) from the channel username (youtube.com/@MrBeast).
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+name
+required
+string (Name) non-empty
+Example: name=daviddobrik
+Channel username.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/name-to-id
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/name-to-id"
+params = {
+  "name": "daviddobrik",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+{
+"data": "UCmh5gdwCx6lN7gEC20leNVA"
+}
+Channel Id To Username
+Get the channel username (youtube.com/@MrBeast) from the channel ID (youtube.com/channel/UCX6OQ3DkcsbYNE6H8uQQuVA).
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+browseId
+required
+string (Browseid) >= 4 characters
+Example: browseId=UCX6OQ3DkcsbYNE6H8uQQuVA
+Channel ID.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/channel/id-to-name
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/channel/id-to-name"
+params = {
+  "browseId": "UCX6OQ3DkcsbYNE6H8uQQuVA",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+{
+"data": "bhagatsisters"
+}
+Music Id To Shorts
+Get shorts using a specific music ID.
+
+You can find the music ID using the Video / Short Details endpoint. It will be in the response inside the url at 'panels[-1].engagementPanelSectionListRenderer.content.richGridRenderer.contents[0].continuationItemRenderer.continuationItemRenderer.continuationCommand.token'.
+
+Depth 1 returns approx. 15 videos, Depth N returns approx. 15 * N videos.
+
+API Pricing (per request): #returned_shorts / 10 units
+
+Try the API
+query Parameters
+id
+required
+string (Id) non-empty
+Example: id=4qmFsgKsARIRRkVzZnZfYXVkaW9fcGl2b3QaeENBRHlCVlVLUmhJM0NndGFZVGgwU1VsMlNWVlZkeElMV21FNGRFbEpka2xWVlhjYUMwWkhVRlJDWmtGMGQwNVJJZzRJOEtVREVnZ0lEQkNBZ2Nta0F4b0xSa2RRVkVKbVFYUjNUbEVvc096US12VDZyTG40QVdnQpoCHGJyb3dzZS1mZWVkRkVzZnZfYXVkaW9fcGl2b3Q%3D
+Music ID.
+
+depth	
+integer (Depth) > 0
+Default: 1
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/music/id-to-shorts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/music/id-to-shorts"
+params = {
+  "id": "4qmFsgKsARIRRkVzZnZfYXVkaW9fcGl2b3QaeENBRHlCVlVLUmhJM0NndGFZVGgwU1VsMlNWVlZkeElMV21FNGRFbEpka2xWVlhjYUMwWkhVRlJDWmtGMGQwNVJJZzRJOEtVREVnZ0lEQkNBZ2Nta0F4b0xSa2RRVkVKbVFYUjNUbEVvc096US12VDZyTG40QVdnQpoCHGJyb3dzZS1mZWVkRkVzZnZfYXVkaW9fcGl2b3Q%3D",
+  "depth": 1,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{},
+{}
+]
+}
+Video / Short Comments
+Get comments for a specific Youtube video or short.
+
+See the cursor query parameter below for information on how to manage pagination (fetch more comments).
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+id
+required
+string (Id) non-empty
+Example: id=cKkb5tperxc
+video or short ID.
+
+cursor	
+string (Cursor)
+Default: ""
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/youtube/video/comments
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/youtube/video/comments"
+params = {
+  "id": "cKkb5tperxc",
+  "cursor": "",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"info": {},
+"comments": [],
+"nextCursor": "Eg0SC2JHWnBscWVJYjN3GAYy6QIKvwJnZXRfcmFua2VkX3N0cmVhbXMtLUNxUUJDSUFFRlJlMzBUZ2FtUUVLbEFFSTJGOFFnQVFZQnlLSkFWdDhHYzNMbDg3UTNDbWQ2Q3gtbmhGRzBtNlVCRGl5T05CbUdaN1hILXR2czhUTUpxVHhleDlqbFRMaDFINHcwc21qN1ZZNkd4TU5POHV3WU84T3VoODQ0aGRlaGRyYVZKWlZCRjVaWVphQXJRUndvTHg2QWNmZE8zZEpYS2RtRmlIMmwyQmFLaXBiWmNrOTFWdHo3cWV5VnhYMXhWMlpmU3RKek91eDNGRjhEMWdMTFhTRVlSOEpFQlFTQlFpSElCZ0FFZ2NJaFNBUURoZ0JFZ1VJaUNBWUFCSUZDSVlnR0FBU0J3aVhJQkFRR0FFU0J3aUVJQkFNR0FFU0JRaUpJQmdBR0FBIhEiC2JHWnBscWVJYjN3MAB4ASgUQhBjb21tZW50cy1zZWN0aW9u"
+}
+}
+Threads
+Real-time Threads data scraping API for publicly available data. Scrape Threads videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+Keyword Search
+Fetch posts related to a certain keyword. The posts can be top or most recent.
+
+NB: Threads returns only 10-20 posts at maximum per keyword. Run the API multiple times per day to get more posts.
+
+API Pricing (per request): #returned_posts units
+
+Try the API
+query Parameters
+name
+required
+string (Name)
+Example: name=ferrari
+Keyword to search.
+
+sorting	
+string (Sorting)
+Default: 0
+Enum: "0" "1"
+The posts returned are TOP if sorting=0, or most RECENT if sorting=1
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/threads/keyword/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/threads/keyword/search"
+params = {
+  "name": "ferrari",
+  "sorting": 0,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+User Search
+Find users matching a given input string.
+
+API Pricing (per request): 4 units
+
+Try the API
+query Parameters
+name
+required
+string (Name)
+Example: name=orlandomagic
+Name of the user to search.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/threads/user/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/threads/user/search"
+params = {
+  "name": "orlandomagic",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+User Info
+Get user detailed information using the user ID.
+
+API Pricing (per request): 4 units
+
+Try the API
+query Parameters
+id
+required
+integer (Id)
+Example: id=195178788
+User ID.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/threads/user/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/threads/user/info"
+params = {
+  "id": 195178788,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"pk": "195178788",
+"text_post_app_is_private": false,
+"hd_profile_pic_versions": [],
+"profile_pic_url": "https://instagram.fpiu2-1.fna.fbcdn.net/v/t51.2885-19/438868684_384914461187298_6638452308730716862_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fpiu2-1.fna.fbcdn.net&_nc_cat=106&_nc_ohc=sXHm1Dxty50Q7kNvgH9nSJg&_nc_gid=f88c7cc75cb6418d948577e00b95d573&edm=APs17CUBAAAA&ccb=7-5&oh=00_AYDWlWLhL9xiLlESTJMMI2tmMMPitrMMzoC3gPeEFcsoHw&oe=66E96957&_nc_sid=10d13b",
+"username": "orlandomagic",
+"friendship_status": null,
+"follower_count": 276177,
+"profile_context_facepile_users": null,
+"eligible_for_text_app_activation_badge": false,
+"hide_text_app_activation_badge_on_text_app": false,
+"biography": "building the culture in the O 🪄",
+"text_app_biography": {},
+"account_badges": [ ],
+"text_post_app_remove_mention_entrypoint": null,
+"is_verified": true,
+"full_name": "Orlando Magic",
+"bio_links": [ ],
+"transparency_label": null,
+"is_threads_only_user": false,
+"gating": null,
+"id": "195178788"
+}
+}
+User Posts
+Fetch most recent posts for a user using the user ID.
+
+NB: Threads returns at maximum the 20-30 most recent posts for a user.
+
+API Pricing (per request): #returned_posts units
+
+Try the API
+query Parameters
+id
+required
+integer (Id)
+Example: id=195178788
+User ID.
+
+chunk_size	
+integer (Chunk Size) > 0
+Default: 10
+Example: chunk_size=10
+How many posts to fetch with the request.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/threads/user/posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/threads/user/posts"
+params = {
+  "id": 195178788,
+  "chunk_size": 10,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+Post Replies
+Fetch the replies to a post using its ID.
+
+NB: Threads returns at maximum the 20-30 most popular replies to a posts.
+
+API Pricing (per request): #returned_replies units
+
+Try the API
+query Parameters
+id
+required
+integer (Id)
+Example: id=3462070596773592600
+Post ID.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/threads/post/replies
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/threads/post/replies"
+params = {
+  "id": 3462070596773592457,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+Reddit
+Real-time Reddit data scraping API for publicly available data. Scrape Reddit videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+Subreddit Posts
+Fetch posts from a given subreddit with chosen filters.
+
+See the cursor query parameter below for information on how to manage pagination (fetch more posts).
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+name
+required
+string (Name)
+Example: name=SkincareAddiction
+Subreddit to be searched.
+
+sort
+required
+string (SubredditSorting)
+Enum: "hot" "new" "top" "rising"
+Example: sort=new
+Type of posts to fetch.
+
+period
+required
+string (Period)
+Enum: "hour" "day" "week" "month" "year" "all"
+Example: period=hour
+ATTENTION: The time filter applies only to sort type 'top'.
+
+cursor	
+string (Cursor)
+Default: ""
+Parameter to manually handle pagination. Each response contains a nextCursor which can be used to retrieve the next page of results by sending it as the next cursor. If the nextCursor is not present in the response, it means that there are no more results to retrieve.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+404
+Not found
+
+422
+Validation Error
+
+469
+Topic restricted
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/reddit/subreddit/posts
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/reddit/subreddit/posts"
+params = {
+  "name": "SkincareAddiction",
+  "sort": "new",
+  "period": "hour",
+  "cursor": "",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200404422469491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+Post Comments
+Fetch comments from a given post.
+
+See the cursor query parameter below for information on how to manage pagination (fetch more comments).
+
+API Pricing (per request): 3 units
+
+Try the API
+query Parameters
+permalink
+required
+string (Permalink)
+Example: permalink=/r/SkincareAddiction/comments/8pv3gg/ba_finished_my_5_month_course_of_accutane_just_in/
+Post permalink found from the other API.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+404
+Not found
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/reddit/post/comments
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/reddit/post/comments"
+params = {
+  "permalink": "/r/SkincareAddiction/comments/8pv3gg/ba_finished_my_5_month_course_of_accutane_just_in/",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200404422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"comments": []
+}
+}
+Twitch
+Real-time Twitch data scraping API for publicly available data. Scrape Twitch videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+Keyword Search
+Fetch results (videos / channels / games) from a given keyword. Depth 1 returns approx. 15 results, depth N returns approx. N * 15 results.
+
+API Pricing (per request): depth units
+
+Try the API
+query Parameters
+keyword
+required
+string (Keyword)
+Example: keyword=magic
+Keyword to be searched.
+
+depth
+required
+integer (Depth)
+Example: depth=1
+Abstraction of the API pagination. Depth 1 returns X results, depth N returns N * X results. Note that the exact number of results per depth (X) may differ per endpoint. Please refer to the specific endpoint description for more information.
+
+type
+required
+string (Type)
+Enum: "videos" "channels" "games"
+Example: type=videos
+Type of results to show.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/twitch/search
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/twitch/search"
+params = {
+  "keyword": "magic",
+  "depth": 1,
+  "type": "videos",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"videos": [],
+"count": 10000
+}
+}
+User Followers
+Fetch the number of followers for the given channel.
+
+API Pricing (per request): 1 unit
+
+Try the API
+query Parameters
+username
+required
+string (Username)
+Example: username=hmatttv
+Name of the channel.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/twitch/user/followers
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/twitch/user/followers"
+params = {
+  "username": "hmatttv",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+{
+"data": 124198
+}
+Twitter
+Real-time Twitter data scraping API for publicly available data. Scrape Twitter videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+User Info
+Get information of a user.
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+name
+required
+string (Name)
+Example: name=elonmusk
+Username.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/twitter/user/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/twitter/user/info"
+params = {
+  "name": "elonmusk",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"__typename": "User",
+"id": "VXNlcjo1MDM5Mzk2MA==",
+"rest_id": "50393960",
+"affiliates_highlighted_label": { },
+"is_blue_verified": true,
+"profile_image_shape": "Circle",
+"legacy": {},
+"tipjar_settings": {},
+"legacy_extended_profile": { },
+"is_profile_translatable": false,
+"has_hidden_subscriptions_on_profile": false,
+"verification_info": {},
+"highlights_info": {},
+"user_seed_tweet_count": 0,
+"business_account": { },
+"creator_subscriptions_count": 0
+}
+}
+User Tweets
+Fetch tweets for a user. Please note that the tweets are returned in the order decided by Twitter (not chronological). Moreover, not all of the users return the data because it would require login and the posts are not public. It works for most of the verified users.
+
+API Pricing (per request): 4 units
+
+Try the API
+query Parameters
+id
+required
+integer (Id)
+Example: id=50393960
+User ID.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/twitter/user/tweets
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/twitter/user/tweets"
+params = {
+  "id": 50393960,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": [
+{}
+]
+}
+Post Info
+Get information and statistics from a Tweet from its ID.
+
+API Pricing (per request): 2 units
+
+Try the API
+query Parameters
+id
+required
+integer (Id)
+Example: id=1694791112567967700
+Tweet ID.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/twitter/post/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/twitter/post/info"
+params = {
+  "id": 1694791112567967849,
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"__typename": "Tweet",
+"rest_id": "1694791112567967849",
+"core": {},
+"unmention_data": { },
+"edit_control": {},
+"is_translatable": false,
+"views": {},
+"source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+"legacy": {}
+}
+}
+Snapchat
+Real-time Snapchat data scraping API for publicly available data. Scrape Snapchat videos, posts, users information and statistics, comments, hashtags, keyword and more.
+
+User Info
+Get information of a user.
+
+API Pricing (per request): 3 units
+
+Try the API
+query Parameters
+name
+required
+string (Name)
+Example: name=daviddobrik
+Username.
+
+token
+required
+string (Token) [ 12 .. 24 ] characters
+Example: token=YOUR_TOKEN_HERE
+Private token assigned to each client to access the APIs.
+
+Responses
+200
+Successful Response
+
+422
+Validation Error
+
+491
+Token not found
+
+492
+Email not verified
+
+493
+Subscription expired
+
+495
+All daily units used
+
+500
+Something went wrong
+
+
+get
+/snapchat/user/info
+Request samples
+Python (requests)Python (our SDK)JavaScript (fetch)JavaScript (our SDK)cURL
+
+Copy
+import requests
+
+root = "https://ensembledata.com/apis"
+endpoint = "/snapchat/user/info"
+params = {
+  "name": "daviddobrik",
+  "token": "YOUR-TOKEN-HERE"
+}
+
+res = requests.get(root+endpoint, params=params)
+print(res.json())
+
+Response samples
+200422491492493495500
+Content type
+application/json
+
+Copy
+Expand allCollapse all
+{
+"data": {
+"viewerInfo": {},
+"localization": {},
+"pageLinks": {},
+"pageMetadata": {},
+"userProfile": {},
+"story": {},
+"linkPreview": {},
+"lenses": [ ],
+"curatedHighlights": [],
+"spotlightHighlights": [],
+"showSnapExpiredToast": false,
+"lensCursor": "0",
+"curatedHighlightsCursor": "eyJkZGJfcGFnaW5hdGlvbl9jdXJzb3IiOiIiLCJzdG1zX3BhZ2luYXRpb25fY3Vyc29yIjoiQ3JzRkVyZ0Zjazh3UVVKWVRubEJRa1p4V1ZoYWFFeHVWakJoVjNkMVUwZEdlbUZGTVdoalFWVklNbk5JUkVadFJGSkJkMEZEVW1kQlMySkhPV2hhUlZwb1dUTlNkbU5yYTBGRFdGSnZZMjFXZW1GSE9YTmFTR2gzVURCQlFVRkJRVUZCUVhnelEwRkJRVUZDUVVGQlFVRkZaRUZCUkZneE9WRmpNMGxCVG0xT2RtSlROV2hpVjBZMllqSTFhR1F6VFhWak1sWjVaRzFzYWxwWVRYVmFTR3gxV1ZjeGRscEhTakpOYVRWMFlqSlNiR0pETlVKa1NGSjVZVmRLTVdSSFZsZFpWM2d4V2xZMmIzUm1NR2hXVjB4RlFXZEJTMVJCUVVKWmJsRkJSbFY0Y1ZsWVdtaE1NalZ3WW5rNVEyVllVbXhSYmxadFdtMVdlVTh3ZDBGQ1IwcFFWREI0TUVGQ1RrMWhiVVl5V1ZNNWMxbFhOVzVNTUVwMllqSjRiRmxYTkRkVVFVRkRXV3hPTUVGQ1FrMWhiVVl5V1ZNNU1XUkhiSE5NTUhod1l6TlJOMVJCUVVKaVNFVkJabWRCUjFSQlFVSmlXRkZCUkRCNGNWbFlXbWhNTTFZd1lWZDNkbFJYUm5kUE1IZEJRVmMxTUVGQ1NrMWhiVVl5V1ZNNWMxbFhOVzVNTVU0d1kyMXNkVnA2ZEUxQlFVcDFWVE5GUVdablFVZFVRVUZLWW14V1RWUkdXbWhpU0Zac1kxRkNMVUZCVmsxQlFVWjZZMUZDTFVGQmFFMUJRVXA2VlRORlFXWm5RVWRsU0VKM1kwaENkMk5JUW5kalNGRkJTak5PYkZsVVJYZGFha1V4VG1reGFrMVVSVEZNVkZGNVdWZFZkRTlVWkd4TlV6QjVUMGROTkUxSFNYaE9lbWN5V2tSbVFXZElRakJCUVU1cVpFaE9lbU5SUWkxQlFVNTNZMGhDZDJOSVFuZGpTRkZCUTFWU01sUnRTbEJUVjAwd1RUTkNNRUZCVG1aWU1VcDZZMUZDTFVGQlRuZGpTRUozWTBoQ2QyTklVVUZEYlhScllUaERRV016VG5SM1NVSjNaRUZCUkdOSGJHdGpNMFZCWm1kQlJHTklRbmRqU0VKM1kwaENNRUZEVm5wWlZHUnNXa1JaTUUxSFRYUmFhazVvV21rd01GcEhUbTFNVjBVeVRWZE5kRTlFWjNsWlYxcG9UWHBWZUZreVVUTmpTR2M5In0",
+"spotlightHighlightsCursor": "eyJkZGJfcGFnaW5hdGlvbl9jdXJzb3IiOiJleUprWkdKZmNHRm5hVzVoZEdsdmJsOWpkWEp6YjNJaU9pSWlMQ0p6ZEcxelgzQmhaMmx1WVhScGIyNWZZM1Z5YzI5eUlqb2lRM05OUmtWelFVWmphemgzVVZWS1dWUnViRUpSYTFwNFYxWm9ZV0ZGZUhWV2FrSm9Wak5rTVZVd1pFZGxiVVpHVFZkb2FsRldWa2xOYms1SlVrVmFkRkpHU2tKa01FWkVWVzFrUWxNeVNraFBWMmhoVWxad2IxZFVUbE5rYlU1eVlUQkdSRmRHU25aWk1qRlhaVzFHU0U5WVRtRlRSMmd6VlVSQ1FsRlZSa0pSVlVaQ1VWaG5lbEV3UmtKUlZVWkRVVlZHUWxGVlJrVmFSVVpDVWtabmVFOVdSbXBOTUd4Q1ZHMHhUMlJ0U2xST1YyaHBWakJaTWxscVNURmhSMUY2VkZoV2FrMXNXalZhUnpGellXeHdXVlJZVm1GVFIzZ3hWMVpqZUdSc2NFaFRha3BPWVZSV01GbHFTbE5pUjBwRVRsVkthMU5HU2pWWlZtUkxUVmRTU0Zac1pGcFdNMmQ0VjJ4Wk1tSXpVbTFOUjJoWFZqQjRSbEZYWkVKVE1WSkNVVlZLV21Kc1JrSlNiRlkwWTFac1dWZHRhRTFOYWxaM1dXNXJOVkV5VmxsVmJYaFNZbXhhZEZkdE1WZGxWVGgzWkRCR1ExSXdjRkZXUkVJMFRVVkdRMVJyTVdoaVZWbDVWMVpOTldNeGJGaE9WelZOVFVWd01sbHFTalJpUm14WVRrUmtWVkZWUmtSWFYzaFBUVVZHUTFGck1XaGlWVmw1VjFaTk5VMVhVa2hpU0U1TlRVaG9kMWw2VGxKT01WSkNVVlZLYVZORlZrSmFiV1JDVWpGU1FsRlZTbWxYUmtaQ1VrUkNOR05XYkZsWGJXaE5UVEZaZDFsV1pETmtiRkpZVW01a1VFMUlaRUpSVm1NeFRVVkdRMU5yTVdoaVZWbDVWMVpOTldNeGJGaE9WelZOVFZVMGQxa3lNWE5rVm5BMlpFVXhRbEZWY0RGV1ZFNUdVVmRhYmxGVlpGVlJWVVpMV1cxNFYxUldVa2RYYldocFUwWmFjMWt4UmtOTVZVWkNWbXN4UWxGVldqWlpNVVpEVEZWR1FtRkZNVUpSVlhBMlZsUk9SbEZYV201UlZXUnNVMFZLTTFrd2FFTmtNazVKVVc1a2FsTkdSa0pUYWs1T1RXczFjVmt6YUU1aGJXUXpWRmRyZDAweGJGVlViV2hOVmtaS2RGZFdaRkprUlRsWVZHMW9XbUZVUm5KWGJHUktUbFp3UlZGdGNFOVdSbFkxVkd4U1ZWRlhaRWxSYWtKQ1VWVTFiVmRFUmt0bGJVNVNVV2t4UWxGVk5UTlpNR2hEWkRKT1NWRnVaR3BUUmtaQ1ZWUktNR0V5UlRSUk1FWnFUVmROZWxkRVFsZFNWMHBIWVVab1YxSlZjSGRXTUZaSFVteEtXRTVZUWxWaVZHeFBWbFZvYTFGc1JsZGlSMnhUVFd4S01GZFljRTlXTWxKWVZtdG9hMU5HU2tOV01uUnJWMWRXUldFemFGWmhNRnBvVldwR2IwNUZPVWhqUkZaU1ZsVmFRMVZXVmtkTk0yUktVVzVrYTFGVlJrVldSVnBPVFVkTmVsSlZSbTFhTUVaRldUQm9RMlF5VGtsUmJtUnFVMFZKZDFGVlNrOWxiVkpKVTJwR1lWWkhPVFJVYm5CS1RVVTVSVk5VVWs1bGF6QXdWR3RTUms1SFRrbGFlakE5SW4wIiwic3Rtc19wYWdpbmF0aW9uX2N1cnNvciI6IiJ9",
+"spotlightStoryMetadata": []
+}
+}
