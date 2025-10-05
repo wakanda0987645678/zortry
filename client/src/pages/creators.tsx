@@ -366,7 +366,6 @@ export default function Creators() {
             <div className="space-y-3">
               {filteredCreators.map((creator, index) => {
                 const isCurrentUser = currentUserAddress && creator.address.toLowerCase() === currentUserAddress.toLowerCase();
-                const xpPoints = creator.totalCoins * 10; // Convert coins to XP points
                 const createdDaysAgo = Math.floor((Date.now() - new Date(creator.createdAt).getTime()) / (1000 * 60 * 60 * 24));
                 const isVeteran = createdDaysAgo >= 365; // 1+ year
 
@@ -422,10 +421,10 @@ export default function Creators() {
                         )}
                       </div>
 
-                      {/* XP Points */}
+                      {/* Market Cap */}
                       <div className="text-right flex-shrink-0">
-                        <div className="text-lg font-bold text-foreground">
-                          {xpPoints} XP
+                        <div className="text-lg font-bold text-foreground" data-testid={`mobile-marketcap-${creator.address}`}>
+                          ${creator.totalMarketCap}
                         </div>
                       </div>
                     </div>
