@@ -95,14 +95,14 @@ export default function Home() {
                   <button
                     key={category.id}
                     onClick={() => setSelectedCategory(category.id)}
-                    className={`flex-shrink-0 flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap category-chip ${category.id} ${
+                    className={`flex-shrink-0 flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                       selectedCategory === category.id
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted/20 text-muted-foreground hover:bg-muted/30 hover:text-foreground"
                     }`}
                     data-testid={`button-category-${category.id}`}
                   >
-                    <IconComponent className="w-4 h-4" />
+                    <IconComponent className={`w-4 h-4 platform-icon-${category.id}`} />
                     {category.label}
                   </button>
                 );

@@ -244,84 +244,63 @@
     background: linear-gradient(135deg, rgba(205, 235, 99, 0.1), rgba(20, 20, 20, 0.8));
   }
 
-  /* Platform category chips - preserve colors in light mode */
-  .category-chip {
-    @apply transition-all duration-200;
+  /* Platform icon colors - preserve in light mode */
+  .platform-icon-youtube {
+    color: #FF0000 !important;
   }
   
-  /* Only apply platform colors when NOT selected */
-  .category-chip.youtube:not(.bg-primary) {
-    background-color: #FF0000 !important;
-    color: white !important;
-    border: 1px solid #FF0000;
+  .platform-icon-farcaster {
+    color: #8a63d2 !important;
   }
   
-  .category-chip.farcaster:not(.bg-primary) {
-    background-color: #8a63d2 !important;
-    color: white !important;
-    border: 1px solid #8a63d2;
+  .platform-icon-gitcoin {
+    color: #02E2AC !important;
   }
   
-  .category-chip.gitcoin:not(.bg-primary) {
-    background-color: #02E2AC !important;
-    color: black !important;
-    border: 1px solid #02E2AC;
+  .platform-icon-spotify {
+    color: #1DB954 !important;
   }
   
-  .category-chip.spotify:not(.bg-primary) {
-    background-color: #1DB954 !important;
-    color: white !important;
-    border: 1px solid #1DB954;
+  .platform-icon-tiktok {
+    color: #000000 !important;
   }
   
-  .category-chip.tiktok:not(.bg-primary) {
-    background-color: #000000 !important;
-    color: white !important;
-    border: 1px solid #000000;
+  .platform-icon-instagram {
+    color: #e6683c !important;
   }
   
-  .category-chip.instagram:not(.bg-primary) {
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
-    color: white !important;
-    border: 1px solid #e6683c;
+  .platform-icon-medium {
+    color: #000000 !important;
   }
   
-  .category-chip.medium:not(.bg-primary) {
-    background-color: #000000 !important;
-    color: white !important;
-    border: 1px solid #000000;
+  .platform-icon-twitter {
+    color: #1DA1F2 !important;
   }
   
-  .category-chip.twitter:not(.bg-primary) {
-    background-color: #000000 !important;
-    color: white !important;
-    border: 1px solid #000000;
+  .platform-icon-blog {
+    color: #6366f1 !important;
   }
   
-  .category-chip.blog:not(.bg-primary) {
-    background-color: #6366f1 !important;
-    color: white !important;
-    border: 1px solid #6366f1;
+  .platform-icon-giveth {
+    color: #5326EC !important;
   }
   
-  .category-chip.giveth:not(.bg-primary) {
-    background-color: #5326EC !important;
-    color: white !important;
-    border: 1px solid #5326EC;
+  .platform-icon-all {
+    color: hsl(var(--primary)) !important;
   }
   
-  /* Light mode overrides to keep platform colors */
-  .light .category-chip.youtube:not(.bg-primary),
-  .light .category-chip.farcaster:not(.bg-primary),
-  .light .category-chip.gitcoin:not(.bg-primary),
-  .light .category-chip.spotify:not(.bg-primary),
-  .light .category-chip.tiktok:not(.bg-primary),
-  .light .category-chip.instagram:not(.bg-primary),
-  .light .category-chip.medium:not(.bg-primary),
-  .light .category-chip.twitter:not(.bg-primary),
-  .light .category-chip.blog:not(.bg-primary),
-  .light .category-chip.giveth:not(.bg-primary) {
-    /* Force platform colors even in light mode */
+  /* Keep icon colors in light mode */
+  .light .platform-icon-youtube,
+  .light .platform-icon-farcaster,
+  .light .platform-icon-gitcoin,
+  .light .platform-icon-spotify,
+  .light .platform-icon-tiktok,
+  .light .platform-icon-instagram,
+  .light .platform-icon-medium,
+  .light .platform-icon-twitter,
+  .light .platform-icon-blog,
+  .light .platform-icon-giveth,
+  .light .platform-icon-all {
     opacity: 1;
   }
 
