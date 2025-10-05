@@ -25,6 +25,8 @@ import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import TradeModal from "@/components/trade-modal";
+import MobileTradeModal from "@/components/mobile-trade-modal";
+import { useIsMobile } from "@/hooks/use-mobile";
 import "@/lib/zora";
 import { createAvatar } from '@dicebear/core';
 import { avataaars } from '@dicebear/collection';
@@ -105,6 +107,7 @@ interface CoinCardProps {
 }
 
 export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
+  const isMobile = useIsMobile();
   const [copied, setCopied] = useState(false);
   const [tradeDialogOpen, setTradeDialogOpen] = useState(false);
   const [marketCap, setMarketCap] = useState<string | null>(null);
@@ -247,13 +250,21 @@ export default function CoinCard({ coin, isOwnCoin = false }: CoinCardProps) {
         )}
       </div>
 
-      {/* Trade Modal */}
+      {/* Trade Modal - Responsive */}
       {!isOwnCoin && (
-        <TradeModal
-          coin={coin as any}
-          open={tradeDialogOpen}
-          onOpenChange={setTradeDialogOpen}
-        />
+        isMobile ? (
+          <MobileTradeModal
+            coin={coin as any}
+            open={tradeDialogOpen}
+            onOpenChange={setTradeDialogOpen}
+          />
+        ) : (
+          <TradeModal
+            coin={coin as any}
+            open={tradeDialogOpen}
+            onOpenChange={setTradeDialogOpen}
+          />
+        )
       )}
 
       {/* Content Section */}
