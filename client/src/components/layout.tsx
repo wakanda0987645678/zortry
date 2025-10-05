@@ -137,7 +137,7 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
 
         {/* Social Links */}
-        {mobile && (
+        {(!sidebarCollapsed || mobile) && (
           <div className="mb-4">
             <div className="px-2 mb-2">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
