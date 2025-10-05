@@ -212,7 +212,7 @@ export default function Creators() {
           <div className="mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-black mb-4 text-white">
+                <h1 className="text-2xl font-black mb-4 text-foreground">
                   Top <span className="spotify-green">Creators</span>
                 </h1>
                 <p className="text-l text-muted-foreground">
@@ -223,7 +223,7 @@ export default function Creators() {
               {/* Inline Stats */}
               <div className="flex flex-wrap gap-6 text-right">
                 <div className="text-center lg:text-right">
-                  <div className="text-1xl font-black text-white">
+                  <div className="text-1xl font-black text-foreground">
                     {filteredCreators.length}
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -231,7 +231,7 @@ export default function Creators() {
                   </div>
                 </div>
                 <div className="text-center lg:text-right">
-                  <div className="text-1xl font-black text-white">
+                  <div className="text-1xl font-black text-foreground">
                     $
                     {filteredCreators
                       .reduce(
@@ -245,7 +245,7 @@ export default function Creators() {
                   </div>
                 </div>
                 <div className="text-center lg:text-right">
-                  <div className="text-1xl font-black text-white">
+                  <div className="text-1xl font-black text-foreground">
                     {filteredCreators.length > 0
                       ? Math.round(
                           filteredCreators.reduce(
@@ -270,7 +270,7 @@ export default function Creators() {
               className={`px-6 py-2 rounded-full font-semibold transition-colors ${
                 selectedTab === "top"
                   ? "bg-primary text-black"
-                  : "bg-muted/20 text-muted-foreground hover:text-white"
+                  : "bg-muted/20 text-muted-foreground hover:text-foreground"
               }`}
             >
               Top Creators
@@ -280,7 +280,7 @@ export default function Creators() {
               className={`px-6 py-2 rounded-full font-semibold transition-colors ${
                 selectedTab === "rising"
                   ? "bg-primary text-black"
-                  : "bg-muted/20 text-muted-foreground hover:text-white"
+                  : "bg-muted/20 text-muted-foreground hover:text-foreground"
               }`}
             >
               Rising Stars
@@ -290,7 +290,7 @@ export default function Creators() {
               className={`px-6 py-2 rounded-full font-semibold transition-colors ${
                 selectedTab === "new"
                   ? "bg-primary text-black"
-                  : "bg-muted/20 text-muted-foreground hover:text-white"
+                  : "bg-muted/20 text-muted-foreground hover:text-foreground"
               }`}
             >
               New Creators
@@ -321,7 +321,7 @@ export default function Creators() {
               <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 No creators yet
               </h3>
               <p className="text-muted-foreground mb-6">
@@ -360,7 +360,7 @@ export default function Creators() {
                     </div>
                     <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-6 gap-1 sm:gap-2 items-center">
                       <div className="min-w-0">
-                        <h3 className="text-white font-bold text-xs sm:text-sm truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
+                        <h3 className="text-foreground font-bold text-xs sm:text-sm truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
                           {creator.name || formatAddress(creator.address)}
                           {index === 0 && (
                             <Award className="w-3 h-3 text-yellow-500 flex-shrink-0" />
@@ -371,7 +371,7 @@ export default function Creators() {
                         </p>
                       </div>
                       <div className="text-left sm:text-center">
-                        <div className="text-white font-bold text-xs sm:text-sm" data-testid={`coins-${creator.address}`}>
+                        <div className="text-foreground font-bold text-xs sm:text-sm" data-testid={`coins-${creator.address}`}>
                           {creator.totalCoins}
                         </div>
                         <div className="text-muted-foreground text-[10px]">
@@ -379,7 +379,7 @@ export default function Creators() {
                         </div>
                       </div>
                       <div className="text-left sm:text-center">
-                        <div className="text-white font-bold text-xs sm:text-sm" data-testid={`marketcap-${creator.address}`}>
+                        <div className="text-foreground font-bold text-xs sm:text-sm" data-testid={`marketcap-${creator.address}`}>
                           ${creator.totalMarketCap}
                         </div>
                         <div className="text-muted-foreground text-[10px]">
@@ -387,7 +387,7 @@ export default function Creators() {
                         </div>
                       </div>
                       <div className="text-left sm:text-center">
-                        <div className="text-white font-bold text-xs sm:text-sm" data-testid={`holders-${creator.address}`}>
+                        <div className="text-foreground font-bold text-xs sm:text-sm" data-testid={`holders-${creator.address}`}>
                           {creator.totalHolders}
                         </div>
                         <div className="text-muted-foreground text-[10px]">
