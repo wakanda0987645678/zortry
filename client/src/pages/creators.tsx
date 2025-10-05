@@ -14,7 +14,7 @@ import { formatEther } from "viem";
 import { useLocation } from "wouter";
 import { createAvatar } from '@dicebear/core';
 import { avataaars } from '@dicebear/collection';
-import { getCoin } from "@zoralabs/coins-sdk";
+import { getCoin, getProfileCoins } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import { Button } from "@/components/ui/button";
 import TradeModal from "@/components/trade-modal";
@@ -29,6 +29,7 @@ export default function Creators() {
   const [selectedCreatorAddress, setSelectedCreatorAddress] = useState<string>("");
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [creatorEarnings, setCreatorEarnings] = useState<Record<string, number>>({});
 
   const { data: creators = [], isLoading: creatorsLoading } = useQuery<
     Creator[]
@@ -48,6 +49,7 @@ export default function Creators() {
     const fetchStats = async () => {
       const marketCapData: Record<string, string> = {};
       const holdersData: Record<string, number> = {};
+      const earningsData: Record<string, number> = {};
       
       for (const creator of creators) {
         const creatorCoins = coins.filter(
@@ -56,6 +58,29 @@ export default function Creators() {
 
         let totalMarketCapUSD = 0;
         let totalHolders = 0;
+        let totalEarnings = 0;
+        
+        // Fetch earnings from profile
+        try {
+          const response = await getProfileCoins({
+            identifier: creator.address,
+            count: 100,
+          });
+
+          const profile: any = response.data?.profile;
+          if (profile?.createdCoins?.edges) {
+            for (const edge of profile.createdCoins.edges) {
+              const coin: any = edge.node;
+              
+              if (coin?.creatorEarnings && coin.creatorEarnings.length > 0) {
+                const earnings = parseFloat(coin.creatorEarnings[0].amountUsd || "0");
+                totalEarnings += earnings;
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching earnings for ${creator.address}:`, error);
+        }
         
         // Fetch market cap and holders for each coin that has an address
         await Promise.all(
@@ -84,10 +109,12 @@ export default function Creators() {
 
         marketCapData[creator.address] = totalMarketCapUSD.toFixed(2);
         holdersData[creator.address] = totalHolders;
+        earningsData[creator.address] = totalEarnings;
       }
       
       setCreatorMarketCaps(marketCapData);
       setCreatorHolders(holdersData);
+      setCreatorEarnings(earningsData);
     };
 
     if (creators.length > 0 && coins.length > 0) {
@@ -103,6 +130,7 @@ export default function Creators() {
     // Use real market cap from fetched data, or 0 if not available yet
     const totalMarketCap = creatorMarketCaps[creator.address] || "0.0000";
     const totalHolders = creatorHolders[creator.address] || 0;
+    const totalEarnings = creatorEarnings[creator.address] || 0;
 
     // Calculate total volume from coin creation (mock for now as we don't track actual trading volume)
     const totalVolume = (creatorCoins.length * 0.001).toFixed(3);
@@ -113,6 +141,7 @@ export default function Creators() {
       totalVolume,
       totalMarketCap,
       totalHolders,
+      totalEarnings,
       coins: creatorCoins,
       // Generate dicebear avatar
       avatarUrl: createAvatar(avataaars, {
@@ -329,7 +358,7 @@ export default function Creators() {
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-5 gap-1 sm:gap-2 items-center">
+                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-6 gap-1 sm:gap-2 items-center">
                       <div className="min-w-0">
                         <h3 className="text-white font-bold text-xs sm:text-sm truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
                           {creator.name || formatAddress(creator.address)}
@@ -363,6 +392,14 @@ export default function Creators() {
                         </div>
                         <div className="text-muted-foreground text-[10px]">
                           Holders
+                        </div>
+                      </div>
+                      <div className="text-left sm:text-center">
+                        <div className="text-green-500 font-bold text-xs sm:text-sm" data-testid={`earnings-${creator.address}`}>
+                          ${creator.totalEarnings.toFixed(2)}
+                        </div>
+                        <div className="text-muted-foreground text-[10px]">
+                          Earnings
                         </div>
                       </div>
                       <div className="text-left sm:text-right">
