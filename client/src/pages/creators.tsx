@@ -8,6 +8,7 @@ import {
   Star,
   ExternalLink,
   Coins as CoinsIcon,
+  Flame,
 } from "lucide-react";
 import Layout from "@/components/layout";
 import { formatEther } from "viem";
@@ -19,6 +20,8 @@ import { base } from "viem/chains";
 import { Button } from "@/components/ui/button";
 import TradeModal from "@/components/trade-modal";
 import ProfileCardModal from "@/components/profile-card-modal";
+import { useAccount } from "wagmi";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Creators() {
   const [, navigate] = useLocation();
@@ -30,6 +33,8 @@ export default function Creators() {
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [creatorEarnings, setCreatorEarnings] = useState<Record<string, number>>({});
+  const { address: currentUserAddress } = useAccount();
+  const isMobile = useIsMobile();
 
   const { data: creators = [], isLoading: creatorsLoading } = useQuery<
     Creator[]
@@ -203,6 +208,34 @@ export default function Creators() {
     return Math.floor(days / 365) + "y";
   };
 
+  const getAvatarBgColor = (index: number) => {
+    const colors = [
+      'bg-pink-200 dark:bg-pink-300',
+      'bg-purple-200 dark:bg-purple-300', 
+      'bg-yellow-200 dark:bg-yellow-300',
+      'bg-blue-200 dark:bg-blue-300',
+      'bg-green-200 dark:bg-green-300',
+      'bg-orange-200 dark:bg-orange-300',
+      'bg-red-200 dark:bg-red-300',
+      'bg-indigo-200 dark:bg-indigo-300',
+    ];
+    return colors[index % colors.length];
+  };
+
+  const getRankColor = (index: number) => {
+    const colors = [
+      'text-pink-600 dark:text-pink-500',
+      'text-purple-600 dark:text-purple-500',
+      'text-yellow-600 dark:text-yellow-500',
+      'text-blue-600 dark:text-blue-500',
+      'text-green-600 dark:text-green-500',
+      'text-orange-600 dark:text-orange-500',
+      'text-red-600 dark:text-red-500',
+      'text-indigo-600 dark:text-indigo-500',
+    ];
+    return colors[index % colors.length];
+  };
+
   const isLoading = creatorsLoading || coinsLoading;
 
   return (
@@ -329,94 +362,156 @@ export default function Creators() {
               </p>
             </div>
           ) : (
-            /* Creators List */
-            <div className="space-y-2">
+            /* Creators List - Mobile Leaderboard Style */
+            <div className="space-y-3">
               {filteredCreators.map((creator, index) => {
+                const isCurrentUser = currentUserAddress && creator.address.toLowerCase() === currentUserAddress.toLowerCase();
+                const xpPoints = creator.totalCoins * 10; // Convert coins to XP points
+                const createdDaysAgo = Math.floor((Date.now() - new Date(creator.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+                const isVeteran = createdDaysAgo >= 365; // 1+ year
+
                 return (
                   <div
                     key={creator.id}
-                    className="spotify-card flex items-center gap-2 p-2 group hover:bg-muted/5 transition-colors"
+                    className={`rounded-2xl overflow-hidden transition-all ${
+                      isCurrentUser 
+                        ? 'bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30' 
+                        : 'bg-card'
+                    }`}
                     data-testid={`creator-${creator.address}`}
                   >
-                    <div 
-                      className="relative flex-shrink-0 cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedCreatorAddress(creator.address);
-                        setIsProfileModalOpen(true);
-                      }}
-                    >
-                      <img
-                        src={creator.avatarUrl}
-                        alt={creator.name || creator.address}
-                        className="w-10 h-10 rounded-full hover:ring-2 hover:ring-primary transition-all"
-                        data-testid={`avatar-${creator.address}`}
-                      />
-                      {index < 3 && (
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-black">
-                          {index + 1}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-6 gap-1 sm:gap-2 items-center">
-                      <div className="min-w-0">
-                        <h3 className="text-foreground font-bold text-xs sm:text-sm truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
-                          {creator.name || formatAddress(creator.address)}
+                    {/* Mobile Layout */}
+                    <div className="flex items-center gap-3 p-4 sm:hidden">
+                      {/* Rank Number */}
+                      <div className={`text-2xl font-black ${getRankColor(index)} flex-shrink-0 w-8`}>
+                        {index + 1}
+                      </div>
+
+                      {/* Avatar with colored background */}
+                      <div 
+                        className={`relative flex-shrink-0 cursor-pointer rounded-full p-1 ${getAvatarBgColor(index)}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCreatorAddress(creator.address);
+                          setIsProfileModalOpen(true);
+                        }}
+                      >
+                        <img
+                          src={creator.avatarUrl}
+                          alt={creator.name || creator.address}
+                          className="w-12 h-12 rounded-full"
+                          data-testid={`avatar-${creator.address}`}
+                        />
+                      </div>
+
+                      {/* Creator Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-foreground font-bold text-base truncate" data-testid={`name-${creator.address}`}>
+                            {isCurrentUser ? 'You' : (creator.name || formatAddress(creator.address))}
+                          </h3>
                           {index === 0 && (
-                            <Award className="w-3 h-3 text-yellow-500 flex-shrink-0" />
+                            <Award className="w-4 h-4 text-yellow-500 flex-shrink-0" />
                           )}
-                        </h3>
-                        <p className="text-muted-foreground text-[10px] font-mono">
-                          {formatAddress(creator.address)}
-                        </p>
+                        </div>
+                        {isVeteran && (
+                          <div className="flex items-center gap-1 mt-1">
+                            <Flame className="w-3 h-3 text-orange-500" />
+                            <span className="text-xs text-orange-600 dark:text-orange-500 font-medium">1+ year</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="text-left sm:text-center">
-                        <div className="text-foreground font-bold text-xs sm:text-sm" data-testid={`coins-${creator.address}`}>
-                          {creator.totalCoins}
-                        </div>
-                        <div className="text-muted-foreground text-[10px]">
-                          Coins
-                        </div>
-                      </div>
-                      <div className="text-left sm:text-center">
-                        <div className="text-foreground font-bold text-xs sm:text-sm" data-testid={`marketcap-${creator.address}`}>
-                          ${creator.totalMarketCap}
-                        </div>
-                        <div className="text-muted-foreground text-[10px]">
-                          Market Cap
+
+                      {/* XP Points */}
+                      <div className="text-right flex-shrink-0">
+                        <div className="text-lg font-bold text-foreground">
+                          {xpPoints} XP
                         </div>
                       </div>
-                      <div className="text-left sm:text-center">
-                        <div className="text-foreground font-bold text-xs sm:text-sm" data-testid={`holders-${creator.address}`}>
-                          {creator.totalHolders}
-                        </div>
-                        <div className="text-muted-foreground text-[10px]">
-                          Holders
-                        </div>
+                    </div>
+
+                    {/* Desktop Layout */}
+                    <div className="hidden sm:flex items-center gap-2 p-2 group hover:bg-muted/5 transition-colors">
+                      <div 
+                        className="relative flex-shrink-0 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCreatorAddress(creator.address);
+                          setIsProfileModalOpen(true);
+                        }}
+                      >
+                        <img
+                          src={creator.avatarUrl}
+                          alt={creator.name || creator.address}
+                          className="w-10 h-10 rounded-full hover:ring-2 hover:ring-primary transition-all"
+                          data-testid={`avatar-${creator.address}`}
+                        />
+                        {index < 3 && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-black">
+                            {index + 1}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-left sm:text-center">
-                        <div className="text-green-500 font-bold text-xs sm:text-sm" data-testid={`earnings-${creator.address}`}>
-                          ${creator.totalEarnings.toFixed(2)}
+                      <div className="flex-1 min-w-0 grid grid-cols-6 gap-2 items-center">
+                        <div className="min-w-0">
+                          <h3 className="text-foreground font-bold text-sm truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
+                            {creator.name || formatAddress(creator.address)}
+                            {index === 0 && (
+                              <Award className="w-3 h-3 text-yellow-500 flex-shrink-0" />
+                            )}
+                          </h3>
+                          <p className="text-muted-foreground text-[10px] font-mono">
+                            {formatAddress(creator.address)}
+                          </p>
                         </div>
-                        <div className="text-muted-foreground text-[10px]">
-                          Earnings
+                        <div className="text-center">
+                          <div className="text-foreground font-bold text-sm" data-testid={`coins-${creator.address}`}>
+                            {creator.totalCoins}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Coins
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-left sm:text-right">
-                        <Button
-                          size="sm"
-                          className="h-7 px-3 text-xs bg-primary hover:bg-primary/90 text-black font-bold rounded-full"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (creator.coins && creator.coins.length > 0) {
-                              setSelectedCoin(creator.coins[0]);
-                              setIsTradeModalOpen(true);
-                            }
-                          }}
-                          disabled={!creator.coins || creator.coins.length === 0}
-                        >
-                          Trade
-                        </Button>
+                        <div className="text-center">
+                          <div className="text-foreground font-bold text-sm" data-testid={`marketcap-${creator.address}`}>
+                            ${creator.totalMarketCap}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Market Cap
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-foreground font-bold text-sm" data-testid={`holders-${creator.address}`}>
+                            {creator.totalHolders}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Holders
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-green-500 font-bold text-sm" data-testid={`earnings-${creator.address}`}>
+                            ${creator.totalEarnings.toFixed(2)}
+                          </div>
+                          <div className="text-muted-foreground text-[10px]">
+                            Earnings
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Button
+                            size="sm"
+                            className="h-7 px-3 text-xs bg-primary hover:bg-primary/90 text-black font-bold rounded-full"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (creator.coins && creator.coins.length > 0) {
+                                setSelectedCoin(creator.coins[0]);
+                                setIsTradeModalOpen(true);
+                              }
+                            }}
+                            disabled={!creator.coins || creator.coins.length === 0}
+                          >
+                            Trade
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
