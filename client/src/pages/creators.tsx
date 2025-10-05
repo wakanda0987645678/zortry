@@ -381,7 +381,7 @@ export default function Creators() {
                     data-testid={`creator-${creator.address}`}
                   >
                     {/* Mobile Layout */}
-                    <div className="flex items-center gap-3 p-4 sm:hidden">
+                    <div className="flex sm:hidden items-center gap-3 p-4">
                       {/* Rank Number */}
                       <div className={`text-2xl font-black ${getRankColor(index)} flex-shrink-0 w-8`}>
                         {index + 1}
@@ -431,7 +431,7 @@ export default function Creators() {
                     </div>
 
                     {/* Desktop Layout */}
-                    <div className="hidden sm:flex items-center gap-2 p-2 group hover:bg-muted/5 transition-colors">
+                    <div className="hidden sm:flex items-center gap-2 p-2 hover:bg-muted/5 transition-colors">
                       <div 
                         className="relative flex-shrink-0 cursor-pointer"
                         onClick={(e) => {
