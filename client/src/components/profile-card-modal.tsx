@@ -4,7 +4,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import type { Coin } from "@shared/schema";
-import { User, Users, DollarSign, Coins as CoinsIcon, Copy, Check } from "lucide-react";
+import { Users, DollarSign, Coins as CoinsIcon, TrendingUp } from "lucide-react";
 import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
 import { createAvatar } from '@dicebear/core';
@@ -18,7 +18,6 @@ interface ProfileCardModalProps {
 
 export default function ProfileCardModal({ creatorAddress, open, onOpenChange }: ProfileCardModalProps) {
   const [isFollowing, setIsFollowing] = useState(false);
-  const [copiedAddress, setCopiedAddress] = useState(false);
   const [totalMarketCap, setTotalMarketCap] = useState<number>(0);
   const [totalHolders, setTotalHolders] = useState<number>(0);
 
@@ -32,7 +31,7 @@ export default function ProfileCardModal({ creatorAddress, open, onOpenChange }:
 
   const avatarUrl = createAvatar(avataaars, {
     seed: creatorAddress,
-    size: 128,
+    size: 96,
   }).toDataUri();
 
   useEffect(() => {
@@ -74,92 +73,100 @@ export default function ProfileCardModal({ creatorAddress, open, onOpenChange }:
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(creatorAddress);
-    setCopiedAddress(true);
-    setTimeout(() => setCopiedAddress(false), 2000);
-  };
-
   const handleFollowToggle = () => {
     setIsFollowing(!isFollowing);
   };
 
+  // Get the first coin's image for background or use a gradient
+  const backgroundImage = creatorCoins[0]?.metadata?.image;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-card/95 backdrop-blur-sm border-border/50 p-0 overflow-hidden sm:rounded-3xl">
+      <DialogContent className="sm:max-w-[320px] bg-card border-border/50 p-0 overflow-hidden sm:rounded-3xl">
         <div className="relative">
-          {/* Header Background */}
-          <div className="h-24 bg-gradient-to-br from-primary/40 to-primary/60"></div>
+          {/* Header Background with gradient overlay */}
+          <div className="relative h-32 overflow-hidden">
+            {backgroundImage ? (
+              <>
+                <img 
+                  src={backgroundImage} 
+                  alt="Background" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background"></div>
+              </>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-primary/40 via-primary/30 to-primary/20"></div>
+            )}
+            
+            {/* Badge */}
+            <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5">
+              <CoinsIcon className="w-3.5 h-3.5 text-primary" />
+              <span className="text-xs font-semibold text-foreground">Creator</span>
+            </div>
+          </div>
 
           {/* Profile Content */}
-          <div className="px-6 pb-6">
+          <div className="px-5 pb-5 -mt-10">
             {/* Avatar */}
-            <div className="relative -mt-16 mb-4">
+            <div className="relative mb-3">
               <img
                 src={avatarUrl}
                 alt="Profile"
-                className="w-32 h-32 rounded-full border-4 border-background"
+                className="w-20 h-20 rounded-full border-4 border-background shadow-lg"
               />
             </div>
 
-            {/* Username & Address */}
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold text-white mb-2">
+            {/* Name & Address */}
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-foreground mb-0.5">
                 {formatAddress(creatorAddress)}
-              </h2>
-              <button
-                onClick={copyToClipboard}
-                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-white transition-colors"
-              >
-                <span className="font-mono">{creatorAddress}</span>
-                {copiedAddress ? (
-                  <Check className="w-4 h-4 text-green-500" />
-                ) : (
-                  <Copy className="w-4 h-4" />
-                )}
-              </button>
+              </h3>
+              <p className="text-xs text-muted-foreground font-mono">
+                {creatorAddress}
+              </p>
+            </div>
+
+            {/* Stats Row */}
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <TrendingUp className="w-3 h-3 text-yellow-500" />
+                  <span className="text-xs font-medium text-muted-foreground">Rating</span>
+                </div>
+                <p className="text-base font-bold text-foreground">5.0</p>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <DollarSign className="w-3 h-3 text-green-500" />
+                  <span className="text-xs font-medium text-muted-foreground">Market</span>
+                </div>
+                <p className="text-base font-bold text-foreground">
+                  ${totalMarketCap > 1000 ? `${(totalMarketCap / 1000).toFixed(0)}k` : totalMarketCap.toFixed(0)}
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <Users className="w-3 h-3 text-blue-500" />
+                  <span className="text-xs font-medium text-muted-foreground">Holders</span>
+                </div>
+                <p className="text-base font-bold text-foreground">{totalHolders}</p>
+              </div>
             </div>
 
             {/* Follow Button */}
             <Button
               onClick={handleFollowToggle}
-              className={`w-full mb-6 rounded-full font-semibold ${
+              className={`w-full rounded-full font-semibold transition-all ${
                 isFollowing
-                  ? 'bg-muted/20 text-white hover:bg-muted/30'
-                  : 'bg-primary text-black hover:bg-primary/90'
+                  ? 'bg-muted/50 text-foreground hover:bg-muted/70 border border-border'
+                  : 'bg-primary text-primary-foreground hover:bg-primary/90'
               }`}
             >
-              {isFollowing ? 'Following' : 'Follow'}
+              {isFollowing ? 'Following' : 'Get in Touch'}
             </Button>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 rounded-lg bg-muted/10">
-                <div className="flex items-center justify-center mb-1">
-                  <CoinsIcon className="w-4 h-4 text-primary" />
-                </div>
-                <div className="text-xl font-bold text-white">{creatorCoins.length}</div>
-                <div className="text-xs text-muted-foreground">Coins</div>
-              </div>
-
-              <div className="text-center p-3 rounded-lg bg-muted/10">
-                <div className="flex items-center justify-center mb-1">
-                  <DollarSign className="w-4 h-4 text-green-500" />
-                </div>
-                <div className="text-xl font-bold text-white">
-                  ${totalMarketCap.toFixed(0)}
-                </div>
-                <div className="text-xs text-muted-foreground">Market Cap</div>
-              </div>
-
-              <div className="text-center p-3 rounded-lg bg-muted/10">
-                <div className="flex items-center justify-center mb-1">
-                  <Users className="w-4 h-4 text-blue-500" />
-                </div>
-                <div className="text-xl font-bold text-white">{totalHolders}</div>
-                <div className="text-xs text-muted-foreground">Holders</div>
-              </div>
-            </div>
           </div>
         </div>
       </DialogContent>
