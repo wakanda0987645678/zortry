@@ -93,7 +93,7 @@ export default function FAQ() {
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <HelpCircle className="w-8 h-8 text-black" />
           </div>
-          <h1 className="text-4xl font-black mb-4 text-white">
+          <h1 className="text-4xl font-black mb-4 text-foreground">
             Frequently Asked <span className="spotify-green">Questions</span>
           </h1>
           <p className="text-xl text-muted-foreground">
@@ -110,7 +110,7 @@ export default function FAQ() {
               className={`px-4 py-2 rounded-full font-semibold transition-colors ${
                 selectedCategory === category.key
                   ? "bg-primary text-black"
-                  : "bg-muted/20 text-muted-foreground hover:text-white"
+                  : "bg-muted/20 text-muted-foreground hover:text-foreground"
               }`}
             >
               {category.label}
@@ -126,7 +126,7 @@ export default function FAQ() {
                 onClick={() => toggleItem(index)}
                 className="w-full p-6 text-left flex items-center justify-between hover:bg-muted/5 transition-colors"
               >
-                <h3 className="text-lg font-bold text-white pr-4">{item.question}</h3>
+                <h3 className="text-lg font-bold text-foreground pr-4">{item.question}</h3>
                 {openItems.includes(index) ? (
                   <ChevronUp className="w-5 h-5 text-primary flex-shrink-0" />
                 ) : (
@@ -152,7 +152,7 @@ export default function FAQ() {
 
         {/* Contact Section */}
         <div className="mt-12 text-center bg-muted/10 rounded-xl p-8">
-          <h2 className="text-2xl font-bold text-white mb-4">Still have questions?</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-4">Still have questions?</h2>
           <p className="text-muted-foreground mb-6">
             Can't find what you're looking for? Get in touch with our support team.
           </p>

@@ -53,14 +53,16 @@ export default function Layout({ children }: LayoutProps) {
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
     if (savedTheme) {
       setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(savedTheme);
     } else {
       // Default to system theme if no theme is saved
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       const initialTheme = prefersDark ? "dark" : "light";
       setTheme(initialTheme);
       localStorage.setItem("theme", initialTheme);
-      document.documentElement.classList.toggle("dark", initialTheme === "dark");
+      document.documentElement.classList.remove("light", "dark");
+      document.documentElement.classList.add(initialTheme);
     }
   }, []);
 
@@ -68,7 +70,8 @@ export default function Layout({ children }: LayoutProps) {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(newTheme);
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -99,7 +102,7 @@ export default function Layout({ children }: LayoutProps) {
     const items = mobile ? mobileNavItems : desktopNavItems;
 
     return (
-      <div className={`bg-slate-950 dark:bg-black/90 ${mobile ? 'p-4' : 'p-6'} flex flex-col h-full`}>
+      <div className={`bg-sidebar ${mobile ? 'p-4' : 'p-6'} flex flex-col h-full`}>
         <div className="flex items-center gap-2 mb-8">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
             <Play className="w-4 h-4 text-black fill-current" />
