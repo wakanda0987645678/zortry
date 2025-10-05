@@ -276,7 +276,7 @@ export default function Layout({ children }: LayoutProps) {
                         : "text-muted-foreground"
                     }`}>
                       <Icon className="w-5 h-5" />
-                      <span className="text-xs font-medium mt-1">{item.label}</span>
+                      <span className="text-[10px] font-medium mt-1">{item.label}</span>
                     </div>
                   </Link>
                 );
