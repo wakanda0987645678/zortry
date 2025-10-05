@@ -289,19 +289,17 @@
     color: hsl(var(--primary)) !important;
   }
   
-  /* Keep icon colors in light mode */
-  .light .platform-icon-youtube,
-  .light .platform-icon-farcaster,
-  .light .platform-icon-gitcoin,
-  .light .platform-icon-spotify,
-  .light .platform-icon-tiktok,
-  .light .platform-icon-instagram,
-  .light .platform-icon-medium,
-  .light .platform-icon-twitter,
-  .light .platform-icon-blog,
-  .light .platform-icon-giveth,
-  .light .platform-icon-all {
-    opacity: 1;
+  /* Light mode adjustments for better visibility */
+  .light .platform-icon-tiktok {
+    color: #EE1D52 !important; /* TikTok pink for light mode */
+  }
+  
+  .light .platform-icon-medium {
+    color: #00ab6c !important; /* Medium green for light mode */
+  }
+  
+  .light .platform-icon-twitter {
+    color: #000000 !important; /* Twitter X black */
   }
 
   /* Mobile-specific utilities */
