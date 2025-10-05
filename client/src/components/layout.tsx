@@ -99,13 +99,13 @@ export default function Layout({ children }: LayoutProps) {
     const items = mobile ? mobileNavItems : desktopNavItems;
 
     return (
-      <div className={`bg-black/90 ${mobile ? 'p-4' : 'p-6'} flex flex-col h-full`}>
+      <div className={`bg-slate-950 dark:bg-black/90 ${mobile ? 'p-4' : 'p-6'} flex flex-col h-full`}>
         <div className="flex items-center gap-2 mb-8">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
             <Play className="w-4 h-4 text-black fill-current" />
           </div>
           {(!sidebarCollapsed || mobile) && (
-            <span className="text-2xl font-bold text-white">CoinIT</span>
+            <span className="text-2xl font-bold text-foreground">CoinIT</span>
           )}
         </div>
 
@@ -119,8 +119,8 @@ export default function Layout({ children }: LayoutProps) {
                 <div
                   className={`flex items-center gap-3 p-2 rounded-lg transition-colors cursor-pointer ${
                     isActive
-                      ? "text-white bg-primary/20"
-                      : "text-muted-foreground hover:text-white hover:bg-muted/10"
+                      ? "text-foreground bg-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/10"
                   }`}
                   onClick={() => mobile && setMobileMenuOpen(false)}
                 >
@@ -136,7 +136,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {(!sidebarCollapsed || mobile) && (
         <div className="bg-muted/20 rounded-lg p-4">
-          <h3 className="font-bold text-white mb-2">Create Your First Coin</h3>
+          <h3 className="font-bold text-foreground mb-2">Create Your First Coin</h3>
           <p className="text-sm text-muted-foreground mb-3">
             Turn any blog post into a tradeable digital asset.
           </p>
@@ -157,9 +157,9 @@ export default function Layout({ children }: LayoutProps) {
           className="flex items-center justify-center w-8 h-8 bg-muted/20 rounded-lg hover:bg-muted/30 transition-colors mt-4"
         >
           {sidebarCollapsed ? (
-            <ChevronRight className="w-4 h-4 text-white" />
+            <ChevronRight className="w-4 h-4 text-foreground" />
           ) : (
-            <ChevronLeft className="w-4 h-4 text-white" />
+            <ChevronLeft className="w-4 h-4 text-foreground" />
           )}
         </button>
       )}
@@ -189,7 +189,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                   <Play className="w-3 h-3 text-black fill-current" />
                 </div>
-                <span className="text-lg font-bold text-white">CoinIT</span>
+                <span className="text-lg font-bold text-foreground">CoinIT</span>
               </div>
             </div>
 
@@ -281,7 +281,7 @@ export default function Layout({ children }: LayoutProps) {
               {isConnected && (
                 <Link href="/profile">
                   <button
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/20 transition-colors text-muted-foreground hover:text-white"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/20 transition-colors text-muted-foreground hover:text-foreground"
                     data-testid="button-profile"
                   >
                     <User className="w-5 h-5" />
