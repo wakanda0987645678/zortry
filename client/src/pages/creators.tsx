@@ -14,6 +14,8 @@ import { formatEther } from "viem";
 import { useLocation } from "wouter";
 import { createAvatar } from '@dicebear/core';
 import { avataaars } from '@dicebear/collection';
+import { getCoin } from "@zoralabs/coins-sdk";
+import { base } from "viem/chains";
 
 export default function Creators() {
   const [, navigate] = useLocation();
@@ -32,14 +34,58 @@ export default function Creators() {
   });
 
   // Calculate creator stats from real data
+  const [creatorMarketCaps, setCreatorMarketCaps] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const fetchMarketCaps = async () => {
+      const marketCapData: Record<string, string> = {};
+      
+      for (const creator of creators) {
+        const creatorCoins = coins.filter(
+          (coin) => coin.creator.toLowerCase() === creator.address.toLowerCase(),
+        );
+
+        let totalMarketCap = 0;
+        
+        // Fetch market cap for each coin that has an address
+        await Promise.all(
+          creatorCoins.map(async (coin) => {
+            if (coin.address) {
+              try {
+                const response = await getCoin({
+                  address: coin.address,
+                  chain: base.id,
+                });
+                
+                const coinData = response.data?.zora20Token;
+                if (coinData?.marketCap) {
+                  totalMarketCap += parseFloat(coinData.marketCap);
+                }
+              } catch (error) {
+                console.error(`Error fetching market cap for ${coin.symbol}:`, error);
+              }
+            }
+          })
+        );
+
+        marketCapData[creator.address] = totalMarketCap.toFixed(4);
+      }
+      
+      setCreatorMarketCaps(marketCapData);
+    };
+
+    if (creators.length > 0 && coins.length > 0) {
+      fetchMarketCaps();
+    }
+  }, [creators, coins]);
+
   const enrichedCreators = creators.map((creator) => {
     const creatorCoins = coins.filter(
       (coin) => coin.creator.toLowerCase() === creator.address.toLowerCase(),
     );
 
-    // Calculate estimated market cap (mock calculation based on coin count)
-    // In a real implementation, this would fetch from blockchain
-    const estimatedMarketCap = (creatorCoins.length * 0.05).toFixed(4);
+    // Use real market cap from fetched data, or 0 if not available yet
+    const totalMarketCap = creatorMarketCaps[creator.address] || "0.0000";
 
     // Calculate total volume from coin creation (mock for now as we don't track actual trading volume)
     const totalVolume = (creatorCoins.length * 0.001).toFixed(3);
@@ -48,7 +94,7 @@ export default function Creators() {
       ...creator,
       totalCoins: creatorCoins.length,
       totalVolume,
-      estimatedMarketCap,
+      totalMarketCap,
       // Generate dicebear avatar
       avatarUrl: createAvatar(avataaars, {
         seed: creator.address,
@@ -280,10 +326,10 @@ export default function Creators() {
                       </div>
                       <div className="text-left sm:text-right">
                         <div className="text-white font-bold text-sm sm:text-base" data-testid={`marketcap-${creator.address}`}>
-                          {creator.estimatedMarketCap} ETH
+                          {creator.totalMarketCap} ETH
                         </div>
                         <div className="text-muted-foreground text-xs">
-                          Est. Market Cap
+                          Market Cap
                         </div>
                       </div>
                     </div>

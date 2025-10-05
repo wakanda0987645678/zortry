@@ -90,8 +90,8 @@ export default function Layout({ children }: LayoutProps) {
   const mobileNavItems = [
     { href: "/", icon: Compass, label: "Explore" },
     { href: "/search", icon: Search, label: "Search" },
+    { href: "/create", icon: Plus, label: "Create" },
     { href: "/channels", icon: Hash, label: "Channels" },
-    { href: "/creators", icon: Users, label: "Creators" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -202,12 +202,6 @@ export default function Layout({ children }: LayoutProps) {
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
-                </button>
-              </Link>
-              <Link href="/create">
-                <button className="flex items-center gap-2 bg-primary text-black hover:bg-primary/90 font-semibold px-3 py-1.5 rounded-full transition-colors text-sm">
-                  <Plus className="w-3 h-3" />
-                  Create
                 </button>
               </Link>
               <WalletConnectButton />
