@@ -16,12 +16,19 @@ import { createAvatar } from '@dicebear/core';
 import { avataaars } from '@dicebear/collection';
 import { getCoin } from "@zoralabs/coins-sdk";
 import { base } from "viem/chains";
+import { Button } from "@/components/ui/button";
+import TradeModal from "@/components/trade-modal";
+import ProfileCardModal from "@/components/profile-card-modal";
 
 export default function Creators() {
   const [, navigate] = useLocation();
   const [selectedTab, setSelectedTab] = useState<"top" | "rising" | "new">(
     "top",
   );
+  const [selectedCoin, setSelectedCoin] = useState<Coin | null>(null);
+  const [selectedCreatorAddress, setSelectedCreatorAddress] = useState<string>("");
+  const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const { data: creators = [], isLoading: creatorsLoading } = useQuery<
     Creator[]
@@ -35,10 +42,12 @@ export default function Creators() {
 
   // Calculate creator stats from real data
   const [creatorMarketCaps, setCreatorMarketCaps] = useState<Record<string, string>>({});
+  const [creatorHolders, setCreatorHolders] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    const fetchMarketCaps = async () => {
+    const fetchStats = async () => {
       const marketCapData: Record<string, string> = {};
+      const holdersData: Record<string, number> = {};
       
       for (const creator of creators) {
         const creatorCoins = coins.filter(
@@ -46,8 +55,9 @@ export default function Creators() {
         );
 
         let totalMarketCapUSD = 0;
+        let totalHolders = 0;
         
-        // Fetch market cap for each coin that has an address
+        // Fetch market cap and holders for each coin that has an address
         await Promise.all(
           creatorCoins.map(async (coin) => {
             if (coin.address) {
@@ -62,21 +72,26 @@ export default function Creators() {
                   // marketCap from API is already in USD
                   totalMarketCapUSD += parseFloat(coinData.marketCap);
                 }
+                if (coinData?.uniqueHolders !== undefined) {
+                  totalHolders += coinData.uniqueHolders;
+                }
               } catch (error) {
-                console.error(`Error fetching market cap for ${coin.symbol}:`, error);
+                console.error(`Error fetching stats for ${coin.symbol}:`, error);
               }
             }
           })
         );
 
         marketCapData[creator.address] = totalMarketCapUSD.toFixed(2);
+        holdersData[creator.address] = totalHolders;
       }
       
       setCreatorMarketCaps(marketCapData);
+      setCreatorHolders(holdersData);
     };
 
     if (creators.length > 0 && coins.length > 0) {
-      fetchMarketCaps();
+      fetchStats();
     }
   }, [creators, coins]);
 
@@ -87,6 +102,7 @@ export default function Creators() {
 
     // Use real market cap from fetched data, or 0 if not available yet
     const totalMarketCap = creatorMarketCaps[creator.address] || "0.0000";
+    const totalHolders = creatorHolders[creator.address] || 0;
 
     // Calculate total volume from coin creation (mock for now as we don't track actual trading volume)
     const totalVolume = (creatorCoins.length * 0.001).toFixed(3);
@@ -96,6 +112,8 @@ export default function Creators() {
       totalCoins: creatorCoins.length,
       totalVolume,
       totalMarketCap,
+      totalHolders,
+      coins: creatorCoins,
       // Generate dicebear avatar
       avatarUrl: createAvatar(avataaars, {
         seed: creator.address,
@@ -288,15 +306,21 @@ export default function Creators() {
                 return (
                   <div
                     key={creator.id}
-                    className="spotify-card flex items-center gap-2 p-2 cursor-pointer group hover:bg-muted/5 transition-colors"
-                    onClick={() => navigate(`/creator/${creator.address}`)}
+                    className="spotify-card flex items-center gap-2 p-2 group hover:bg-muted/5 transition-colors"
                     data-testid={`creator-${creator.address}`}
                   >
-                    <div className="relative flex-shrink-0">
+                    <div 
+                      className="relative flex-shrink-0 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCreatorAddress(creator.address);
+                        setIsProfileModalOpen(true);
+                      }}
+                    >
                       <img
                         src={creator.avatarUrl}
                         alt={creator.name || creator.address}
-                        className="w-10 h-10 rounded-full"
+                        className="w-10 h-10 rounded-full hover:ring-2 hover:ring-primary transition-all"
                         data-testid={`avatar-${creator.address}`}
                       />
                       {index < 3 && (
@@ -305,7 +329,7 @@ export default function Creators() {
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3">
+                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-5 gap-1 sm:gap-2 items-center">
                       <div className="min-w-0">
                         <h3 className="text-white font-bold text-xs sm:text-sm truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
                           {creator.name || formatAddress(creator.address)}
@@ -325,13 +349,37 @@ export default function Creators() {
                           Coins
                         </div>
                       </div>
-                      <div className="text-left sm:text-right">
+                      <div className="text-left sm:text-center">
                         <div className="text-white font-bold text-xs sm:text-sm" data-testid={`marketcap-${creator.address}`}>
                           ${creator.totalMarketCap}
                         </div>
                         <div className="text-muted-foreground text-[10px]">
                           Market Cap
                         </div>
+                      </div>
+                      <div className="text-left sm:text-center">
+                        <div className="text-white font-bold text-xs sm:text-sm" data-testid={`holders-${creator.address}`}>
+                          {creator.totalHolders}
+                        </div>
+                        <div className="text-muted-foreground text-[10px]">
+                          Holders
+                        </div>
+                      </div>
+                      <div className="text-left sm:text-right">
+                        <Button
+                          size="sm"
+                          className="h-7 px-3 text-xs bg-primary hover:bg-primary/90 text-black font-bold rounded-full"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (creator.coins && creator.coins.length > 0) {
+                              setSelectedCoin(creator.coins[0]);
+                              setIsTradeModalOpen(true);
+                            }
+                          }}
+                          disabled={!creator.coins || creator.coins.length === 0}
+                        >
+                          Trade
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -341,6 +389,22 @@ export default function Creators() {
           )}
         </div>
       </div>
+
+      {/* Trade Modal */}
+      {selectedCoin && (
+        <TradeModal
+          coin={selectedCoin}
+          open={isTradeModalOpen}
+          onOpenChange={setIsTradeModalOpen}
+        />
+      )}
+
+      {/* Profile Card Modal */}
+      <ProfileCardModal
+        creatorAddress={selectedCreatorAddress}
+        open={isProfileModalOpen}
+        onOpenChange={setIsProfileModalOpen}
+      />
     </Layout>
   );
 }

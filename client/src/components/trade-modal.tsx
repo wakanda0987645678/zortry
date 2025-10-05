@@ -23,6 +23,30 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Badge } from "@/components/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
+// Assuming ProfileCardModal component is defined elsewhere and imported
+// For demonstration, a placeholder is included here. In a real scenario, import it.
+const ProfileCardModal = ({ creatorAddress, open, onOpenChange }: { creatorAddress: string; open: boolean; onOpenChange: (open: boolean) => void }) => {
+  // Placeholder for Profile Card Modal content and logic
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Creator Profile</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center p-4">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-lg font-bold text-white mb-3">
+            {creatorAddress.slice(0, 4).toUpperCase()}
+          </div>
+          <p className="text-lg font-semibold text-white mb-1">{creatorAddress.slice(0, 10)}...</p>
+          <p className="text-sm text-muted-foreground mb-3">@{creatorAddress.slice(0, 8)}</p>
+          <p className="text-xs text-muted-foreground text-center mb-4">Some placeholder stats like Marketcap, Holders would go here.</p>
+          <Button className="w-full rounded-full">Follow</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 interface TradeModalProps {
   coin: Coin;
   open: boolean;
@@ -59,6 +83,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
   const [timeframe, setTimeframe] = useState<'1H' | '1D' | 'W' | 'M' | 'All'>('1D');
   const [priceChange, setPriceChange] = useState<number>(0);
   const [currentSlide, setCurrentSlide] = useState(0); // Added state for current slide tracking
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); // State to control profile modal visibility
 
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
@@ -470,6 +495,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     setEthAmount("0.000111");
     setComment("");
     onOpenChange(false);
+    setIsProfileModalOpen(false); // Close profile modal on trade modal close
   };
 
   const setQuickAmount = (amount: string) => {
@@ -913,9 +939,9 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
                     if (tokenBalance > 1e18) {
                       // Very large numbers (wei units) - convert to standard units
-                      formattedBalance = (tokenBalance / 1e18).toLocaleString(undefined, { 
+                      formattedBalance = (tokenBalance / 1e18).toLocaleString(undefined, {
                         maximumFractionDigits: 2,
-                        minimumFractionDigits: 2 
+                        minimumFractionDigits: 2
                       });
                     } else if (tokenBalance > 1e6) {
                       // Millions
@@ -934,8 +960,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                     } else if (holder.percentage >= 100 || isNaN(holder.percentage)) {
                       // If data is inconsistent, calculate from total holders instead
                       const totalHoldersBalance = holders.reduce((sum, h) => sum + parseFloat(h.balance), 0);
-                      const actualPercentage = totalHoldersBalance > 0 
-                        ? (tokenBalance / totalHoldersBalance) * 100 
+                      const actualPercentage = totalHoldersBalance > 0
+                        ? (tokenBalance / totalHoldersBalance) * 100
                         : 0;
                       formattedPercentage = actualPercentage.toFixed(2);
                     } else {
@@ -958,7 +984,14 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                               : isCreator
                                 ? 'bg-gradient-to-br from-primary to-secondary'
                                 : 'bg-gradient-to-br from-blue-500 to-cyan-500'
-                          } flex items-center justify-center text-xs font-bold text-white flex-shrink-0`}>
+                          } flex items-center justify-center text-xs font-bold text-white flex-shrink-0`}
+                            // Add onClick to open Profile Card Modal
+                            onClick={() => {
+                              // You might want to fetch specific creator details here if needed
+                              setIsProfileModalOpen(true);
+                            }}
+                            style={{ cursor: 'pointer' }} // Indicate it's clickable
+                          >
                             {holder.address.slice(2, 4).toUpperCase()}
                           </div>
                           <div>
@@ -1141,6 +1174,13 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
           </div>
         </div>
       </DialogContent>
+
+      {/* Profile Card Modal */}
+      <ProfileCardModal
+        creatorAddress={coin.creator}
+        open={isProfileModalOpen}
+        onOpenChange={setIsProfileModalOpen}
+      />
     </Dialog>
   );
 }
