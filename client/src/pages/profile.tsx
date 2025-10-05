@@ -514,7 +514,7 @@ export default function Profile() {
                 key={coin.id} 
                 coin={{
                   ...coin,
-                  createdAt: coin.createdAt.toISOString(),
+                  createdAt: typeof coin.createdAt === 'string' ? coin.createdAt : coin.createdAt.toISOString(),
                   ipfsUri: coin.ipfsUri ?? undefined
                 }} 
                 isOwnCoin={selectedTab === "created"} 
