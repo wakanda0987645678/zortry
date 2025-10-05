@@ -45,7 +45,7 @@ export default function Creators() {
           (coin) => coin.creator.toLowerCase() === creator.address.toLowerCase(),
         );
 
-        let totalMarketCap = 0;
+        let totalMarketCapUSD = 0;
         
         // Fetch market cap for each coin that has an address
         await Promise.all(
@@ -59,7 +59,8 @@ export default function Creators() {
                 
                 const coinData = response.data?.zora20Token;
                 if (coinData?.marketCap) {
-                  totalMarketCap += parseFloat(coinData.marketCap);
+                  // marketCap from API is already in USD
+                  totalMarketCapUSD += parseFloat(coinData.marketCap);
                 }
               } catch (error) {
                 console.error(`Error fetching market cap for ${coin.symbol}:`, error);
@@ -68,7 +69,7 @@ export default function Creators() {
           })
         );
 
-        marketCapData[creator.address] = totalMarketCap.toFixed(4);
+        marketCapData[creator.address] = totalMarketCapUSD.toFixed(2);
       }
       
       setCreatorMarketCaps(marketCapData);
@@ -184,16 +185,16 @@ export default function Creators() {
                 </div>
                 <div className="text-center lg:text-right">
                   <div className="text-1xl font-black text-white">
+                    $
                     {filteredCreators
                       .reduce(
-                        (acc, creator) => acc + parseFloat(creator.totalVolume),
+                        (acc, creator) => acc + parseFloat(creator.totalMarketCap),
                         0,
                       )
-                      .toFixed(3)}{" "}
-                    ETH
+                      .toFixed(2)}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Total Volume
+                    Total Market Cap
                   </div>
                 </div>
                 <div className="text-center lg:text-right">
@@ -282,12 +283,12 @@ export default function Creators() {
             </div>
           ) : (
             /* Creators List */
-            <div className="space-y-4">
+            <div className="space-y-2">
               {filteredCreators.map((creator, index) => {
                 return (
                   <div
                     key={creator.id}
-                    className="spotify-card flex items-center gap-3 p-3 sm:p-4 cursor-pointer group hover:bg-muted/5 transition-colors"
+                    className="spotify-card flex items-center gap-2 p-2 cursor-pointer group hover:bg-muted/5 transition-colors"
                     onClick={() => navigate(`/creator/${creator.address}`)}
                     data-testid={`creator-${creator.address}`}
                   >
@@ -295,40 +296,40 @@ export default function Creators() {
                       <img
                         src={creator.avatarUrl}
                         alt={creator.name || creator.address}
-                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"
+                        className="w-10 h-10 rounded-full"
                         data-testid={`avatar-${creator.address}`}
                       />
                       {index < 3 && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs font-bold text-black">
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[10px] font-bold text-black">
                           {index + 1}
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-3">
                       <div className="min-w-0">
-                        <h3 className="text-white font-bold text-sm sm:text-base truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
+                        <h3 className="text-white font-bold text-xs sm:text-sm truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
                           {creator.name || formatAddress(creator.address)}
                           {index === 0 && (
-                            <Award className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                            <Award className="w-3 h-3 text-yellow-500 flex-shrink-0" />
                           )}
                         </h3>
-                        <p className="text-muted-foreground text-xs font-mono">
+                        <p className="text-muted-foreground text-[10px] font-mono">
                           {formatAddress(creator.address)}
                         </p>
                       </div>
                       <div className="text-left sm:text-center">
-                        <div className="text-white font-bold text-sm sm:text-base" data-testid={`coins-${creator.address}`}>
+                        <div className="text-white font-bold text-xs sm:text-sm" data-testid={`coins-${creator.address}`}>
                           {creator.totalCoins}
                         </div>
-                        <div className="text-muted-foreground text-xs">
-                          Coins Created
+                        <div className="text-muted-foreground text-[10px]">
+                          Coins
                         </div>
                       </div>
                       <div className="text-left sm:text-right">
-                        <div className="text-white font-bold text-sm sm:text-base" data-testid={`marketcap-${creator.address}`}>
-                          {creator.totalMarketCap} ETH
+                        <div className="text-white font-bold text-xs sm:text-sm" data-testid={`marketcap-${creator.address}`}>
+                          ${creator.totalMarketCap}
                         </div>
-                        <div className="text-muted-foreground text-xs">
+                        <div className="text-muted-foreground text-[10px]">
                           Market Cap
                         </div>
                       </div>
