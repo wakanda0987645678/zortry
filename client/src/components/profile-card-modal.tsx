@@ -84,37 +84,21 @@ export default function ProfileCardModal({ creatorAddress, open, onOpenChange }:
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[320px] bg-card border-border/50 p-0 overflow-hidden sm:rounded-3xl">
         <div className="relative">
-          {/* Header Background with gradient overlay */}
-          <div className="relative h-32 overflow-hidden">
-            {backgroundImage ? (
-              <>
-                <img 
-                  src={backgroundImage} 
-                  alt="Background" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background"></div>
-              </>
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/40 via-primary/30 to-primary/20"></div>
-            )}
-            
-            {/* Badge */}
-            <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5">
-              <CoinsIcon className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-semibold text-foreground">Creator</span>
-            </div>
-          </div>
-
           {/* Profile Content */}
-          <div className="px-5 pb-5 -mt-10">
-            {/* Avatar */}
-            <div className="relative mb-3">
+          <div className="px-5 pt-5 pb-5">
+            {/* Avatar and Badge */}
+            <div className="relative mb-3 flex items-start justify-between">
               <img
                 src={avatarUrl}
                 alt="Profile"
-                className="w-20 h-20 rounded-full border-4 border-background shadow-lg"
+                className="w-20 h-20 rounded-full border-4 border-border shadow-lg"
               />
+              
+              {/* Badge */}
+              <div className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 border border-border/50">
+                <CoinsIcon className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs font-semibold text-foreground">Creator</span>
+              </div>
             </div>
 
             {/* Name & Address */}
@@ -131,10 +115,10 @@ export default function ProfileCardModal({ creatorAddress, open, onOpenChange }:
             <div className="grid grid-cols-3 gap-2 mb-4">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
-                  <TrendingUp className="w-3 h-3 text-yellow-500" />
-                  <span className="text-xs font-medium text-muted-foreground">Rating</span>
+                  <CoinsIcon className="w-3 h-3 text-yellow-500" />
+                  <span className="text-xs font-medium text-muted-foreground">Coins</span>
                 </div>
-                <p className="text-base font-bold text-foreground">5.0</p>
+                <p className="text-base font-bold text-foreground">{creatorCoins.length}</p>
               </div>
 
               <div className="text-center">
@@ -165,7 +149,7 @@ export default function ProfileCardModal({ creatorAddress, open, onOpenChange }:
                   : 'bg-primary text-primary-foreground hover:bg-primary/90'
               }`}
             >
-              {isFollowing ? 'Following' : 'Get in Touch'}
+              {isFollowing ? 'Unfollow' : 'Follow'}
             </Button>
           </div>
         </div>
