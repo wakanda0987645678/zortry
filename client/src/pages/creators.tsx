@@ -12,6 +12,8 @@ import {
 import Layout from "@/components/layout";
 import { formatEther } from "viem";
 import { useLocation } from "wouter";
+import { createAvatar } from '@dicebear/core';
+import { avataaars } from '@dicebear/collection';
 
 export default function Creators() {
   const [, navigate] = useLocation();
@@ -35,15 +37,23 @@ export default function Creators() {
       (coin) => coin.creator.toLowerCase() === creator.address.toLowerCase(),
     );
 
+    // Calculate estimated market cap (mock calculation based on coin count)
+    // In a real implementation, this would fetch from blockchain
+    const estimatedMarketCap = (creatorCoins.length * 0.05).toFixed(4);
+
+    // Calculate total volume from coin creation (mock for now as we don't track actual trading volume)
+    const totalVolume = (creatorCoins.length * 0.001).toFixed(3);
+
     return {
       ...creator,
       totalCoins: creatorCoins.length,
-      // Calculate total volume from coin creation (mock for now as we don't track actual trading volume)
-      totalVolume: (creatorCoins.length * 0.001).toFixed(3), // Estimate based on coin count
-      // Generate avatar initials from address
-      avatar: creator.name
-        ? creator.name.substring(0, 2).toUpperCase()
-        : creator.address.substring(2, 4).toUpperCase(),
+      totalVolume,
+      estimatedMarketCap,
+      // Generate dicebear avatar
+      avatarUrl: createAvatar(avataaars, {
+        seed: creator.address,
+        size: 56,
+      }).toDataUri(),
       // Mock followers based on coin count and address
       followers: Math.floor(
         creatorCoins.length * 50 + parseInt(creator.address.slice(-2), 16) * 10,
@@ -228,48 +238,53 @@ export default function Creators() {
             /* Creators List */
             <div className="space-y-4">
               {filteredCreators.map((creator, index) => {
-                const coinsCreated = creator.totalCoins; // Assuming totalCoins is the relevant metric
-                const totalMarketCap = creator.totalVolume; // Assuming totalVolume is the relevant metric
-
                 return (
                   <div
                     key={creator.id}
-                    className="spotify-card flex items-center gap-3 p-3 sm:p-4 cursor-pointer group"
-                    onClick={() => navigate(`/creator/${creator.address}`)} // Example navigation
+                    className="spotify-card flex items-center gap-3 p-3 sm:p-4 cursor-pointer group hover:bg-muted/5 transition-colors"
+                    onClick={() => navigate(`/creator/${creator.address}`)}
+                    data-testid={`creator-${creator.address}`}
                   >
                     <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full flex items-center justify-center text-lg sm:text-xl font-bold text-white">
-                        {creator.avatar}
-                      </div>
+                      <img
+                        src={creator.avatarUrl}
+                        alt={creator.name || creator.address}
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"
+                        data-testid={`avatar-${creator.address}`}
+                      />
                       {index < 3 && (
                         <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs font-bold text-black">
                           {index + 1}
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-white font-bold text-sm sm:text-base truncate flex items-center gap-1">
-                        {creator.name || formatAddress(creator.address)}
-                        {index === 0 && (
-                          <Award className="w-4 h-4 text-yellow-500 flex-shrink-0" />
-                        )}
-                      </h3>
-                      <p className="text-muted-foreground text-xs font-mono hidden sm:block">
-                        {formatAddress(creator.address)}
-                      </p>
-                      <p className="text-muted-foreground text-xs sm:hidden">
-                        {coinsCreated} coins
-                      </p>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <div className="text-white font-bold text-sm sm:text-base">
-                        {totalMarketCap} ETH
+                    <div className="flex-1 min-w-0 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+                      <div className="min-w-0">
+                        <h3 className="text-white font-bold text-sm sm:text-base truncate flex items-center gap-1" data-testid={`name-${creator.address}`}>
+                          {creator.name || formatAddress(creator.address)}
+                          {index === 0 && (
+                            <Award className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                          )}
+                        </h3>
+                        <p className="text-muted-foreground text-xs font-mono">
+                          {formatAddress(creator.address)}
+                        </p>
                       </div>
-                      <div className="text-muted-foreground text-xs hidden sm:block">
-                        Total Volume
+                      <div className="text-left sm:text-center">
+                        <div className="text-white font-bold text-sm sm:text-base" data-testid={`coins-${creator.address}`}>
+                          {creator.totalCoins}
+                        </div>
+                        <div className="text-muted-foreground text-xs">
+                          Coins Created
+                        </div>
                       </div>
-                      <div className="text-muted-foreground text-xs sm:hidden">
-                        {coinsCreated} coins
+                      <div className="text-left sm:text-right">
+                        <div className="text-white font-bold text-sm sm:text-base" data-testid={`marketcap-${creator.address}`}>
+                          {creator.estimatedMarketCap} ETH
+                        </div>
+                        <div className="text-muted-foreground text-xs">
+                          Est. Market Cap
+                        </div>
                       </div>
                     </div>
                   </div>
