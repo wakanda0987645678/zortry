@@ -1,5 +1,6 @@
 import { type ScrapedContent, type InsertScrapedContent, type Coin, type InsertCoin, type UpdateCoin, type Reward, type InsertReward, type Creator, type InsertCreator, type UpdateCreator, type Comment, type InsertComment, type Notification, type InsertNotification } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { SupabaseStorage } from "./supabase-storage";
 
 export interface IStorage {
   // Scraped Content
@@ -119,13 +120,19 @@ export class MemStorage implements IStorage {
 
   async createCoin(insertCoin: InsertCoin): Promise<Coin> {
     const id = randomUUID();
-    const coin: Coin = { 
-      ...insertCoin,
+    const coin: Coin = {
+      id,
+      symbol: insertCoin.symbol ?? '',
+      name: insertCoin.name ?? '',
       address: insertCoin.address ?? null,
+      creator: insertCoin.creator ?? '',
       status: insertCoin.status ?? 'pending',
       scrapedContentId: insertCoin.scrapedContentId ?? null,
       ipfsUri: insertCoin.ipfsUri ?? null,
-      id,
+      chainId: insertCoin.chainId ?? null,
+      registryTxHash: insertCoin.registryTxHash ?? null,
+      metadataHash: insertCoin.metadataHash ?? null,
+      registeredAt: insertCoin.registeredAt ?? null,
       createdAt: new Date()
     };
     this.coins.set(id, coin);
@@ -323,7 +330,7 @@ export class MemStorage implements IStorage {
       coinSymbol: insertNotification.coinSymbol ?? null,
       amount: insertNotification.amount ?? null,
       transactionHash: insertNotification.transactionHash ?? null,
-      read: insertNotification.read ?? false,
+      read: false,
       id,
       createdAt: new Date()
     };
@@ -367,4 +374,49 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Use SupabaseStorage for coins, MemStorage for everything else
+const memStorage = new MemStorage();
+const supabaseStorage = new SupabaseStorage();
+
+export const storage: IStorage = {
+  // Scraped Content
+  getScrapedContent: (id) => memStorage.getScrapedContent(id),
+  createScrapedContent: (content) => memStorage.createScrapedContent(content),
+  getAllScrapedContent: () => memStorage.getAllScrapedContent(),
+
+  // Coins (Supabase)
+  getCoin: (id) => supabaseStorage.getCoin(id),
+  getCoinByAddress: (address) => supabaseStorage.getCoinByAddress(address),
+  createCoin: (coin) => supabaseStorage.createCoin(coin),
+  updateCoin: (id, update) => supabaseStorage.updateCoin(id, update),
+  getAllCoins: () => supabaseStorage.getAllCoins(),
+  getCoinsByCreator: (creator) => supabaseStorage.getCoinsByCreator(creator),
+
+  // Rewards
+  getReward: (id) => memStorage.getReward(id),
+  createReward: (reward) => memStorage.createReward(reward),
+  getAllRewards: () => memStorage.getAllRewards(),
+  getRewardsByCoin: (coinAddress) => memStorage.getRewardsByCoin(coinAddress),
+  getRewardsByRecipient: (recipientAddress) => memStorage.getRewardsByRecipient(recipientAddress),
+
+  // Creators
+  getCreator: (id) => memStorage.getCreator(id),
+  getCreatorByAddress: (address) => memStorage.getCreatorByAddress(address),
+  createCreator: (creator) => memStorage.createCreator(creator),
+  updateCreator: (id, update) => memStorage.updateCreator(id, update),
+  getAllCreators: () => memStorage.getAllCreators(),
+  getTopCreators: () => memStorage.getTopCreators(),
+
+  // Comments
+  createComment: (comment) => memStorage.createComment(comment),
+  getCommentsByCoin: (coinAddress) => memStorage.getCommentsByCoin(coinAddress),
+  getAllComments: () => memStorage.getAllComments(),
+
+  // Notifications
+  createNotification: (notification) => memStorage.createNotification(notification),
+  getNotificationsByUser: (userId) => memStorage.getNotificationsByUser(userId),
+  getUnreadNotificationsByUser: (userId) => memStorage.getUnreadNotificationsByUser(userId),
+  markNotificationAsRead: (id) => memStorage.markNotificationAsRead(id),
+  markAllNotificationsAsRead: (userId) => memStorage.markAllNotificationsAsRead(userId),
+  deleteNotification: (id) => memStorage.deleteNotification(id),
+};
