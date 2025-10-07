@@ -9,8 +9,12 @@ import { migrateOldData } from "./migrate-old-data";
 import { sendTelegramNotification } from "./telegram-bot";
 import { RegistryService } from "./registry-service";
 import { base } from "viem/chains";
+import { handleFileUpload } from "./upload-handler"; // Import the upload handler
 
 export async function registerRoutes(app: Express): Promise<Server> {
+
+  // File upload endpoint
+  app.post("/api/upload", handleFileUpload);
 
   // Scrape URL endpoint
   app.post("/api/scrape", async (req, res) => {
@@ -45,29 +49,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (axios.isAxiosError(error)) {
         if (error.code === 'ECONNABORTED') {
-          return res.status(408).json({ 
-            error: 'Request timeout - the page took too long to load' 
+          return res.status(408).json({
+            error: 'Request timeout - the page took too long to load'
           });
         }
         if (error.response?.status === 404) {
-          return res.status(404).json({ 
-            error: 'Page not found - please check the URL is correct' 
+          return res.status(404).json({
+            error: 'Page not found - please check the URL is correct'
           });
         }
         if (error.response?.status === 403) {
-          return res.status(403).json({ 
-            error: 'Access forbidden - this platform blocks automated access' 
+          return res.status(403).json({
+            error: 'Access forbidden - this platform blocks automated access'
           });
         }
         if (error.response?.status === 429) {
-          return res.status(429).json({ 
-            error: 'Rate limit exceeded - Instagram and TikTok often block scrapers. Try YouTube, Medium, or blog URLs instead.' 
+          return res.status(429).json({
+            error: 'Rate limit exceeded - Instagram and TikTok often block scrapers. Try YouTube, Medium, or blog URLs instead.'
           });
         }
       }
 
-      res.status(500).json({ 
-        error: 'Failed to scrape content - some platforms block automated access. Try a different URL or platform.' 
+      res.status(500).json({
+        error: 'Failed to scrape content - some platforms block automated access. Try a different URL or platform.'
       });
     }
   });
@@ -451,9 +455,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
 
       if (unregisteredCoins.length === 0) {
-        return res.json({ 
-          message: 'No coins to register', 
-          registered: 0 
+        return res.json({
+          message: 'No coins to register',
+          registered: 0
         });
       }
 
@@ -470,14 +474,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
 
-        return res.json({ 
-          success: true, 
+        return res.json({
+          success: true,
           transactionHash: txHash,
-          registered: unregisteredCoins.length 
+          registered: unregisteredCoins.length
         });
       } else {
-        return res.status(500).json({ 
-          error: 'Failed to register coins batch' 
+        return res.status(500).json({
+          error: 'Failed to register coins batch'
         });
       }
     } catch (error) {
