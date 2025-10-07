@@ -621,7 +621,7 @@ export default function MobileTradeModal({ coin, open, onOpenChange }: MobileTra
               {holders.length > 0 ? (
                 <div className="space-y-2">
                   {holders.map((holder, index) => {
-                    const isCreator = holder.address.toLowerCase() === coin.creator.toLowerCase();
+                    const isCreator = coin.creator ? holder.address.toLowerCase() === coin.creator.toLowerCase() : false;
                     const tokenBalance = parseFloat(holder.balance);
                     let formattedBalance: string;
 
@@ -820,7 +820,7 @@ export default function MobileTradeModal({ coin, open, onOpenChange }: MobileTra
                   <span className="text-sm">Creator</span>
                 </div>
                 <span className="text-sm font-mono text-white">
-                  {coin.creator.slice(0, 6)}...{coin.creator.slice(-4)}
+                  {formatAddress(coin.creator)}
                 </span>
               </div>
 
