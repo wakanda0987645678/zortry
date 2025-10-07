@@ -190,7 +190,8 @@ export default function MobileTradeModal({ coin, open, onOpenChange }: MobileTra
     }
   }, [coin.address, open]);
 
-  const formatAddress = (address: string) => {
+  const formatAddress = (address?: string) => {
+    if (!address) return 'Unknown';
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
