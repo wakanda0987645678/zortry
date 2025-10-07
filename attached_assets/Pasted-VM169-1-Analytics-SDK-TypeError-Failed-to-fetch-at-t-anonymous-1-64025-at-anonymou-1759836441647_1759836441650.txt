@@ -1,0 +1,44 @@
+VM169:1 Analytics SDK: TypeError: Failed to fetch
+    at _t (<anonymous>:1:64025)
+    at <anonymous>:1:68106 
+Object
+pinata.ts:4 PINATA_JWT available: true
+pinata.ts:5 Environment variables: 
+Object
+api/coins:1 
+ Failed to load resource: the server responded with a status of 400 (Bad Request)
+Node cannot be found in the current page.
+pinata.ts:4 PINATA_JWT available: true
+pinata.ts:5 Environment variables: 
+{VITE_PINATA_JWT: true, VITE_PINATA_API_KEY: true, VITE_NEXT_PUBLIC_GATEWAY_URL: true}
+queryClient.ts:15 
+ POST https://11a58d76-ca49-4fcd-b5c1-4f9da4e8cf56-00-6uj250227jil.janeway.replit.dev/api/coins 400 (Bad Request)
+apiRequest	@	queryClient.ts:15
+mutationFn	@	content-preview-card.tsx:60
+await in mutationFn		
+fn	@	chunk-7X75LGXT.js?v=38e7ac52:1189
+run	@	chunk-7X75LGXT.js?v=38e7ac52:494
+start	@	chunk-7X75LGXT.js?v=38e7ac52:536
+execute	@	chunk-7X75LGXT.js?v=38e7ac52:1225
+await in execute		
+mutate	@	chunk-7X75LGXT.js?v=38e7ac52:2630
+(anonymous)	@	chunk-7X75LGXT.js?v=38e7ac52:3295
+onClick	@	content-preview-card.tsx:197
+callCallback2	@	chunk-Z2GUPSCO.js?v=38e7ac52:3674
+invokeGuardedCallbackDev	@	chunk-Z2GUPSCO.js?v=38e7ac52:3699
+invokeGuardedCallback	@	chunk-Z2GUPSCO.js?v=38e7ac52:3733
+invokeGuardedCallbackAndCatchFirstError	@	chunk-Z2GUPSCO.js?v=38e7ac52:3736
+executeDispatch	@	chunk-Z2GUPSCO.js?v=38e7ac52:7014
+processDispatchQueueItemsInOrder	@	chunk-Z2GUPSCO.js?v=38e7ac52:7034
+processDispatchQueue	@	chunk-Z2GUPSCO.js?v=38e7ac52:7043
+dispatchEventsForPlugins	@	chunk-Z2GUPSCO.js?v=38e7ac52:7051
+(anonymous)	@	chunk-Z2GUPSCO.js?v=38e7ac52:7174
+batchedUpdates$1	@	chunk-Z2GUPSCO.js?v=38e7ac52:18913
+batchedUpdates	@	chunk-Z2GUPSCO.js?v=38e7ac52:3579
+dispatchEventForPluginEventSystem	@	chunk-Z2GUPSCO.js?v=38e7ac52:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay	@	chunk-Z2GUPSCO.js?v=38e7ac52:5478
+dispatchEvent	@	chunk-Z2GUPSCO.js?v=38e7ac52:5472
+dispatchDiscreteEvent	@	chunk-Z2GUPSCO.js?v=38e7ac52:5449
+
+﻿
+
