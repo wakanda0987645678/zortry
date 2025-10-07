@@ -105,7 +105,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertCoinSchema.parse(req.body);
       const coin = await storage.createCoin(validatedData);
 
-      // Auto-create or update creator
+      // Auto-create or update creator (only if creator address exists)
+      if (!coin.creator) {
+        return res.status(400).json({ error: 'Creator address is required' });
+      }
       let creator = await storage.getCreatorByAddress(coin.creator);
       if (!creator) {
         // Create new creator

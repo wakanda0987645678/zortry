@@ -75,11 +75,42 @@ export async function handleFileUpload(req: Request, res: Response) {
       // Clean up temp file
       fs.unlinkSync(file.filepath);
 
+      // Create scraped content record for uploaded file
+      const { storage } = await import('./storage');
+      const title = (fields.title as string) || fileName;
+      const description = (fields.description as string) || `User uploaded ${file.mimetype?.split('/')[0] || 'file'}`;
+      const author = (fields.author as string) || 'Anonymous Creator';
+
+      const scrapedContent = await storage.createScrapedContent({
+        url: url,
+        title: title,
+        description: description,
+        image: file.mimetype?.startsWith('image/') ? url : '',
+        author: author,
+        publishDate: new Date().toISOString(),
+        content: description,
+        platform: 'upload',
+        type: file.mimetype?.split('/')[0] || 'file',
+      });
+
       res.json({
         success: true,
         ipfsHash,
         url,
         fileName,
+        scrapedContentId: scrapedContent.id,
+        scrapedData: {
+          id: scrapedContent.id,
+          title: scrapedContent.title,
+          description: scrapedContent.description,
+          image: scrapedContent.image,
+          url: scrapedContent.url,
+          author: scrapedContent.author,
+          publishDate: scrapedContent.publishDate,
+          content: scrapedContent.content,
+          platform: scrapedContent.platform,
+          type: scrapedContent.type,
+        }
       });
     } catch (error) {
       console.error("Upload error:", error);

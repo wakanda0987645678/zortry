@@ -90,9 +90,12 @@ export default function Create() {
     setIsUploading(true);
 
     try {
-      // Upload file to Pinata
+      // Upload file to Pinata with metadata
       const formData = new FormData();
       formData.append('file', uploadedFile);
+      formData.append('title', uploadTitle);
+      formData.append('description', uploadDescription);
+      formData.append('author', uploadAuthor);
 
       const uploadRes = await fetch('/api/upload', {
         method: 'POST',
@@ -103,20 +106,7 @@ export default function Create() {
         throw new Error('Failed to upload file');
       }
 
-      const { ipfsHash, url } = await uploadRes.json();
-
-      // Create scraped data format from upload
-      const uploadData = {
-        title: uploadTitle,
-        description: uploadDescription || `User uploaded ${uploadedFile.type.split('/')[0]} content`,
-        image: url,
-        url: url,
-        author: uploadAuthor || "Anonymous Creator",
-        publishDate: new Date().toISOString(),
-        content: uploadDescription,
-        platform: 'upload',
-        type: uploadedFile.type.split('/')[0], // image, video, or audio
-      };
+      const { scrapedData: uploadData } = await uploadRes.json();
 
       setScrapedData(uploadData);
       setShowPreview(true);

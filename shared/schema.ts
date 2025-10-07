@@ -23,7 +23,7 @@ export const coins = pgTable("coins", {
   name: text("name").notNull(),
   symbol: text("symbol").notNull(),
   address: text("address"),
-  creator: text("creator").notNull(),
+  creator: text("creator").notNull(), // Wallet address of coin creator
   status: text("status").notNull().default('pending'),
   scrapedContentId: varchar("scraped_content_id").references(() => scrapedContent.id),
   ipfsUri: text("ipfs_uri"),
