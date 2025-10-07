@@ -106,7 +106,7 @@ export default function Create() {
         throw new Error('Failed to upload file');
       }
 
-      const { scrapedData: uploadData } = await uploadRes.json();
+      const { uploadData } = await uploadRes.json();
 
       setScrapedData(uploadData);
       setShowPreview(true);
