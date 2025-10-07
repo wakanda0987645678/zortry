@@ -25,8 +25,10 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 // Assuming ProfileCardModal component is defined elsewhere and imported
 // For demonstration, a placeholder is included here. In a real scenario, import it.
-const ProfileCardModal = ({ creatorAddress, open, onOpenChange }: { creatorAddress: string; open: boolean; onOpenChange: (open: boolean) => void }) => {
+const ProfileCardModal = ({ creatorAddress, open, onOpenChange }: { creatorAddress?: string; open: boolean; onOpenChange: (open: boolean) => void }) => {
   // Placeholder for Profile Card Modal content and logic
+  if (!creatorAddress) return null;
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -198,7 +200,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${import.meta.env.VITE_NEXT_PUBLIC_ZORA_API_KEY || ''}`,
           },
-          body: JSON.JSON.stringify({
+          body: JSON.stringify({
             query: `
               query GetCoinPriceHistory($address: String!, $chainId: Int!) {
                 zora20Token(address: $address, chainId: $chainId) {
@@ -364,7 +366,8 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
     return imageUrl;
   };
 
-  const formatAddress = (address: string) => {
+  const formatAddress = (address?: string) => {
+    if (!address) return 'Unknown';
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
@@ -438,28 +441,21 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
         // Create notification for the trade
         const notificationType = isBuying ? 'buy' : 'sell';
         const notificationTitle = isBuying ? 'Coin Purchase Successful' : 'Coin Sale Successful';
-        // Ensure amounts are parsed correctly for notification message
-        const amountFormatted = formatEther(BigInt(result.amountReceived || result.amountSent || '0')); // Use appropriate field based on buy/sell
-        const totalCostFormatted = formatEther(BigInt(result.transaction.value || '0')); // Use transaction value for total cost
-
+        
         const notificationMessage = isBuying
-          ? `You bought ${amountFormatted} ${coin.symbol} for ${totalCostFormatted} ETH`
-          : `You sold ${amountFormatted} ${coin.symbol} for ${totalCostFormatted} ETH`;
+          ? `You bought ${coin.symbol} for ${ethAmount} ETH`
+          : `You sold ${coin.symbol} for ${ethAmount} ETH`;
 
-        await apiRequest('/api/notifications', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: address,
-            type: notificationType,
-            title: notificationTitle,
-            message: notificationMessage,
-            coinAddress: coin.address,
-            coinSymbol: coin.symbol,
-            amount: amountFormatted, // Use formatted amount
-            transactionHash: result.hash,
-            read: false
-          })
+        await apiRequest('POST', '/api/notifications', {
+          userId: address,
+          type: notificationType,
+          title: notificationTitle,
+          message: notificationMessage,
+          coinAddress: coin.address,
+          coinSymbol: coin.symbol,
+          amount: ethAmount,
+          transactionHash: result.hash,
+          read: false
         });
 
 
@@ -531,8 +527,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
 
             {/* Carousel - Image & Chart Slides */}
             <div className="flex-1 min-h-[200px] relative px-4">
-              <Carousel className="w-full h-full" opts={{ loop: false }}
-                onSlideChanged={(index) => setCurrentSlide(index)}>
+              <Carousel className="w-full h-full" opts={{ loop: false }}>
                 <CarouselContent className="h-full">
                   {/* Slide 1: Coin Image */}
                   <CarouselItem className="h-full">
@@ -540,7 +535,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                       {displayImage ? (
                         <img
                           src={displayImage}
-                          alt={coin.metadata?.title || coin.name}
+                          alt={(coin as any).metadata?.title || coin.name}
                           className="max-w-full max-h-full object-contain"
                         />
                       ) : (
@@ -1148,7 +1143,7 @@ export default function TradeModal({ coin, open, onOpenChange }: TradeModalProps
                   <span className="text-sm">Creator</span>
                 </div>
                 <span className="text-sm font-mono text-white">
-                  {coin.creator.slice(0, 6)}...{coin.creator.slice(-4)}
+                  {formatAddress(coin.creator)}
                 </span>
               </div>
 
