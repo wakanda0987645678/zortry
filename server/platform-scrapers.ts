@@ -25,9 +25,9 @@ async function scrapeInstagramOembed(url: string): Promise<ScrapedData> {
     // Extract username from URL
     const usernameMatch = url.match(/instagram\.com\/([^\/\?]+)/);
     if (!usernameMatch) throw new Error('Invalid Instagram URL');
-    
+
     const username = usernameMatch[1];
-    
+
     // Get user info using EnsembleData
     const userInfoUrl = `${ENSEMBLE_BASE_URL}/ig/user/info`;
     const response = await axios.get(userInfoUrl, {
@@ -73,9 +73,9 @@ async function scrapeTikTokOembed(url: string): Promise<ScrapedData> {
     // Extract username from URL
     const usernameMatch = url.match(/tiktok\.com\/@([^\/\?]+)/);
     if (!usernameMatch) throw new Error('Invalid TikTok URL');
-    
+
     const username = usernameMatch[1];
-    
+
     // Get user info using EnsembleData
     const userInfoUrl = `${ENSEMBLE_BASE_URL}/tt/user/info`;
     const response = await axios.get(userInfoUrl, {
@@ -140,9 +140,9 @@ async function scrapeYouTube(url: string): Promise<ScrapedData> {
         content: response.data.title || '',
       };
     }
-    
+
     const channelId = channelMatch[2];
-    
+
     // Get channel info using EnsembleData
     const channelInfoUrl = `${ENSEMBLE_BASE_URL}/yt/channel/info`;
     const response = await axios.get(channelInfoUrl, {
@@ -201,9 +201,9 @@ async function scrapeTwitterNitter(url: string): Promise<ScrapedData> {
     // Extract username from URL
     const usernameMatch = url.match(/(?:twitter\.com|x\.com)\/([^\/\?]+)/);
     if (!usernameMatch) throw new Error('Invalid Twitter URL');
-    
+
     const username = usernameMatch[1];
-    
+
     // Get user info using EnsembleData
     const userInfoUrl = `${ENSEMBLE_BASE_URL}/twitter/user/info`;
     const response = await axios.get(userInfoUrl, {
@@ -297,6 +297,22 @@ async function scrapeSpotify(url: string): Promise<ScrapedData> {
       engagement: 0,
     };
   }
+}
+
+async function scrapeAudioUrl(url: string): Promise<ScrapedData> {
+  // For generic audio URLs, we can only extract basic information.
+  // More detailed metadata would require specific API integrations or advanced analysis.
+  return {
+    url,
+    platform: 'audio',
+    title: 'Audio File',
+    description: 'Direct link to an audio file',
+    author: '',
+    image: '',
+    content: 'Audio content',
+    followers: 0,
+    engagement: 0,
+  };
 }
 
 async function scrapeMedium(url: string): Promise<ScrapedData> {
@@ -472,11 +488,19 @@ async function scrapeGenericBlog(url: string): Promise<ScrapedData> {
 
 export async function scrapeByPlatform(url: string, platform: PlatformType): Promise<ScrapedData> {
   try {
+    // Handle Spotify URLs
+    if (platform === 'spotify' || url.includes('spotify.com')) {
+      return scrapeSpotify(url);
+    }
+
+    // Handle generic audio URLs
+    if (platform === 'audio' || url.match(/\.(mp3|wav|ogg|m4a|aac|flac)$/i)) {
+      return scrapeAudioUrl(url);
+    }
+
     switch (platform) {
       case 'youtube':
         return await scrapeYouTube(url);
-      case 'spotify':
-        return await scrapeSpotify(url);
       case 'medium':
         return await scrapeMedium(url);
       case 'substack':

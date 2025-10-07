@@ -11,7 +11,8 @@ export type PlatformType =
   | 'github'
   | 'farcaster'
   | 'twitch'
-  | 'blog';
+  | 'blog'
+  | 'audio';
 
 export interface PlatformInfo {
   type: PlatformType;
@@ -43,6 +44,11 @@ export function detectPlatform(url: string): PlatformInfo {
         name: 'Spotify',
         id: match ? match[2] : undefined
       };
+    }
+
+    // Audio URL detection
+    if (/\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(url)) {
+      return { type: 'audio', name: 'Audio File' };
     }
 
     // Medium
@@ -99,6 +105,10 @@ export function detectPlatform(url: string): PlatformInfo {
     return { type: 'blog', name: 'Blog/Article' };
 
   } catch (error) {
+    // If URL parsing fails, treat as a generic blog/article
+    if (/\.(mp3|wav|ogg|m4a|aac|flac)$/i.test(url)) {
+      return { type: 'audio', name: 'Audio File' };
+    }
     return { type: 'blog', name: 'Blog/Article' };
   }
 }
@@ -106,6 +116,7 @@ export function detectPlatform(url: string): PlatformInfo {
 export const SUPPORTED_PLATFORMS = [
   { type: 'youtube', name: 'YouTube', example: 'https://youtube.com/@channelname' },
   { type: 'spotify', name: 'Spotify', example: 'https://open.spotify.com/track/...' },
+  { type: 'audio', name: 'Audio File', example: 'https://example.com/audio.mp3' },
   { type: 'medium', name: 'Medium', example: 'https://medium.com/@author/article' },
   { type: 'substack', name: 'Substack', example: 'https://example.substack.com/p/article' },
   { type: 'gitcoin', name: 'Gitcoin Grants', example: 'https://grants.gitcoin.co/...' },

@@ -14,6 +14,7 @@ export const scrapedContent = pgTable("scraped_content", {
   image: text("image"),
   content: text("content"),
   tags: json("tags").$type<string[]>(),
+  metadata: json("metadata"),
   scrapedAt: timestamp("scraped_at").defaultNow().notNull(),
 });
 
