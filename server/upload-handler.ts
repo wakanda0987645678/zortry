@@ -4,9 +4,9 @@ import formidable from "formidable";
 import fs from "fs";
 import path from "path";
 
-const PINATA_JWT = process.env.PINATA_JWT;
-const PINATA_API_KEY = process.env.PINATA_API_KEY;
-const PINATA_SECRET_KEY = process.env.PINATA_SECRET_KEY;
+const PINATA_JWT = process.env.VITE_PINATA_JWT;
+const PINATA_API_KEY = process.env.VITE_PINATA_API_KEY;
+const PINATA_SECRET_KEY = process.env.VITE_PINATA_SECRET_KEY;
 
 export async function handleFileUpload(req: Request, res: Response) {
   if (!PINATA_JWT && (!PINATA_API_KEY || !PINATA_SECRET_KEY)) {
