@@ -1,0 +1,53 @@
+VM900:1 
+ POST https://cca-lite.coinbase.com/amp net::ERR_NAME_NOT_RESOLVED
+_t	@	VM900:1
+Mt	@	VM900:1
+(anonymous)	@	VM900:1
+setTimeout		
+Pt	@	VM900:1
+(anonymous)	@	VM900:1
+requestIdleCallback		
+yt	@	VM900:1
+$t	@	VM900:1
+analyticsTracker	@	VM900:1
+u	@	VM900:1
+requestIdleCallback		
+N	@	VM900:1
+R	@	VM900:1
+e	@	VM900:1
+(anonymous)	@	VM900:1
+yn	@	VM900:1
+pinata.ts:4 PINATA_JWT available: true
+pinata.ts:5 Environment variables: 
+{VITE_PINATA_JWT: true, VITE_PINATA_API_KEY: true, VITE_NEXT_PUBLIC_GATEWAY_URL: true}
+queryClient.ts:15 
+ POST https://11a58d76-ca49-4fcd-b5c1-4f9da4e8cf56-00-6uj250227jil.janeway.replit.dev/api/coins 400 (Bad Request)
+apiRequest	@	queryClient.ts:15
+mutationFn	@	content-preview-card.tsx:52
+await in mutationFn		
+fn	@	chunk-7X75LGXT.js?v=74a20efe:1189
+run	@	chunk-7X75LGXT.js?v=74a20efe:494
+start	@	chunk-7X75LGXT.js?v=74a20efe:536
+execute	@	chunk-7X75LGXT.js?v=74a20efe:1225
+await in execute		
+mutate	@	chunk-7X75LGXT.js?v=74a20efe:2630
+(anonymous)	@	chunk-7X75LGXT.js?v=74a20efe:3295
+onClick	@	content-preview-card.tsx:199
+callCallback2	@	chunk-Z2GUPSCO.js?v=74a20efe:3674
+invokeGuardedCallbackDev	@	chunk-Z2GUPSCO.js?v=74a20efe:3699
+invokeGuardedCallback	@	chunk-Z2GUPSCO.js?v=74a20efe:3733
+invokeGuardedCallbackAndCatchFirstError	@	chunk-Z2GUPSCO.js?v=74a20efe:3736
+executeDispatch	@	chunk-Z2GUPSCO.js?v=74a20efe:7014
+processDispatchQueueItemsInOrder	@	chunk-Z2GUPSCO.js?v=74a20efe:7034
+processDispatchQueue	@	chunk-Z2GUPSCO.js?v=74a20efe:7043
+dispatchEventsForPlugins	@	chunk-Z2GUPSCO.js?v=74a20efe:7051
+(anonymous)	@	chunk-Z2GUPSCO.js?v=74a20efe:7174
+batchedUpdates$1	@	chunk-Z2GUPSCO.js?v=74a20efe:18913
+batchedUpdates	@	chunk-Z2GUPSCO.js?v=74a20efe:3579
+dispatchEventForPluginEventSystem	@	chunk-Z2GUPSCO.js?v=74a20efe:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay	@	chunk-Z2GUPSCO.js?v=74a20efe:5478
+dispatchEvent	@	chunk-Z2GUPSCO.js?v=74a20efe:5472
+dispatchDiscreteEvent	@	chunk-Z2GUPSCO.js?v=74a20efe:5449
+
+﻿
+
