@@ -75,10 +75,15 @@ export async function handleFileUpload(req: Request, res: Response) {
       // Clean up temp file
       fs.unlinkSync(file.filepath);
 
-      // Get user-provided metadata
-      const title = (fields.title as string) || fileName;
-      const description = (fields.description as string) || '';
-      const author = (fields.author as string) || '';
+      // Get user-provided metadata (formidable can return arrays or strings)
+      const getFieldValue = (field: any): string => {
+        if (Array.isArray(field)) return field[0] || '';
+        return field || '';
+      };
+
+      const title = getFieldValue(fields.title) || fileName;
+      const description = getFieldValue(fields.description) || '';
+      const author = getFieldValue(fields.author) || '';
       const fileType = file.mimetype?.split('/')[0] || 'file';
 
       // Return upload data directly - no scraping needed for uploads

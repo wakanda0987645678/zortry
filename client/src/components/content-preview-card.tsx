@@ -19,14 +19,15 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
   const { toast } = useToast();
   const { address: walletAddress } = useAccount();
   const { data: walletClient } = useWalletClient();
-  const [coinSymbol, setCoinSymbol] = useState(
-    scrapedData.title
+  const [coinSymbol, setCoinSymbol] = useState(() => {
+    const title = typeof scrapedData.title === 'string' ? scrapedData.title : 'COIN';
+    return title
       .split(" ")
       .map((w: string) => w[0])
       .join("")
       .toUpperCase()
-      .substring(0, 5)
-  );
+      .substring(0, 5);
+  });
 
   const createCoinMutation = useMutation({
     mutationFn: async () => {
