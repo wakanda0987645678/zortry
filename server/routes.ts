@@ -30,7 +30,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Detect platform
       const platformInfo = detectPlatform(url);
-      
+
       // Scrape content using platform-specific logic
       const scrapedData = await scrapeByPlatform(url, platformInfo.type);
 
@@ -100,7 +100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertCoinSchema.parse(req.body);
       const coin = await storage.createCoin(validatedData);
-      
+
       // Auto-create or update creator
       let creator = await storage.getCreatorByAddress(coin.creator);
       if (!creator) {
@@ -118,7 +118,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           totalCoins: newTotalCoins,
         });
       }
-      
+
       res.json(coin);
     } catch (error) {
       console.error('Create coin error:', error);
@@ -265,7 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/creators", async (req, res) => {
     try {
       const { address } = req.body;
-      
+
       // Check if creator already exists
       const existingCreator = await storage.getCreatorByAddress(address);
       if (existingCreator) {
@@ -381,7 +381,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertNotificationSchema.parse(req.body);
       const notification = await storage.createNotification(validatedData);
-      
+
       // Send Telegram notification if available
       await sendTelegramNotification(
         notification.userId,
@@ -389,7 +389,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notification.message,
         notification.type
       );
-      
+
       res.json(notification);
     } catch (error) {
       console.error('Create notification error:', error);
@@ -513,9 +513,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { address } = req.params;
       const isRegistered = await registryService.isPlatformCoin(address);
-      
+
       const coin = await storage.getCoinByAddress(address);
-      
+
       res.json({
         address,
         isRegistered,
@@ -533,7 +533,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { address } = req.params;
       const count = await registryService.getCreatorCoinCount(address);
-      
+
       res.json({
         creator: address,
         onchainCoinCount: count,

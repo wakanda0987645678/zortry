@@ -244,19 +244,59 @@ async function scrapeTwitterNitter(url: string): Promise<ScrapedData> {
 }
 
 async function scrapeSpotify(url: string): Promise<ScrapedData> {
-  const response = await axios.get(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
-    timeout: 30000,
-  });
+  try {
+    const response = await axios.get(url, {
+      headers: { 
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+      },
+      timeout: 30000,
+    });
 
-  const $ = cheerio.load(response.data);
+    const $ = cheerio.load(response.data);
 
-  const title = $('meta[property="og:title"]').attr('content') || 'Spotify Content';
-  const description = $('meta[property="og:description"]').attr('content') || '';
-  const author = $('meta[name="music:musician"]').attr('content') || '';
-  const image = $('meta[property="og:image"]').attr('content') || '';
+    const title = $('meta[property="og:title"]').attr('content') || 
+                  $('meta[name="twitter:title"]').attr('content') || 
+                  $('title').text() || 
+                  'Spotify Content';
+    const description = $('meta[property="og:description"]').attr('content') || 
+                       $('meta[name="twitter:description"]').attr('content') || 
+                       $('meta[name="description"]').attr('content') || 
+                       '';
+    const author = $('meta[name="music:musician"]').attr('content') || 
+                   $('meta[property="music:creator"]').attr('content') || 
+                   '';
+    const image = $('meta[property="og:image"]').attr('content') || 
+                  $('meta[name="twitter:image"]').attr('content') || 
+                  '';
 
-  return { url, platform: 'spotify', title, description, author, image, content: description };
+    return { 
+      url, 
+      platform: 'spotify', 
+      title, 
+      description, 
+      author, 
+      image, 
+      content: description,
+      followers: 0,
+      engagement: 0,
+    };
+  } catch (error) {
+    console.error('Spotify scraping error:', error);
+    // Fallback response
+    return {
+      url,
+      platform: 'spotify',
+      title: 'Spotify Content',
+      description: 'Audio content from Spotify',
+      author: '',
+      image: '',
+      content: '',
+      followers: 0,
+      engagement: 0,
+    };
+  }
 }
 
 async function scrapeMedium(url: string): Promise<ScrapedData> {
