@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import type { Coin, Comment } from "@shared/schema";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
@@ -323,15 +322,21 @@ export default function MobileTradeModal({ coin, open, onOpenChange }: MobileTra
     }
   };
 
+  const imageUrl = coin?.image || coin?.metadata?.image || "";
+
   return (
     <Drawer open={open} onOpenChange={handleClose}>
       <DrawerContent className="bg-background border-t border-border/50 max-h-[90vh]">
         <DrawerHeader className="px-4 pt-4 pb-2">
           <DrawerTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-sm font-bold text-foreground">
-                {coin.symbol.slice(0, 2)}
-              </div>
+              {imageUrl ? (
+                <img src={imageUrl} alt="Coin logo" className="w-10 h-10 rounded-full object-cover" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-sm font-bold text-foreground">
+                  {coin.symbol.slice(0, 2)}
+                </div>
+              )}
               <div>
                 <h3 className="text-lg font-bold text-foreground">{coin.name}</h3>
                 <p className="text-xs text-muted-foreground">@{formatAddress(coin.creator)}</p>

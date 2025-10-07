@@ -108,8 +108,9 @@ export async function createZoraCoin(
       metadata: { type: "RAW_URI" as const, uri: metadataUri || "" },
       currency: CreateConstants.ContentCoinCurrencies.ETH,
       chainId,
-      skipMetadataValidation: true, // Skip validation since we've already validated and uploaded
+      skipMetadataValidation: !metadataUri, // Only skip if no URI (validation will fail on empty)
       platformReferrer: ADMIN_PLATFORM_REFERRAL, // Earn 20% of all trading fees for this coin
+      startingMarketCap: CreateConstants.StartingMarketCaps.LOW, // Set initial market cap
     };
 
     // For client-side, we'll return the call data instead of executing
@@ -201,8 +202,9 @@ export async function createZoraCoinWithWallet(
       metadata: { type: "RAW_URI" as const, uri: metadataUri || "" },
       currency: CreateConstants.ContentCoinCurrencies.ETH,
       chainId,
-      skipMetadataValidation: true, // Skip validation since we've already validated and uploaded
+      skipMetadataValidation: !metadataUri, // Only skip if no URI (validation will fail on empty)
       platformReferrer: ADMIN_PLATFORM_REFERRAL, // Earn 20% of all trading fees for this coin
+      startingMarketCap: CreateConstants.StartingMarketCaps.LOW, // Set initial market cap
     };
 
     // Create coin using high-level function with SDK v0.3.2 signature

@@ -23,7 +23,7 @@ export const coins = pgTable("coins", {
   name: text("name").notNull(),
   symbol: text("symbol").notNull(),
   address: text("address"),
-  creator: text("creator").notNull(), // Wallet address of coin creator
+  creator: text("creator").notNull(),
   status: text("status").notNull().default('pending'),
   scrapedContentId: varchar("scraped_content_id").references(() => scrapedContent.id),
   ipfsUri: text("ipfs_uri"),
@@ -32,6 +32,8 @@ export const coins = pgTable("coins", {
   metadataHash: text("metadata_hash"),
   registeredAt: timestamp("registered_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  image: text("image"), // Image URL for display
+  description: text("description"), // Coin description
 });
 
 export const insertScrapedContentSchema = createInsertSchema(scrapedContent).omit({

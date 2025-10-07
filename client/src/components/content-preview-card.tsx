@@ -48,17 +48,18 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
       const ipfsUri = await uploadToIPFS(metadata);
 
       // Create pending coin record in database first (decouple from Zora blockchain)
-      const pendingCoinData = {
+      const createdCoin = await apiRequest("POST", "/api/coins", {
         name: scrapedData.title,
         symbol: coinSymbol,
         creator: walletAddress,
-        scrapedContentId: scrapedData.id,
-        ipfsUri,
         status: 'pending' as const,
-      };
+        scrapedContentId: null,
+        ipfsUri: null,
+        image: scrapedData.image || "",
+        description: scrapedData.description || `A coin representing ${scrapedData.title}`,
+      });
+      const createdCoinJson = await createdCoin.json();
 
-      const createRes = await apiRequest("POST", "/api/coins", pendingCoinData);
-      const createdCoin = await createRes.json();
 
       // Try to create on Zora blockchain (optional, won't block database save)
       let zoraCoinResult = null;
@@ -77,7 +78,7 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
           zoraCoinResult = await createZoraCoinWithWallet(coinMetadata, walletAddress, walletClient, chainId);
 
           // Update coin with address, chainId, and active status
-          await apiRequest("PATCH", `/api/coins/${createdCoin.id}`, {
+          await apiRequest("PATCH", `/api/coins/${createdCoinJson.id}`, {
             address: zoraCoinResult.address,
             chainId: chainId.toString(),
             status: 'active' as const,
@@ -88,7 +89,7 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
 
         // Update status to failed since Zora creation didn't work
         try {
-          await apiRequest("PATCH", `/api/coins/${createdCoin.id}`, {
+          await apiRequest("PATCH", `/api/coins/${createdCoinJson.id}`, {
             status: 'failed' as const,
           });
         } catch (updateError) {
@@ -96,13 +97,13 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
         }
       }
 
-      return { coin: createdCoin, zoraCoinResult };
+      return { coin: createdCoinJson, zoraCoinResult };
     },
     onSuccess: (data) => {
       toast({
         title: "Coin created successfully!",
-        description: data.zoraCoinResult 
-          ? "Your coin is now live on Zora!" 
+        description: data.zoraCoinResult
+          ? "Your coin is now live on Zora!"
           : "Coin saved! Blockchain deployment pending.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/coins"] });
@@ -166,9 +167,9 @@ export default function ContentPreviewCard({ scrapedData, onCoinCreated }: Conte
             )}
             <div className="flex items-center gap-1">
               <ExternalLink className="w-4 h-4" />
-              <a 
-                href={scrapedData.url} 
-                target="_blank" 
+              <a
+                href={scrapedData.url}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="truncate max-w-xs hover:text-foreground"
                 data-testid="link-preview-url"
